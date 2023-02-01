@@ -1,0 +1,26 @@
+{
+  "name": "web-chapter",
+  "version": "1.0.0",
+  "description": "A framework for building web apps",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coremaker/web-chapter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/coremaker/web-chapter/issues"
+  },
+  "homepage": "https://github.com/coremaker/web-chapter#readme",
+  "workspaces": [
+    "packages/ui",
+    "packages/lib"
+  ],
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  }
+}
