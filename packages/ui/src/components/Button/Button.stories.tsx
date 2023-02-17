@@ -1,5 +1,6 @@
 import Button from "./Button";
 import { Meta, StoryFn } from "@storybook/react";
+import { range } from "@web-chapter/lib";
 
 export default {
 	title: "Example/Button",
@@ -10,7 +11,7 @@ const Template: StoryFn<typeof Button> = (args) => <Button {...args} />;
 
 export const Primary = Template.bind({});
 Primary.args = {
-	text: "Primary Button",
+	text: `${range(3)} GO`,
 	color: "primary",
 	variant: "contained",
 };

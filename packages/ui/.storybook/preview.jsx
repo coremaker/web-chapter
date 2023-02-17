@@ -1,6 +1,6 @@
 import React from "react";
 import { ThemeProvider } from "@mui/material";
-import { ThemeProvider as Emotion10ThemeProvider } from 'emotion-theming';
+// import { ThemeProvider as Emotion10ThemeProvider } from 'emotion-theming';
 
 import theme from "../src/components/theme/theme";
 
@@ -16,10 +16,10 @@ export const parameters = {
 
 export const decorators = [
 	(Story) => (
-		<Emotion10ThemeProvider theme={theme}>
+		// <Emotion10ThemeProvider theme={theme}>
 			<ThemeProvider theme={theme}>
 				<Story />
 			</ThemeProvider>
-		</Emotion10ThemeProvider>
+		// </Emotion10ThemeProvider>
 	),
 ];

@@ -2,7 +2,19 @@
 	"name": "@web-chapter/lib",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
+	"files": [
+		"dist"
+	],
+	"exports": {
+		".": {
+			"import": "./dist/lib.es.js",
+			"require": "./dist/lib.umd.js"
+		}
+	},
+	"type": "module",
+	"main": "./dist/lib.umd.js",
+	"module": "./dist/lib.es.js",
+	"types": "./dist/index.d.ts",
 	"scripts": {
 		"test": "vitest",
 		"build": "tsc && vite build"
