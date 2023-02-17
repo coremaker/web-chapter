@@ -1,7 +1,10 @@
 {
-    "files": [],
-    "references": [
-      { "path": "packages/ui" },
-      { "path": "packages/lib" }
-    ]
-  }
+	"files": [],
+	"references": [{ "path": "packages/ui" }, { "path": "packages/lib" }],
+	"compilerOptions": {
+		"lib": ["es6", "dom"],
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"strictNullChecks": true
+	}
+}
