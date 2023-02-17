@@ -26,6 +26,7 @@
 		"@emotion/react": "^11.10.6",
 		"@emotion/styled": "^11.10.6",
 		"@mui/material": "^5.11.9",
+		"@web-chapter/lib": "file:../lib",
 		"classnames": "^2.3.2"
 	},
 	"devDependencies": {
