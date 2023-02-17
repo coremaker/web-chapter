@@ -2,7 +2,19 @@
 	"name": "@web-chapter/ui",
 	"private": true,
 	"version": "0.0.0",
+	"files": [
+		"dist"
+	],
+	"exports": {
+		".": {
+			"import": "./dist/ui.es.js",
+			"require": "./dist/ui.umd.js"
+		}
+	},
 	"type": "module",
+	"main": "./dist/ui.umd.js",
+	"module": "./dist/ui.es.js",
+	"types": "./dist/index.d.ts",
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",

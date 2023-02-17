@@ -1,20 +1,28 @@
 {
-  "name": "@web-chapter/lib",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/coremaker/web-chapter.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/coremaker/web-chapter/issues"
-  },
-  "homepage": "https://github.com/coremaker/web-chapter#readme"
+	"name": "@web-chapter/lib",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "vitest",
+		"build": "tsc && vite build"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/coremaker/web-chapter.git"
+	},
+	"devDependencies": {
+		"typescript": "^4.9.5",
+		"vite": "^4.1.0",
+		"vite-plugin-dts": "^2.0.0-beta.1",
+		"vite-tsconfig-paths": "^4.0.5",
+		"vitest": "^0.25.8"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/coremaker/web-chapter/issues"
+	},
+	"homepage": "https://github.com/coremaker/web-chapter#readme"
 }

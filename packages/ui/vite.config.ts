@@ -22,8 +22,6 @@ export default defineConfig((configEnv) => ({
 	],
 	resolve: {
 		alias: {
-			// "@material-ui": resolve("../../node_modules/@material-ui"),
-			// "@emotion/styled": resolve("../../node_modules/@emotion/styled"),
 			"@emotion/core": resolve("../../node_modules/@emotion/react"),
 			"emotion-theming": resolve("../../node_modules/@emotion/react"),
 		},
