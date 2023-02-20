@@ -20,5 +20,14 @@ export default defineConfig((configEnv) => ({
 			formats: ["es", "umd"],
 			fileName: (format) => `ui.${format}.js`,
 		},
+		rollupOptions: {
+			external: ["react", "react-dom"],
+			output: {
+				globals: {
+					react: "React",
+					"react-dom": "ReactDOM",
+				},
+			},
+		},
 	},
 }));
