@@ -2,9 +2,7 @@
 	"name": "@web-chapter/monorepo",
 	"version": "1.0.0",
 	"description": "A framework for building web apps",
-	"main": "index.js",
-	"scripts": {
-	},
+	"scripts": {},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/coremaker/web-chapter.git"

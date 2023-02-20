@@ -1,6 +1,6 @@
 {
 	"name": "@web-chapter/lib",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "",
 	"files": [
 		"dist"
@@ -17,7 +17,8 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"test": "vitest",
-		"build": "tsc && vite build"
+		"build": "tsc && vite build",
+		"rm:build": "tsc --build --clean && rm -rf dist"
 	},
 	"repository": {
 		"type": "git",

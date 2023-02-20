@@ -5,27 +5,15 @@
 		"rootDir": "src",
 		"outDir": "dist",
 		"target": "ESNext",
-		"useDefineForClassFields": true,
 		"lib": ["DOM", "DOM.Iterable", "ESNext"],
-		"allowJs": false,
-		"allowSyntheticDefaultImports": true,
-		"strict": true,
-		"forceConsistentCasingInFileNames": true,
-		"module": "ESNext",
-		"moduleResolution": "Node",
-		"resolveJsonModule": true,
-		"isolatedModules": true,
 		"jsx": "react-jsx",
-		"declaration": true,
-		"skipLibCheck": true,
-		"esModuleInterop": true,
-		"declarationMap": true,
-		"baseUrl": ".",
+		"emitDeclarationOnly": true,
+		"baseUrl": "./src",
 		"paths": {
-			"ui": ["src/component/index.ts"]
-		},
-		"typeRoots": ["node_modules/@types", "src/component/index.d.ts"]
+			"src/*": ["./*"]
+		}
 	},
 	"include": ["src"],
-	"references": [{ "path": "./tsconfig.node.json" }, { "path": "../lib" }]
+	"exclude": ["vite.config.ts"],
+	"references": [{ "path": "../lib" }, { "path": "./tsconfig.node.json" }]
 }

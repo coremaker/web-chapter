@@ -1,6 +1,5 @@
 {
 	"name": "@web-chapter/ui",
-	"private": true,
 	"version": "0.0.0",
 	"files": [
 		"dist"
@@ -17,10 +16,11 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"dev": "vite",
-		"build": "tsc && vite build",
+		"build": "tsc -b && vite build",
 		"preview": "vite preview",
 		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build"
+		"build-storybook": "storybook build",
+		"rm:build": "tsc --build --clean && rm -rf dist"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.10.6",

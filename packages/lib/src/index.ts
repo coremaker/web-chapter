@@ -1,1 +1,1 @@
-export { range } from "./functions/functions";
+export { range } from "src/functions/functions";

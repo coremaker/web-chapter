@@ -3,22 +3,16 @@
 import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
-// import EsLint from "vite-plugin-linter";
 import tsConfigPaths from "vite-tsconfig-paths";
-// const { EsLinter, linterPlugin } = EsLint;
 
 // https://vitejs.dev/config/
 export default defineConfig((configEnv) => ({
-	plugins: [
-		tsConfigPaths(),
-		// linterPlugin({
-		// 	include: ["./src}/**/*.{ts,tsx}"],
-		// 	linters: [new EsLinter({ configEnv })],
-		// }),
-		dts({
-			include: ["src/*"],
-		}),
-	],
+	plugins: [tsConfigPaths(), dts()],
+	resolve: {
+		alias: {
+			src: resolve(__dirname, "src"),
+		},
+	},
 	test: {
 		globals: true,
 		mockReset: true,
@@ -29,6 +23,15 @@ export default defineConfig((configEnv) => ({
 			name: "@web-chapter/lib",
 			formats: ["es", "umd"],
 			fileName: (format) => `lib.${format}.js`,
+		},
+		rollupOptions: {
+			external: ["react", "react-dom"],
+			output: {
+				globals: {
+					react: "React",
+					"react-dom": "ReactDOM",
+				},
+			},
 		},
 	},
 }));
