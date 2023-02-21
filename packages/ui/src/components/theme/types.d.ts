@@ -1,11 +1,7 @@
 export {};
 
 declare module "@mui/material/styles" {
-	interface Theme {
-		status: {
-			danger: React.CSSProperties["color"];
-		};
-	}
+	interface Theme {}
 
 	interface Palette {
 		ink: Palette["primary"];
@@ -31,11 +27,7 @@ declare module "@mui/material/styles" {
 		darker?: string;
 	}
 
-	interface ThemeOptions {
-		status: {
-			danger: React.CSSProperties["color"];
-		};
-	}
+	interface ThemeOptions {}
 }
 
 declare module "@mui/material/Button" {
