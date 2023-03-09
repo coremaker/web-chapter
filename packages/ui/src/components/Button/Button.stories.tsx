@@ -26,7 +26,7 @@ Secondary.args = {
 export const LargeContained = Template.bind({});
 LargeContained.args = {
 	text: "Large Contained Button",
-	color: "danger",
+	color: "warning",
 	size: "large",
 	variant: "contained",
 };

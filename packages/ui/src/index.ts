@@ -6,4 +6,6 @@ export { default as Select } from "@mui/material/Select";
 
 export { ThemeProvider } from "@mui/material";
 
+export { Typography } from "@mui/material";
+
 export { default as theme } from "./components/theme/theme";
