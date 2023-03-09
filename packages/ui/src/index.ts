@@ -11,3 +11,5 @@ export { Typography } from "@mui/material";
 export { default as theme } from "./components/theme/theme";
 
 export { createTheme } from "@mui/material";
+
+import "./components/theme/types";
