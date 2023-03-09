@@ -6,8 +6,13 @@ export { default as Select } from "@mui/material/Select";
 
 export { ThemeProvider } from "@mui/material";
 
-export { Typography } from "@mui/material";
+export { default as Typography } from "@mui/material/Typography";
 
 export { default as theme } from "./components/theme/theme";
 
 export { createTheme } from "@mui/material";
+
+export * from "@mui/material";
+export * from "@mui/material/styles";
+export * from "@mui/material/Button";
+export * from "@mui/material/Typography";
