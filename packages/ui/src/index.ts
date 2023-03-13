@@ -1,18 +1,12 @@
-// export { default as Button } from "./components/Button/Button";
-
-export { default as Modal } from "@mui/material/Modal";
-
-export { default as Select } from "@mui/material/Select";
-
 export { default as ThemeProvider } from "@mui/material/styles/ThemeProvider";
-
-export { default as Typography } from "@mui/material/Typography";
-
-export { default as Button } from "@mui/material/Button";
 
 export { default as theme } from "./components/theme/theme";
 
 export { default as createTheme } from "@mui/material/styles/createTheme";
+
+export { default as SelectUnstyled } from "@mui/base/SelectUnstyled";
+export { default as ButtonUnstyled } from "@mui/base/ButtonUnstyled";
+export { default as InputUnstyled } from "@mui/base/InputUnstyled";
 
 export * from "@mui/material";
 export * from "@mui/material/styles";
