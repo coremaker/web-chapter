@@ -1,9 +1,20 @@
 {
-    "extends": "../../tsconfig.base.json",
-    "references": [{ "path": "../lib" }],
+	"extends": "../../tsconfig.base.json",
 
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist"
-    },
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "dist",
+		"target": "ESNext",
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"jsx": "react-jsx",
+		"emitDeclarationOnly": true,
+		"declaration": true,
+		"baseUrl": "./src",
+		"paths": {
+			"src/*": ["./*"]
+		}
+	},
+	"include": ["src"],
+	"exclude": ["vite.config.ts"],
+	"references": [{ "path": "../lib" }, { "path": "./tsconfig.node.json" }]
 }
