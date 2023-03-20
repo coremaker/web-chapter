@@ -1,6 +1,6 @@
 export { default as ThemeProvider } from "@mui/material/styles/ThemeProvider";
 
-export { default as theme } from "./components/theme/theme";
+export { default as defaultTheme } from "./components/theme/theme";
 
 export { default as createTheme } from "@mui/material/styles/createTheme";
 
