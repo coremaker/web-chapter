@@ -1,5 +1,52 @@
 export {};
 
+interface TypographyThemeVariants {
+	displayLarge?: React.CSSProperties;
+	displayMedium?: React.CSSProperties;
+	displaySmall?: React.CSSProperties;
+
+	titleLarge?: React.CSSProperties;
+	titleMedium?: React.CSSProperties;
+	titleSmall?: React.CSSProperties;
+
+	bodyLargeRegular?: React.CSSProperties;
+	bodyLargeItalic?: React.CSSProperties;
+	bodyLargeBold?: React.CSSProperties;
+	bodyLargeLink?: React.CSSProperties;
+
+	bodySmallRegular?: React.CSSProperties;
+	bodySmallItalic?: React.CSSProperties;
+	bodySmallBold?: React.CSSProperties;
+	bodySmallLink?: React.CSSProperties;
+
+	buttonLarge?: React.CSSProperties;
+	buttonLargeLink?: React.CSSProperties;
+
+	buttonSmall?: React.CSSProperties;
+	buttonSmallLink?: React.CSSProperties;
+
+	captionLarge?: React.CSSProperties;
+	captionSmall?: React.CSSProperties;
+	captionSmallBold?: React.CSSProperties;
+}
+
+interface ColorThemeVariants {
+	0?: string;
+	50?: string;
+	100?: string;
+	200?: string;
+	300?: string;
+	400?: string;
+	500?: string;
+	600?: string;
+	700?: string;
+	800?: string;
+	900?: string;
+	tint50?: string;
+	tint100?: string;
+	tint200?: string;
+}
+
 declare module "@mui/material/styles/createPalette" {
 	interface PaletteOptions {
 		ink: PaletteColorOptions;
@@ -20,101 +67,15 @@ declare module "@mui/material/styles/createPalette" {
 declare module "@mui/material/styles" {
 	interface Theme {}
 
-	interface PaletteColor {
-		0?: string;
-		50?: string;
-		100?: string;
-		200?: string;
-		300?: string;
-		400?: string;
-		500?: string;
-		600?: string;
-		700?: string;
-		800?: string;
-		900?: string;
-		tint50?: string;
-		tint100?: string;
-		tint200?: string;
-	}
+	interface PaletteColor extends ColorThemeVariants {}
 
-	interface SimplePaletteColorOptions {
-		0?: string;
-		50?: string;
-		100?: string;
-		200?: string;
-		300?: string;
-		400?: string;
-		500?: string;
-		600?: string;
-		700?: string;
-		800?: string;
-		900?: string;
-		tint50?: string;
-		tint100?: string;
-		tint200?: string;
-	}
+	interface SimplePaletteColorOptions extends ColorThemeVariants {}
 
 	interface ThemeOptions {}
 
-	interface TypographyVariants {
-		displayLarge?: React.CSSProperties;
-		displayMedium?: React.CSSProperties;
-		displaySmall?: React.CSSProperties;
+	interface TypographyVariants extends TypographyThemeVariants {}
 
-		titleLarge?: React.CSSProperties;
-		titleMedium?: React.CSSProperties;
-		titleSmall?: React.CSSProperties;
-
-		bodyLargeRegular?: React.CSSProperties;
-		bodyLargeItalic?: React.CSSProperties;
-		bodyLargeBold?: React.CSSProperties;
-		bodyLargeLink?: React.CSSProperties;
-
-		bodySmallRegular?: React.CSSProperties;
-		bodySmallItalic?: React.CSSProperties;
-		bodySmallBold?: React.CSSProperties;
-		bodySmallLink?: React.CSSProperties;
-
-		buttonLarge?: React.CSSProperties;
-		buttonLargeLink?: React.CSSProperties;
-
-		buttonSmall?: React.CSSProperties;
-		buttonSmallLink?: React.CSSProperties;
-
-		captionLarge?: React.CSSProperties;
-		captionSmall?: React.CSSProperties;
-		captionSmallBold?: React.CSSProperties;
-	}
-
-	interface TypographyVariantsOptions {
-		displayLarge?: React.CSSProperties;
-		displayMedium?: React.CSSProperties;
-		displaySmall?: React.CSSProperties;
-
-		titleLarge?: React.CSSProperties;
-		titleMedium?: React.CSSProperties;
-		titleSmall?: React.CSSProperties;
-
-		bodyLargeRegular?: React.CSSProperties;
-		bodyLargeItalic?: React.CSSProperties;
-		bodyLargeBold?: React.CSSProperties;
-		bodyLargeLink?: React.CSSProperties;
-
-		bodySmallRegular?: React.CSSProperties;
-		bodySmallItalic?: React.CSSProperties;
-		bodySmallBold?: React.CSSProperties;
-		bodySmallLink?: React.CSSProperties;
-
-		buttonLarge?: React.CSSProperties;
-		buttonLargeLink?: React.CSSProperties;
-
-		buttonSmall?: React.CSSProperties;
-		buttonSmallLink?: React.CSSProperties;
-
-		captionLarge?: React.CSSProperties;
-		captionSmall?: React.CSSProperties;
-		captionSmallBold?: React.CSSProperties;
-	}
+	interface TypographyVariantsOptions extends TypographyThemeVariants {}
 }
 
 declare module "@mui/material/Button" {
