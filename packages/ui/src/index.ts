@@ -9,8 +9,6 @@ export { default as OptionUnstyled } from "@mui/base/OptionUnstyled";
 export { default as ButtonUnstyled } from "@mui/base/ButtonUnstyled";
 export { default as InputUnstyled } from "@mui/base/InputUnstyled";
 
-export * from "@mui/material/usePagination";
-
 export * from "@mui/material";
 export * from "@mui/material/styles";
 export * from "@mui/material/Button";
