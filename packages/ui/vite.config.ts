@@ -21,6 +21,7 @@ export default defineConfig((configEnv) => ({
 			fileName: (format) => `ui.${format}.js`,
 		},
 		rollupOptions: {
+			input: [resolve("src/hooks/*", "index.ts")],
 			external: ["react", "react-dom"],
 			output: {
 				globals: {
