@@ -8,13 +8,16 @@
 		"lib": ["DOM", "DOM.Iterable", "ESNext"],
 		"jsx": "react-jsx",
 		"emitDeclarationOnly": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"strictNullChecks": true,
 		"declaration": true,
 		"baseUrl": "./src",
 		"paths": {
 			"src/*": ["./*"]
 		}
 	},
-	"include": ["src"],
+	"include": ["src", "src/hooks"],
 	"exclude": ["vite.config.ts"],
 	"references": [{ "path": "../lib" }, { "path": "./tsconfig.node.json" }]
 }
