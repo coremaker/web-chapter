@@ -11,7 +11,8 @@
 		},
 		"./hooks/usePagination": {
 			"import": "./dist/usePagination.es.js",
-			"require": "./dist/usePagination.cjs.js"
+			"require": "./dist/usePagination.cjs.js",
+			"types": "./dist/hooks/usePagination/index.d.ts"
 		}
 	},
 	"type": "module",
