@@ -1,6 +1,6 @@
 {
 	"name": "@web-chapter/ui",
-	"version": "0.0.4",
+	"version": "0.0.4-beta01",
 	"files": [
 		"dist"
 	],
@@ -10,8 +10,8 @@
 			"require": "./dist/index.cjs.js"
 		},
 		"./hooks/usePagination": {
-			"import": "./dist/hooks/usePagination.es.js",
-			"require": "./dist/hooks/usePagination.cjs.js"
+			"import": "./dist/usePagination.es.js",
+			"require": "./dist/usePagination.cjs.js"
 		}
 	},
 	"type": "module",
