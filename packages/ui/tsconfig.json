@@ -17,7 +17,7 @@
 			"src/*": ["./*"]
 		}
 	},
-	"include": ["src", "src/hooks"],
+	"include": ["src", "src/hooks/usePagination/*"],
 	"exclude": ["vite.config.ts"],
 	"references": [{ "path": "../lib" }, { "path": "./tsconfig.node.json" }]
 }
