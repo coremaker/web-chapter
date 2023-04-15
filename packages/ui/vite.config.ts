@@ -14,15 +14,10 @@ export default defineConfig((configEnv) => ({
 		},
 	},
 	build: {
-		emptyOutDir: false,
-		outDir: "dist",
 		lib: {
-			entry: {
-				index: resolve("src", "index.ts"),
-				usePagination: resolve("src/hooks/usePagination", "index.ts"),
-			},
+			entry: resolve("src", "index.ts"),
 			name: "@web-chapter/ui",
-			formats: ["es", "cjs"],
+			formats: ["es", "umd"],
 			fileName: (format, entryName) => `${entryName}.${format}.js`,
 		},
 		rollupOptions: {

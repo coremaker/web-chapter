@@ -1,24 +1,19 @@
 {
 	"name": "@web-chapter/ui",
-	"version": "0.0.4-beta05",
+	"version": "0.0.5",
 	"files": [
-		"dist/*"
+		"dist"
 	],
 	"exports": {
 		".": {
 			"import": "./dist/index.es.js",
-			"require": "./dist/index.cjs.js",
-			"type": "./dist/index.d.ts"
-		},
-		"./hooks/usePagination": {
-			"import": "./dist/usePagination.es.js",
-			"require": "./dist/usePagination.cjs.js",
-			"type": "./dist/hooks/usePagination/index.d.ts"
+			"require": "./dist/index.umd.js"
 		}
 	},
 	"type": "module",
-	"main": "./dist/index.cjs.js",
+	"main": "./dist/index.umd.js",
 	"module": "./dist/index.es.js",
+	"types": "./dist/index.d.ts",
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc -b && vite build",
