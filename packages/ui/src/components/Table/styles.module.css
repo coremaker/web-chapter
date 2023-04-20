@@ -1,0 +1,13 @@
+.table__headArea {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.table__searchInputContainer {
+    width: 400px;
+}
+
+.table__searchInputContainer > div {
+    width: 100%;
+}

@@ -30,4 +30,15 @@ export default defineConfig((configEnv) => ({
 			},
 		},
 	},
+	test: {
+		globals: true,
+		environment: "jsdom",
+		setupFiles: ["src/setupTests.ts"],
+		mockReset: true,
+		coverage: {
+			provider: "c8",
+			include: ["src/**/*.{ts,tsx}"],
+			exclude: ["src/**/*.test.{ts,tsx}", "src/setupTests.ts"],
+		},
+	},
 }));
