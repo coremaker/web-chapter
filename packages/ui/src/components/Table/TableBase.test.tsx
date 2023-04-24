@@ -2,7 +2,7 @@ import { render, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import Table from "./Table";
+import Table from "./BaseTable";
 import { headCells, rows } from "./mock-data";
 
 describe("<Table />", () => {

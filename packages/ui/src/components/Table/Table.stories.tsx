@@ -1,5 +1,5 @@
 import { Meta, StoryFn } from "@storybook/react";
-import Table from "./Table";
+import Table from "./BaseTable";
 import { headCells, rows } from "./mock-data";
 import { SelectedRowIds } from "../../hooks/useTable/reducer";
 import Styles from "./styles.module.css";

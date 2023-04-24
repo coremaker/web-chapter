@@ -1,5 +1,5 @@
 import { ChangeEvent, useCallback, useMemo, useReducer } from "react";
-import { TableProps } from "../../components/Table/Table";
+import { BaseTableProps } from "../../components/Table/BaseTable";
 import { Cell, CellComparator, Row } from "../../components/Table/types";
 import { TableState, reducer } from "./reducer";
 import { getTablePropsWithDefaults } from "./utils";
@@ -37,7 +37,7 @@ const makeSortRowByCellComparator =
 		return comparator(secondCell.label, firstCell.label);
 	};
 
-export default function useTable(props: TableProps) {
+export default function useTable(props: BaseTableProps) {
 	const {
 		defaultRowsPerPage,
 		headCells,

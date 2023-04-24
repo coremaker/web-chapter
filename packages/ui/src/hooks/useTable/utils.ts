@@ -1,14 +1,17 @@
-import { TableClasses, TableProps } from "../../components/Table/Table";
+import {
+	BaseTableClasses,
+	BaseTableProps,
+} from "../../components/Table/BaseTable";
 import { RowAction } from "../../components/Table/types";
 
-interface TablePropsWithDefaults extends TableProps {
+interface TablePropsWithDefaults extends BaseTableProps {
 	defaultRowsPerPage: number;
-	classes: TableClasses;
+	classes: BaseTableClasses;
 	rowActions: RowAction[];
 }
 
-type GetTablePropsFunc = (props: TableProps) => TablePropsWithDefaults;
+type GetTablePropsFunc = (props: BaseTableProps) => TablePropsWithDefaults;
 
 export const getTablePropsWithDefaults: GetTablePropsFunc = (
-	tableProps: TableProps
+	tableProps: BaseTableProps
 ) => ({ defaultRowsPerPage: 10, rowActions: [], classes: {}, ...tableProps });

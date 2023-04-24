@@ -25,7 +25,7 @@ import useTable from "../../hooks/useTable/useTable";
 import { getTablePropsWithDefaults } from "../../hooks/useTable/utils";
 import { SelectedRowIds } from "../../hooks/useTable/reducer";
 
-export interface TableClasses {
+export interface BaseTableClasses {
 	root?: string;
 	headArea?: string;
 	searchInputContainer?: string;
@@ -34,7 +34,7 @@ export interface TableClasses {
 	cell?: TableCellClasses;
 }
 
-export interface TableProps {
+export interface BaseTableProps {
 	showIdCell?: boolean;
 	headIdCell?: Omit<HeadCell, "id">;
 	rowIdCell?: Omit<Cell, "label">;
@@ -55,10 +55,10 @@ export interface TableProps {
 	SortIcon?: React.JSXElementConstructor<{
 		className: string;
 	}>;
-	classes?: TableClasses;
+	classes?: BaseTableClasses;
 }
 
-const Table = (props: TableProps) => {
+const BaseTable = (props: BaseTableProps) => {
 	const {
 		headCells,
 		rows,
@@ -305,4 +305,4 @@ const Table = (props: TableProps) => {
 	);
 };
 
-export default Table;
+export default BaseTable;

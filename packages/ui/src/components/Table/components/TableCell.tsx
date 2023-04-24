@@ -1,14 +1,13 @@
 import {
 	TableCell as MuiTableCell,
 	TableCellProps as MuiTableCellProps,
+	SortDirection,
 	TableSortLabel,
 } from "@mui/material";
 import { forwardRef } from "react";
 
-import { SortDirection } from "../types";
-
 export type TableCellClasses = {
-	cell?: string;
+	bodyCell?: string;
 	headCell?: string;
 	sortLabel?: {
 		root?: string;
@@ -35,21 +34,21 @@ const TableCell = forwardRef(
 			classes = {},
 			sortable,
 			children,
-			sortDirection = "asc",
+			sortDirection,
 			active,
 			SortIcon,
 			...props
 		}: TableCellProps,
 		ref
 	) => {
-		const rootClasses = isHeadCell ? classes.headCell : classes.cell;
+		const rootClasses = isHeadCell ? classes.headCell : classes.bodyCell;
 
 		if (isHeadCell && sortable) {
 			return (
 				<MuiTableCell ref={ref} className={rootClasses} {...props}>
 					<TableSortLabel
 						IconComponent={SortIcon}
-						direction={sortDirection}
+						direction={sortDirection ? sortDirection : "asc"}
 						active={active}
 						classes={classes.sortLabel}
 					>

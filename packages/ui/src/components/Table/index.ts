@@ -1,2 +1,2 @@
-export { default as BaseTable } from "./Table";
+export * from "./BaseTable";
 export * from "./types";
