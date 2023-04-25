@@ -13,6 +13,8 @@ interface EllipsisCellContentProps {
 	classes?: Partial<EllipsisCellContentClasses>;
 	rowActions: RowAction[];
 	icon?: ReactNode;
+	onMenuOpen?: (row: Row) => void;
+	onMenuClose?: (row: Row) => void;
 }
 const StyledDivContainer = styled("div")({
 	display: "flex",
@@ -26,13 +28,17 @@ const EllipsisCellContent = ({
 	rowActions,
 	icon,
 	classes = {},
+	onMenuOpen,
+	onMenuClose,
 }: EllipsisCellContentProps) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
 	const handleClick = (event: MouseEvent<HTMLElement>) => {
+		onMenuOpen?.(row);
 		setAnchorEl(event.currentTarget);
 	};
 	const handleClose = () => {
+		onMenuClose?.(row);
 		setAnchorEl(null);
 	};
 	return (

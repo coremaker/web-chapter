@@ -3,6 +3,7 @@ import {
 	Table as MuiTable,
 	TableBody,
 	TableContainer,
+	TableFooter,
 	TableHead,
 	TablePagination,
 	TableRow,
@@ -35,6 +36,7 @@ export interface BaseTableClasses {
 	tableContainer: string;
 	cell: Partial<TableCellClasses>;
 	ellipsis: Partial<EllipsisCellContentClasses>;
+	footer: string;
 }
 
 export interface BaseTableProps {
@@ -44,6 +46,10 @@ export interface BaseTableProps {
 	makeSearchableRowContent?: (row: Row) => string;
 	searchInputPlaceholder?: string;
 	selectable?: boolean;
+	/**
+	 * This prop changes the selected rows state from uncontrolled to controlled
+	 */
+	selectedRowIds?: SelectedRowIds;
 	headCells: HeadCell[];
 	rows: Row[];
 	rowActions?: RowAction[];
@@ -54,6 +60,8 @@ export interface BaseTableProps {
 	renderCheckbox?: (args: CheckboxRendererArgs) => ReactNode;
 	onRowSelectionChange?: (rowId: string, selected: boolean) => void;
 	onAllRowsSelectionChange?: (selected: boolean) => void;
+	onRowMenuOpen?: (row: Row) => void;
+	onRowMenuClose?: (row: Row) => void;
 	defaultRowsPerPage?: number;
 	paginated?: boolean;
 	SortIcon?: React.JSXElementConstructor<{
@@ -82,6 +90,8 @@ const BaseTable = (props: BaseTableProps) => {
 		paginated,
 		SortIcon,
 		classes,
+		onRowMenuOpen,
+		onRowMenuClose,
 	} = getTablePropsWithDefaults(props);
 
 	const {
@@ -103,6 +113,10 @@ const BaseTable = (props: BaseTableProps) => {
 
 	const { cell: cellClasses } = classes;
 
+	const selectedRowIdsState = props.selectedRowIds
+		? props.selectedRowIds
+		: state.selectedRowIds;
+
 	const renderRowCell = (row: Row, cell: Cell, cellIndex: number) => {
 		const cellContent = renderCellContent(cell);
 
@@ -112,7 +126,12 @@ const BaseTable = (props: BaseTableProps) => {
 				data-testid="table-row-cell"
 				align={cell.numeric ? "right" : "left"}
 				padding={cell.disablePadding ? "none" : "normal"}
-				classes={cellClasses}
+				classes={{
+					...cellClasses,
+					bodyCell: `${cellClasses?.bodyCell ?? ""} BaseTable__Cell__${
+						headCells[cellIndex].id
+					}`,
+				}}
 				SortIcon={SortIcon}
 			>
 				{cellIndex === row.cells.length - 1 && rowActions.length > 0 ? (
@@ -122,6 +141,8 @@ const BaseTable = (props: BaseTableProps) => {
 						rowActions={rowActions}
 						classes={classes.ellipsis}
 						icon={ellipsisIcon}
+						onMenuOpen={onRowMenuOpen}
+						onMenuClose={onRowMenuClose}
 					/>
 				) : (
 					cellContent
@@ -145,21 +166,23 @@ const BaseTable = (props: BaseTableProps) => {
 			});
 		}
 		return (
-			<TablePagination
-				data-testid="table-pagination"
-				rowsPerPageOptions={[5, 10, 15, 20, 25]}
-				count={filteredRows.length}
-				rowsPerPage={defaultRowsPerPage}
-				page={page}
-				SelectProps={{
-					inputProps: {
-						"aria-label": "rows per page",
-					},
-					native: true,
-				}}
-				onPageChange={handleChangePage}
-				onRowsPerPageChange={handleRowsPerPageChange}
-			/>
+			<TableFooter className={classes.footer}>
+				<TablePagination
+					data-testid="table-pagination"
+					rowsPerPageOptions={[5, 10, 15, 20, 25]}
+					count={filteredRows.length}
+					rowsPerPage={defaultRowsPerPage}
+					page={page}
+					SelectProps={{
+						inputProps: {
+							"aria-label": "rows per page",
+						},
+						native: true,
+					}}
+					onPageChange={handleChangePage}
+					onRowsPerPageChange={handleRowsPerPageChange}
+				/>
+			</TableFooter>
 		);
 	};
 
@@ -183,7 +206,7 @@ const BaseTable = (props: BaseTableProps) => {
 					</div>
 				)}
 				<div className={classes.actionsContainer}>
-					{renderTableActions?.(state.selectedRowIds)}
+					{renderTableActions?.(selectedRowIdsState)}
 				</div>
 			</div>
 
@@ -266,7 +289,7 @@ const BaseTable = (props: BaseTableProps) => {
 								key={row.id}
 								data-testid={`table-body-row-${row.id}`}
 								className={
-									state.selectedRowIds[row.id] ? "BaseTable__Row--selected" : ""
+									selectedRowIdsState[row.id] ? "BaseTable__Row--selected" : ""
 								}
 							>
 								{selectable && (
@@ -278,7 +301,7 @@ const BaseTable = (props: BaseTableProps) => {
 										{renderCheckbox ? (
 											renderCheckbox({
 												rowId: row.id,
-												checked: !!state.selectedRowIds[row.id],
+												checked: !!selectedRowIdsState[row.id],
 												onChange: (e) =>
 													handleRowSelection(row.id, e.target.checked),
 											})
@@ -287,7 +310,7 @@ const BaseTable = (props: BaseTableProps) => {
 												onChange={(e) =>
 													handleRowSelection(row.id, e.target.checked)
 												}
-												checked={!!state.selectedRowIds[row.id]}
+												checked={!!selectedRowIdsState[row.id]}
 												inputProps={{
 													"aria-label": `select row ${row.id}`,
 												}}
@@ -312,9 +335,9 @@ const BaseTable = (props: BaseTableProps) => {
 							</TableRow>
 						))}
 					</TableBody>
+					{renderPaginationComponent()}
 				</MuiTable>
 			</TableContainer>
-			{renderPaginationComponent()}
 		</div>
 	);
 };

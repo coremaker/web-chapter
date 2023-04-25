@@ -42,7 +42,6 @@ const TableCell = forwardRef(
 		ref
 	) => {
 		const rootClasses = isHeadCell ? classes.headCell : classes.bodyCell;
-
 		if (isHeadCell && sortable) {
 			return (
 				<MuiTableCell ref={ref} className={rootClasses} {...props}>

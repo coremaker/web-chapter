@@ -47,6 +47,7 @@ export default function useTable(props: BaseTableProps) {
 		paginated,
 		onAllRowsSelectionChange,
 		onRowSelectionChange,
+		selectedRowIds,
 	} = getTablePropsWithDefaults(props);
 
 	const [state, dispatch] = useReducer(reducer, {
@@ -58,10 +59,16 @@ export default function useTable(props: BaseTableProps) {
 		sortDirection: "asc",
 	});
 
+	const isSelectionControlled = !!selectedRowIds;
+
+	const selectedRowIdsState = isSelectionControlled
+		? selectedRowIds
+		: state.selectedRowIds;
+
 	const selectedRowsCount = useMemo(
 		() =>
-			Object.values(state.selectedRowIds).filter((selected) => selected).length,
-		[state.selectedRowIds]
+			Object.values(selectedRowIdsState).filter((selected) => selected).length,
+		[selectedRowIdsState]
 	);
 
 	const updateState = useCallback(
@@ -89,24 +96,31 @@ export default function useTable(props: BaseTableProps) {
 		updateState({ searchValue });
 
 	const handleRowSelection = (rowId: string, selected: boolean) => {
-		updateState({ selectedRowIds: { [rowId]: selected } });
+		if (!isSelectionControlled) {
+			updateState({ selectedRowIds: { [rowId]: selected } });
+		}
 		onRowSelectionChange?.(rowId, selected);
 	};
 
 	const handleAllRowsSelection = () => {
 		const shouldSelectAll = selectedRowsCount === 0 ? true : false;
-		const updatedSelectedRows = rows
-			.map((row) => row.id)
-			.reduce(
-				(acc: Record<string, boolean>, currentRowId: string) => ({
-					...acc,
-					[currentRowId]: shouldSelectAll,
-				}),
-				{}
-			);
-		updateState({ selectedRowIds: updatedSelectedRows });
+
+		if (!isSelectionControlled) {
+			const updatedSelectedRows = rows
+				.map((row) => row.id)
+				.reduce(
+					(acc: Record<string, boolean>, currentRowId: string) => ({
+						...acc,
+						[currentRowId]: shouldSelectAll,
+					}),
+					{}
+				);
+			updateState({ selectedRowIds: updatedSelectedRows });
+		}
+
 		onAllRowsSelectionChange?.(shouldSelectAll);
 	};
+
 	const handleRowsPerPageChange = (
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {

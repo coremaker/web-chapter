@@ -1,4 +1,4 @@
-import { render, within } from "@testing-library/react";
+import { render, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
@@ -72,6 +72,29 @@ describe("<Table />", () => {
 		);
 
 		expect(ellipsisButton).toBeInTheDocument();
+	});
+
+	it("calls the onMenuOpen prop when rowActions are defined in props and the menu is opening", async () => {
+		const mockOnMenuOpen = vi.fn();
+
+		const { getByTestId } = render(
+			<Table
+				headCells={headCells}
+				rows={rows}
+				rowActions={[{ label: "Action 1", onClick() {} }]}
+				onRowMenuOpen={mockOnMenuOpen}
+			/>
+		);
+
+		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
+		const cells = within(renderedRow).getAllByTestId("table-row-cell");
+		const ellipsisButton = within(cells[cells.length - 1]).getByTestId(
+			`ellipsis-button-${rows[0].id}`
+		);
+
+		await userEvent.click(ellipsisButton);
+
+		expect(mockOnMenuOpen).toHaveBeenCalledTimes(1);
 	});
 
 	it("renders all rowActions when clicking on the ellipsis button", async () => {
@@ -179,6 +202,93 @@ describe("<Table />", () => {
 		const tableBodyCheckboxes = within(tableBodyArea).getAllByRole("checkbox");
 
 		expect(tableBodyCheckboxes.length).toBe(rows.length);
+	});
+
+	it("correctly renders the selected rows when selection is controlled", () => {
+		const { getByTestId } = render(
+			<Table
+				selectable
+				selectedRowIds={{
+					[rows[0].id]: true,
+					[rows[2].id]: true,
+				}}
+				headCells={headCells}
+				rows={rows}
+			/>
+		);
+
+		const tableBodyArea = getByTestId("table-body");
+		const tableBodyCheckedCheckboxes = within(tableBodyArea).getAllByRole(
+			"checkbox",
+			{
+				checked: true,
+			}
+		);
+
+		expect(tableBodyCheckedCheckboxes.length).toBe(2);
+	});
+
+	it("correctly updates the selected rows when selection is controlled and the state changes", () => {
+		const { getByTestId, rerender } = render(
+			<Table
+				selectable
+				selectedRowIds={{
+					[rows[0].id]: true,
+					[rows[2].id]: true,
+				}}
+				headCells={headCells}
+				rows={rows}
+			/>
+		);
+
+		rerender(
+			<Table
+				selectable
+				selectedRowIds={{
+					[rows[5].id]: true,
+					[rows[2].id]: false,
+					[rows[0].id]: false,
+				}}
+				headCells={headCells}
+				rows={rows}
+			/>
+		);
+		const tableBodyArea = getByTestId("table-body");
+		const tableBodyCheckedCheckboxes = within(tableBodyArea).getAllByRole(
+			"checkbox",
+			{
+				checked: true,
+			}
+		);
+
+		expect(tableBodyCheckedCheckboxes.length).toBe(1);
+	});
+
+	it("doesn't update the selected rows, but calls the onChange callback when selection is controlled and the checkbox is clicked", async () => {
+		const mockOnCheckboxChange = vi.fn();
+
+		const { getByTestId } = render(
+			<Table
+				selectable
+				selectedRowIds={{}}
+				headCells={headCells}
+				rows={rows}
+				onRowSelectionChange={mockOnCheckboxChange}
+			/>
+		);
+
+		const tableBodyArea = getByTestId("table-body");
+		const tableBodyCheckboxes = within(tableBodyArea).getAllByRole("checkbox");
+
+		await userEvent.click(tableBodyCheckboxes[0]);
+
+		const bodyCheckedCheckBoxes = within(tableBodyArea).queryAllByRole(
+			"checkbox",
+			{ checked: true }
+		);
+
+		expect(bodyCheckedCheckBoxes.length).toBe(0);
+		expect(mockOnCheckboxChange).toHaveBeenCalledTimes(1);
 	});
 
 	it("automatically selects the head checkbox if all the body checkboxes are selected", async () => {
