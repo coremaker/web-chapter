@@ -1,4 +1,10 @@
-import { ChangeEvent, useCallback, useMemo, useReducer } from "react";
+import {
+	ChangeEvent,
+	MouseEvent,
+	useCallback,
+	useMemo,
+	useReducer,
+} from "react";
 import { BaseTableProps } from "../../components/Table/BaseTable";
 import { Cell, CellComparator, Row } from "../../components/Table/types";
 import { TableState, reducer } from "./reducer";
@@ -86,7 +92,7 @@ export default function useTable(props: BaseTableProps) {
 		cell.renderComponent ? cell.renderComponent(cell.label) : cell.label;
 
 	const handleChangePage = (
-		_e: React.MouseEvent<HTMLButtonElement> | null,
+		_e: MouseEvent<HTMLButtonElement> | null,
 		newPage: number
 	) => {
 		updateState({ page: newPage });
@@ -121,9 +127,7 @@ export default function useTable(props: BaseTableProps) {
 		onAllRowsSelectionChange?.(shouldSelectAll);
 	};
 
-	const handleRowsPerPageChange = (
-		event: React.ChangeEvent<HTMLInputElement>
-	) => {
+	const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const updatedRowsPerPage = parseInt(event.target.value, 10);
 		updateState({ rowsPerPage: updatedRowsPerPage, page: 0 });
 	};

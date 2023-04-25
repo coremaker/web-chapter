@@ -4,7 +4,7 @@ import {
 	SortDirection,
 	TableSortLabel,
 } from "@mui/material";
-import { forwardRef } from "react";
+import { JSXElementConstructor, forwardRef } from "react";
 
 export type TableCellClasses = {
 	bodyCell?: string;
@@ -21,7 +21,7 @@ interface TableCellProps extends Omit<MuiTableCellProps, "classes"> {
 	sortable?: boolean;
 	sortDirection?: SortDirection;
 	active?: boolean;
-	SortIcon?: React.JSXElementConstructor<{
+	SortIcon?: JSXElementConstructor<{
 		className: string;
 	}>;
 	classes?: TableCellClasses;

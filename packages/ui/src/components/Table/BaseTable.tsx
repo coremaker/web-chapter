@@ -9,7 +9,7 @@ import {
 	TableRow,
 	TextField,
 } from "@mui/material";
-import { ReactNode } from "react";
+import { JSXElementConstructor, ReactNode } from "react";
 
 import EllipsisCellContent, {
 	EllipsisCellContentClasses,
@@ -69,7 +69,7 @@ export interface BaseTableProps {
 	onRowMenuClose?: (row: Row) => void;
 	defaultRowsPerPage?: number;
 	paginated?: boolean;
-	SortIcon?: React.JSXElementConstructor<{
+	SortIcon?: JSXElementConstructor<{
 		className: string;
 	}>;
 	classes?: Partial<BaseTableClasses>;

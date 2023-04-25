@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactNode } from "react";
+import { ChangeEvent, MouseEvent, ReactNode } from "react";
 
 export interface Cell {
 	numeric?: boolean;
@@ -27,10 +27,10 @@ export interface RowAction {
 }
 
 export type RowsPerPageChangeHandler = (
-	event: React.ChangeEvent<HTMLInputElement>
+	event: ChangeEvent<HTMLInputElement>
 ) => void;
 export type PageChangeHandler = (
-	_e: React.MouseEvent<HTMLButtonElement> | null,
+	_e: MouseEvent<HTMLButtonElement> | null,
 	newPage: number
 ) => void;
 
@@ -46,10 +46,7 @@ export interface CheckboxRendererArgs {
 	rowId?: string;
 	checked?: boolean;
 	indeterminate?: boolean;
-	onChange: (
-		event: React.ChangeEvent<HTMLInputElement>,
-		checked: boolean
-	) => void;
+	onChange: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
 }
 
 export interface SearchInputRendererArgs {
