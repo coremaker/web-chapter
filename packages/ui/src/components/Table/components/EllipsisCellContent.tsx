@@ -1,19 +1,31 @@
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { IconButton, Menu, MenuClasses, MenuItem, styled } from "@mui/material";
 import { MouseEvent, ReactNode, useState } from "react";
-
 import { Row, RowAction } from "../types";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
+export interface EllipsisCellContentClasses {
+	root: string;
+	menu: Partial<MenuClasses>;
+}
 interface EllipsisCellContentProps {
 	row: Row;
 	label: string | ReactNode;
-
+	classes?: Partial<EllipsisCellContentClasses>;
 	rowActions: RowAction[];
+	icon?: ReactNode;
 }
+const StyledDivContainer = styled("div")({
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "space-between",
+});
 
 const EllipsisCellContent = ({
 	row,
 	label,
 	rowActions,
+	icon,
+	classes = {},
 }: EllipsisCellContentProps) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
@@ -24,23 +36,21 @@ const EllipsisCellContent = ({
 		setAnchorEl(null);
 	};
 	return (
-		<div className="flex justify-between items-center">
+		<StyledDivContainer className={classes.root ?? ""}>
 			<div>{label}</div>
 			<div>
 				<IconButton
 					data-testid={`ellipsis-button-${row.id}`}
 					aria-controls={open ? `table-row-menu-${row.id}` : undefined}
 					aria-haspopup="true"
+					className="BaseTable__EllipsisCellContent__Button"
 					aria-expanded={open ? "true" : undefined}
 					onClick={handleClick}
 				>
-					...
+					{icon ?? <MoreHorizIcon fontSize="small" />}
 				</IconButton>
 				<Menu
-					classes={{
-						list: "py-1",
-						paper: "bg-admin-surface-panel text-ink",
-					}}
+					classes={classes.menu}
 					id={`table-row-menu-${row.id}`}
 					open={open}
 					onClose={handleClose}
@@ -58,7 +68,7 @@ const EllipsisCellContent = ({
 					))}
 				</Menu>
 			</div>
-		</div>
+		</StyledDivContainer>
 	);
 };
 

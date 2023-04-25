@@ -85,8 +85,8 @@ export default function useTable(props: BaseTableProps) {
 		updateState({ page: newPage });
 	};
 
-	const handleChangeSearchValue = (e: ChangeEvent<HTMLInputElement>) =>
-		updateState({ searchValue: e.target.value });
+	const handleChangeSearchValue = (searchValue: string) =>
+		updateState({ searchValue });
 
 	const handleRowSelection = (rowId: string, selected: boolean) => {
 		updateState({ selectedRowIds: { [rowId]: selected } });

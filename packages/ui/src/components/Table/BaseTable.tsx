@@ -10,7 +10,9 @@ import {
 } from "@mui/material";
 import { ReactNode } from "react";
 
-import EllipsisCellContent from "./components/EllipsisCellContent";
+import EllipsisCellContent, {
+	EllipsisCellContentClasses,
+} from "./components/EllipsisCellContent";
 import TableCell, { TableCellClasses } from "./components/TableCell";
 import {
 	Cell,
@@ -26,12 +28,13 @@ import { getTablePropsWithDefaults } from "../../hooks/useTable/utils";
 import { SelectedRowIds } from "../../hooks/useTable/reducer";
 
 export interface BaseTableClasses {
-	root?: string;
-	headArea?: string;
-	searchInputContainer?: string;
-	actionsContainer?: string;
-	tableContainer?: string;
-	cell?: TableCellClasses;
+	root: string;
+	headArea: string;
+	searchInputContainer: string;
+	actionsContainer: string;
+	tableContainer: string;
+	cell: Partial<TableCellClasses>;
+	ellipsis: Partial<EllipsisCellContentClasses>;
 }
 
 export interface BaseTableProps {
@@ -44,6 +47,7 @@ export interface BaseTableProps {
 	headCells: HeadCell[];
 	rows: Row[];
 	rowActions?: RowAction[];
+	ellipsisIcon?: ReactNode;
 	renderTableActions?: (selectedRows: SelectedRowIds) => ReactNode;
 	renderTablePagination?: (args: PaginationRendererArgs) => ReactNode;
 	renderSearchInput?: (args: SearchInputRendererArgs) => ReactNode;
@@ -55,7 +59,7 @@ export interface BaseTableProps {
 	SortIcon?: React.JSXElementConstructor<{
 		className: string;
 	}>;
-	classes?: BaseTableClasses;
+	classes?: Partial<BaseTableClasses>;
 }
 
 const BaseTable = (props: BaseTableProps) => {
@@ -69,6 +73,7 @@ const BaseTable = (props: BaseTableProps) => {
 		headIdCell,
 		rowIdCell,
 		rowActions,
+		ellipsisIcon,
 		renderTableActions,
 		renderTablePagination,
 		renderSearchInput,
@@ -115,6 +120,8 @@ const BaseTable = (props: BaseTableProps) => {
 						row={row}
 						label={cellContent}
 						rowActions={rowActions}
+						classes={classes.ellipsis}
+						icon={ellipsisIcon}
 					/>
 				) : (
 					cellContent
@@ -169,7 +176,7 @@ const BaseTable = (props: BaseTableProps) => {
 						) : (
 							<TextField
 								placeholder={searchInputPlaceholder}
-								onChange={handleChangeSearchValue}
+								onChange={(e) => handleChangeSearchValue(e.target.value)}
 								value={searchValue}
 							/>
 						)}
@@ -189,6 +196,10 @@ const BaseTable = (props: BaseTableProps) => {
 									{renderCheckbox ? (
 										renderCheckbox({
 											onChange: handleAllRowsSelection,
+											checked: selectedRowsCount === rows.length,
+											indeterminate:
+												selectedRowsCount > 0 &&
+												selectedRowsCount < rows.length,
 										})
 									) : (
 										<Checkbox
@@ -254,6 +265,9 @@ const BaseTable = (props: BaseTableProps) => {
 								tabIndex={-1}
 								key={row.id}
 								data-testid={`table-body-row-${row.id}`}
+								className={
+									state.selectedRowIds[row.id] ? "BaseTable__Row--selected" : ""
+								}
 							>
 								{selectable && (
 									<TableCell

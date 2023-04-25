@@ -6,7 +6,7 @@ import { RowAction } from "../../components/Table/types";
 
 interface TablePropsWithDefaults extends BaseTableProps {
 	defaultRowsPerPage: number;
-	classes: BaseTableClasses;
+	classes: Partial<BaseTableClasses>;
 	rowActions: RowAction[];
 }
 

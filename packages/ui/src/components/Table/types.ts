@@ -45,6 +45,7 @@ export interface PaginationRendererArgs {
 export interface CheckboxRendererArgs {
 	rowId?: string;
 	checked?: boolean;
+	indeterminate?: boolean;
 	onChange: (
 		event: React.ChangeEvent<HTMLInputElement>,
 		checked: boolean
@@ -53,5 +54,5 @@ export interface CheckboxRendererArgs {
 
 export interface SearchInputRendererArgs {
 	searchValue: string;
-	handleChangeSearchValue: (e: ChangeEvent<HTMLInputElement>) => void;
+	handleChangeSearchValue: (value: string) => void;
 }

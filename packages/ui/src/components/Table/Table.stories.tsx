@@ -4,6 +4,7 @@ import { headCells, rows } from "./mock-data";
 import { SelectedRowIds } from "../../hooks/useTable/reducer";
 import Styles from "./styles.module.css";
 import { Chip } from "@mui/material";
+import AppleIcon from "@mui/icons-material/Apple";
 
 export default {
 	title: "Example/Table",
@@ -88,4 +89,37 @@ SelectableWithCustomHandlers.args = {
 	makeSearchableRowContent: (row) => {
 		return `${row.cells[0].label} ${row.cells[1].label}`;
 	},
+};
+
+export const RowActions = Template.bind({});
+RowActions.args = {
+	rows: rows,
+	headCells: headCells,
+	rowActions: [
+		{
+			label: "Action 1",
+			onClick: () => alert("Action 1 clicked"),
+		},
+		{
+			label: "Action 2",
+			onClick: () => alert("Action 2 clicked"),
+		},
+	],
+};
+
+export const RowActionsCustomIcon = Template.bind({});
+RowActionsCustomIcon.args = {
+	rows: rows,
+	headCells: headCells,
+	ellipsisIcon: <AppleIcon fontSize="small" />,
+	rowActions: [
+		{
+			label: "Action 1",
+			onClick: () => alert("Action 1 clicked"),
+		},
+		{
+			label: "Action 2",
+			onClick: () => alert("Action 2 clicked"),
+		},
+	],
 };
