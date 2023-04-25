@@ -28,7 +28,7 @@ import useTable from "../../hooks/useTable/useTable";
 import { getTablePropsWithDefaults } from "../../hooks/useTable/utils";
 import { SelectedRowIds } from "../../hooks/useTable/reducer";
 
-export interface TableFooterClasses {
+interface BaseTableFooterClasses {
 	root: string;
 	cell: string;
 }
@@ -41,7 +41,7 @@ export interface BaseTableClasses {
 	tableContainer: string;
 	cell: Partial<TableCellClasses>;
 	ellipsis: Partial<EllipsisCellContentClasses>;
-	footer: Partial<TableFooterClasses>;
+	footer: Partial<BaseTableFooterClasses>;
 }
 
 export interface BaseTableProps {
