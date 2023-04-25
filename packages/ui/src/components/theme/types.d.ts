@@ -1,33 +1,35 @@
+import { CSSProperties } from "react";
+
 export {};
 
 interface TypographyThemeVariants {
-	displayLarge?: React.CSSProperties;
-	displayMedium?: React.CSSProperties;
-	displaySmall?: React.CSSProperties;
+	displayLarge?: CSSProperties;
+	displayMedium?: CSSProperties;
+	displaySmall?: CSSProperties;
 
-	titleLarge?: React.CSSProperties;
-	titleMedium?: React.CSSProperties;
-	titleSmall?: React.CSSProperties;
+	titleLarge?: CSSProperties;
+	titleMedium?: CSSProperties;
+	titleSmall?: CSSProperties;
 
-	bodyLargeRegular?: React.CSSProperties;
-	bodyLargeItalic?: React.CSSProperties;
-	bodyLargeBold?: React.CSSProperties;
-	bodyLargeLink?: React.CSSProperties;
+	bodyLargeRegular?: CSSProperties;
+	bodyLargeItalic?: CSSProperties;
+	bodyLargeBold?: CSSProperties;
+	bodyLargeLink?: CSSProperties;
 
-	bodySmallRegular?: React.CSSProperties;
-	bodySmallItalic?: React.CSSProperties;
-	bodySmallBold?: React.CSSProperties;
-	bodySmallLink?: React.CSSProperties;
+	bodySmallRegular?: CSSProperties;
+	bodySmallItalic?: CSSProperties;
+	bodySmallBold?: CSSProperties;
+	bodySmallLink?: CSSProperties;
 
-	buttonLarge?: React.CSSProperties;
-	buttonLargeLink?: React.CSSProperties;
+	buttonLarge?: CSSProperties;
+	buttonLargeLink?: CSSProperties;
 
-	buttonSmall?: React.CSSProperties;
-	buttonSmallLink?: React.CSSProperties;
+	buttonSmall?: CSSProperties;
+	buttonSmallLink?: CSSProperties;
 
-	captionLarge?: React.CSSProperties;
-	captionSmall?: React.CSSProperties;
-	captionSmallBold?: React.CSSProperties;
+	captionLarge?: CSSProperties;
+	captionSmall?: CSSProperties;
+	captionSmallBold?: CSSProperties;
 }
 
 interface ColorThemeVariants {
