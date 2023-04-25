@@ -28,6 +28,11 @@ import useTable from "../../hooks/useTable/useTable";
 import { getTablePropsWithDefaults } from "../../hooks/useTable/utils";
 import { SelectedRowIds } from "../../hooks/useTable/reducer";
 
+export interface TableFooterClasses {
+	root: string;
+	cell: string;
+}
+
 export interface BaseTableClasses {
 	root: string;
 	headArea: string;
@@ -36,7 +41,7 @@ export interface BaseTableClasses {
 	tableContainer: string;
 	cell: Partial<TableCellClasses>;
 	ellipsis: Partial<EllipsisCellContentClasses>;
-	footer: string;
+	footer: Partial<TableFooterClasses>;
 }
 
 export interface BaseTableProps {
@@ -166,8 +171,9 @@ const BaseTable = (props: BaseTableProps) => {
 			});
 		}
 		return (
-			<TableFooter className={classes.footer}>
+			<TableFooter className={classes.footer?.root}>
 				<TablePagination
+					className={classes.footer?.cell}
 					data-testid="table-pagination"
 					rowsPerPageOptions={[5, 10, 15, 20, 25]}
 					count={filteredRows.length}
