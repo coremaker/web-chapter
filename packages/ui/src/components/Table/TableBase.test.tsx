@@ -61,7 +61,7 @@ describe("<Table />", () => {
 			<Table
 				headCells={headCells}
 				rows={rows}
-				rowActions={[{ label: "Action 1", onClick() {} }]}
+				rowActions={[{ id: "1", label: "Action 1", onClick() {} }]}
 			/>
 		);
 
@@ -81,7 +81,7 @@ describe("<Table />", () => {
 			<Table
 				headCells={headCells}
 				rows={rows}
-				rowActions={[{ label: "Action 1", onClick() {} }]}
+				rowActions={[{ id: "1", label: "Action 1", onClick() {} }]}
 				onRowMenuOpen={mockOnMenuOpen}
 			/>
 		);
@@ -103,9 +103,9 @@ describe("<Table />", () => {
 				headCells={headCells}
 				rows={rows}
 				rowActions={[
-					{ label: "Action 1", onClick() {} },
-					{ label: "Action 2", onClick() {} },
-					{ label: "Action 3", onClick() {} },
+					{ id: "1", label: "Action 1", onClick() {} },
+					{ id: "12", label: "Action 2", onClick() {} },
+					{ id: "123", label: "Action 3", onClick() {} },
 				]}
 			/>
 		);
@@ -122,13 +122,22 @@ describe("<Table />", () => {
 		expect(getByText("Action 3")).toBeInTheDocument();
 	});
 
-	it("renders all rowActions when clicking on the ellipsis button for row: %s", async () => {
-		const mockRowAction = vi.fn();
-		const { getByTestId } = render(
+	it("renders all rowActions when clicking on the ellipsis button and the rowAction has a custom renderer", async () => {
+		const { getByTestId, getByText } = render(
 			<Table
 				headCells={headCells}
 				rows={rows}
-				rowActions={[{ label: "Action", onClick: mockRowAction }]}
+				rowActions={[
+					{
+						id: "1",
+						renderComponent: () => <div>Custom renderer Action 1</div>,
+					},
+					{
+						id: "12",
+						renderComponent: () => <div>Custom renderer Action 2</div>,
+					},
+					{ id: "123", label: "Action 3", onClick() {} },
+				]}
 			/>
 		);
 
@@ -139,7 +148,29 @@ describe("<Table />", () => {
 		);
 
 		await userEvent.click(ellipsisButton);
-		const menuItem = getByTestId(`menu-item-${rows[0].id}-Action`);
+		expect(getByText("Custom renderer Action 1")).toBeInTheDocument();
+		expect(getByText("Custom renderer Action 2")).toBeInTheDocument();
+		expect(getByText("Action 3")).toBeInTheDocument();
+	});
+
+	it("calls the onClick function passed on rowAction prop", async () => {
+		const mockRowAction = vi.fn();
+		const { getByTestId } = render(
+			<Table
+				headCells={headCells}
+				rows={rows}
+				rowActions={[{ id: "1", label: "Action", onClick: mockRowAction }]}
+			/>
+		);
+
+		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
+		const cells = within(renderedRow).getAllByTestId("table-row-cell");
+		const ellipsisButton = within(cells[cells.length - 1]).getByTestId(
+			`ellipsis-button-${rows[0].id}`
+		);
+
+		await userEvent.click(ellipsisButton);
+		const menuItem = getByTestId(`menu-item-${rows[0].id}-1`);
 		await userEvent.click(menuItem);
 
 		expect(mockRowAction).toHaveBeenCalledTimes(1);
