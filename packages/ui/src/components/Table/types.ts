@@ -20,10 +20,11 @@ export interface Row {
 }
 
 export interface RowAction {
+	id: string;
 	label?: string;
-	renderComponent?: (value: string) => ReactNode;
+	renderComponent?: () => ReactNode;
 	labelClassName?: string;
-	onClick: (row: Row) => void;
+	onClick?: (row: Row) => void;
 }
 
 export type RowsPerPageChangeHandler = (

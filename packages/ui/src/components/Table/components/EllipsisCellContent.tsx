@@ -62,16 +62,20 @@ const EllipsisCellContent = ({
 					onClose={handleClose}
 					anchorEl={anchorEl}
 				>
-					{rowActions.map((rowAction) => (
-						<MenuItem
-							key={row.id + rowAction.label}
-							data-testid={`menu-item-${row.id}-${rowAction.label}`}
-							className={rowAction.labelClassName}
-							onClick={() => rowAction.onClick(row)}
-						>
-							{rowAction.label}
-						</MenuItem>
-					))}
+					{rowActions.map((rowAction) =>
+						rowAction.renderComponent ? (
+							rowAction.renderComponent()
+						) : (
+							<MenuItem
+								key={`${row.id}-${rowAction.id}`}
+								data-testid={`menu-item-${row.id}-${rowAction.id}`}
+								className={rowAction.labelClassName}
+								onClick={() => rowAction.onClick?.(row)}
+							>
+								{rowAction.label}
+							</MenuItem>
+						)
+					)}
 				</Menu>
 			</div>
 		</StyledDivContainer>
