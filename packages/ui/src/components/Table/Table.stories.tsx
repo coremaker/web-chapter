@@ -97,10 +97,12 @@ RowActions.args = {
 	headCells: headCells,
 	rowActions: [
 		{
+			id: "1",
 			label: "Action 1",
 			onClick: () => alert("Action 1 clicked"),
 		},
 		{
+			id: "2",
 			label: "Action 2",
 			onClick: () => alert("Action 2 clicked"),
 		},
@@ -114,10 +116,12 @@ RowActionsCustomIcon.args = {
 	ellipsisIcon: <AppleIcon fontSize="small" />,
 	rowActions: [
 		{
+			id: "1",
 			label: "Action 1",
 			onClick: () => alert("Action 1 clicked"),
 		},
 		{
+			id: "2",
 			label: "Action 2",
 			onClick: () => alert("Action 2 clicked"),
 		},
