@@ -1,10 +1,16 @@
 import { ChangeEvent, MouseEvent, ReactNode } from "react";
+import { SelectedRowIds } from "src/hooks/useTable/reducer";
 
+interface CellRendererArgs {
+	value: string;
+	selectedRowIds: SelectedRowIds;
+	rowId: string;
+}
 export interface Cell {
 	numeric?: boolean;
 	disablePadding?: boolean;
 	label: string;
-	renderComponent?: (value: string) => ReactNode;
+	renderComponent?: (args: CellRendererArgs) => ReactNode;
 }
 export type CellComparator = (firstCell: string, secondCell: string) => number;
 
