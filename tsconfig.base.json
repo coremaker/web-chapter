@@ -21,5 +21,6 @@
     "@web-chapter/*": ["packages/*/src"]
   },
   "exclude": ["node_modules"],
+  "files": [],
   "references": [{ "path": "packages/lib" }, { "path": "packages/ui" }]
 }
