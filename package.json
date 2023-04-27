@@ -2,7 +2,9 @@
 	"name": "@web-chapter/monorepo",
 	"version": "1.0.0",
 	"description": "A framework for building web apps",
-	"scripts": {},
+	"scripts": {
+		"lint": "eslint --ext .js,.jsx,.ts,.tsx ."
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/coremaker/web-chapter.git"
@@ -17,12 +19,21 @@
 		"packages/*"
 	],
 	"devDependencies": {
-		"@testing-library/react": "^14.0.0",
 		"@vitest/coverage-c8": "^0.25.8",
 		"@vitest/ui": "^0.29.8",
 		"typescript": "^4.9.5",
-		"vitest": "^0.30.1"
+		"vitest": "^0.30.1",
+		"@web-chapter/eslint": "^0.0.1",
+		"@typescript-eslint/eslint-plugin": "^5.59.1",
+		"@typescript-eslint/parser": "^5.59.1",
+		"eslint": "^8.39.0",
+		"eslint-config-prettier": "^8.8.0",
+		"eslint-plugin-import": "^2.27.5",
+		"eslint-plugin-jsx-a11y": "^6.7.1",
+		"eslint-plugin-prettier": "^4.2.1",
+		"eslint-plugin-react": "^7.32.2",
+		"eslint-plugin-react-hooks": "^4.6.0",
+		"eslint-plugin-storybook": "^0.6.11"
 	},
-	"dependencies": {
-	}
+	"dependencies": {}
 }

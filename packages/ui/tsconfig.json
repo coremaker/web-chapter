@@ -15,6 +15,6 @@
 		}
 	},
 	"include": ["src"],
-	"exclude": ["vite.config.ts"],
+	// "exclude": ["vite.config.ts"],
 	"references": [{ "path": "../lib" }, { "path": "./tsconfig.node.json" }]
 }

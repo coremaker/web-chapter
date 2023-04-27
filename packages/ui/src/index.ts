@@ -12,9 +12,10 @@ export { default as InputUnstyled } from "@mui/base/InputUnstyled";
 export * from "./hooks/usePagination/index";
 
 export * from "@mui/material";
-export * from "@mui/material/styles";
-export * from "@mui/material/Button";
-export * from "@mui/material/Typography";
+// export * from "@mui/material/styles";
+
+// export * from "@mui/material/Button";
+// export * from "@mui/material/Typography";
 
 export * from "src/components/Table";
 export { default as BaseTable } from "src/components/Table";

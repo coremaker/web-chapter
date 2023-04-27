@@ -6,7 +6,7 @@ import dts from "vite-plugin-dts";
 import tsConfigPaths from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config/
-export default defineConfig((configEnv) => ({
+export default defineConfig(() => ({
 	plugins: [react(), tsConfigPaths(), dts()],
 	resolve: {
 		alias: {
