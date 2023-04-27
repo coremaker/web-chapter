@@ -1,0 +1,17 @@
+{
+  "trailingComma": "es5",
+  "tabWidth": 4,
+  "printWidth": 120,
+  "semi": true,
+  "singleQuote": true,
+  "jsxSingleQuote": false,
+  "importOrder": ["^[./]"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "overrides": [
+    {
+      "files": ["./*", "*.yml", "*.yaml"],
+      "options": { "tabWidth": 2 }
+    }
+  ]
+}

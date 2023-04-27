@@ -1,28 +1,28 @@
 {
-	"name": "@web-chapter/monorepo",
-	"version": "1.0.0",
-	"description": "A framework for building web apps",
-	"scripts": {},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/coremaker/web-chapter.git"
-	},
-	"author": "",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/coremaker/web-chapter/issues"
-	},
-	"homepage": "https://github.com/coremaker/web-chapter#readme",
-	"workspaces": [
-		"packages/*"
-	],
-	"devDependencies": {
-		"@testing-library/react": "^14.0.0",
-		"@vitest/coverage-c8": "^0.25.8",
-		"@vitest/ui": "^0.29.8",
-		"typescript": "^4.9.5",
-		"vitest": "^0.30.1"
-	},
-	"dependencies": {
-	}
+  "name": "@web-chapter/monorepo",
+  "version": "1.0.0",
+  "description": "A framework for building web apps",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coremaker/web-chapter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/coremaker/web-chapter/issues"
+  },
+  "homepage": "https://github.com/coremaker/web-chapter#readme",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "@vitest/coverage-c8": "^0.25.8",
+    "@vitest/ui": "^0.29.8",
+    "prettier": "^2.8.8",
+    "typescript": "^4.9.5",
+    "vitest": "^0.30.1"
+  }
 }

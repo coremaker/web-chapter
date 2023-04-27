@@ -1,0 +1,19 @@
+name: web
+concurrency: web
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  main:
+    uses: terra-quantum-io/tq42-github-action-templates/.github/workflows/nodejs.yaml@v0.0.11
+    with:
+      SERVICE_NAME: web
+      GCR_REGISTRY: europe-docker.pkg.dev
+      GCR_REGISTRY_PROJECT: tq42-370723/eu.gcr.io
+      RUN_TESTS: true
+      NODE_VERSION: 18
+    secrets:
+      GCR_JSON_KEY: ${{ secrets.GCR_JSON_KEY }}
