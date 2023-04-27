@@ -75,6 +75,9 @@ export interface BaseTableProps {
 	classes?: Partial<BaseTableClasses>;
 }
 
+const INTERNAL_ID_CELL_IDENTIFIER = "__id";
+const HEAD_ROW_IDENTIFIER = "__head";
+
 const BaseTable = (props: BaseTableProps) => {
 	const {
 		headCells,
@@ -123,7 +126,7 @@ const BaseTable = (props: BaseTableProps) => {
 		: state.selectedRowIds;
 
 	const renderRowCell = (row: Row, cell: Cell, cellIndex: number) => {
-		const cellContent = renderCellContent(cell);
+		const cellContent = renderCellContent(cell, row.id);
 
 		return (
 			<TableCell
@@ -248,17 +251,23 @@ const BaseTable = (props: BaseTableProps) => {
 								<TableCell
 									isHeadCell
 									sortable={headIdCell?.sortable}
-									active={sortByColumnId === "__id"}
+									active={sortByColumnId === INTERNAL_ID_CELL_IDENTIFIER}
 									align="left"
 									sortDirection={
-										sortByColumnId === "__id" ? sortDirection : "desc"
+										sortByColumnId === INTERNAL_ID_CELL_IDENTIFIER
+											? sortDirection
+											: "desc"
 									}
 									padding={headIdCell?.disablePadding ? "none" : "normal"}
-									onClick={() => handleSortCellClick("__id")}
+									onClick={() =>
+										handleSortCellClick(INTERNAL_ID_CELL_IDENTIFIER)
+									}
 									classes={cellClasses}
 									SortIcon={SortIcon}
 								>
-									{headIdCell ? renderCellContent(headIdCell) : "ID"}
+									{headIdCell
+										? renderCellContent(headIdCell, INTERNAL_ID_CELL_IDENTIFIER)
+										: "ID"}
 								</TableCell>
 							)}
 							{headCells.map((headCell) => (
@@ -282,7 +291,7 @@ const BaseTable = (props: BaseTableProps) => {
 									sortable={headCell.sortable}
 									classes={cellClasses}
 								>
-									{renderCellContent(headCell)}
+									{renderCellContent(headCell, HEAD_ROW_IDENTIFIER)}
 								</TableCell>
 							))}
 						</TableRow>
@@ -330,7 +339,7 @@ const BaseTable = (props: BaseTableProps) => {
 										data-testid="table-row-cell"
 										padding="none"
 									>
-										{renderCellContent({ ...rowIdCell, label: row.id })}
+										{renderCellContent({ ...rowIdCell, label: row.id }, row.id)}
 									</TableCell>
 								)}
 								{row.cells

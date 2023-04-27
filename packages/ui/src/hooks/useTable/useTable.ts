@@ -88,8 +88,14 @@ export default function useTable(props: BaseTableProps) {
 		return `${rowId}-${headCells[rowCellIndex].id}`;
 	};
 
-	const renderCellContent = (cell: Cell) =>
-		cell.renderComponent ? cell.renderComponent(cell.label) : cell.label;
+	const renderCellContent = (cell: Cell, rowId: string) =>
+		cell.renderComponent
+			? cell.renderComponent({
+					value: cell.label,
+					selectedRowIds: selectedRowIdsState,
+					rowId,
+			  })
+			: cell.label;
 
 	const handleChangePage = (
 		_e: MouseEvent<HTMLButtonElement> | null,

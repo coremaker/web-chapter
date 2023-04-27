@@ -53,7 +53,7 @@ export const rows: Row[] = range(40).map((i) => ({
 		},
 		{
 			label: i > 6 ? "Pending" : "Active",
-			renderComponent: (value) => <Chip label={value} />,
+			renderComponent: ({ value }) => <Chip label={value} />,
 		},
 	],
 }));
