@@ -17,14 +17,20 @@ import EllipsisCellContent, {
 import TableCell, { TableCellClasses } from "./components/TableCell";
 import {
 	Cell,
+	CellId,
 	CheckboxRendererArgs,
+	GenericRowInfo,
 	HeadCell,
+	HeadRowCells,
 	PaginationRendererArgs,
 	Row,
 	RowAction,
 	SearchInputRendererArgs,
 } from "./types";
-import useTable from "../../hooks/useTable/useTable";
+import useTable, {
+	HEAD_ROW_IDENTIFIER,
+	INTERNAL_ID_CELL_IDENTIFIER,
+} from "../../hooks/useTable/useTable";
 import { getTablePropsWithDefaults } from "../../hooks/useTable/utils";
 import { SelectedRowIds } from "../../hooks/useTable/reducer";
 
@@ -44,29 +50,29 @@ export interface BaseTableClasses {
 	footer: Partial<BaseTableFooterClasses>;
 }
 
-export interface BaseTableProps {
+export interface BaseTableProps<T extends GenericRowInfo> {
 	showIdCell?: boolean;
-	headIdCell?: Omit<HeadCell, "id">;
-	rowIdCell?: Omit<Cell, "label">;
-	makeSearchableRowContent?: (row: Row) => string;
+	headIdCell?: Omit<HeadCell<T>, "id">;
+	rowIdCell?: Omit<Cell<T, string>, "value">;
+	makeSearchableRowContent?: (row: Row<T>) => string;
 	searchInputPlaceholder?: string;
 	selectable?: boolean;
 	/**
 	 * This prop changes the selected rows state from uncontrolled to controlled
 	 */
 	selectedRowIds?: SelectedRowIds;
-	headCells: HeadCell[];
-	rows: Row[];
-	rowActions?: RowAction[];
+	headCells: HeadRowCells<T>;
+	rows: Row<T>[];
+	rowActions?: RowAction<T>[];
 	ellipsisIcon?: ReactNode;
 	renderTableActions?: (selectedRows: SelectedRowIds) => ReactNode;
-	renderTablePagination?: (args: PaginationRendererArgs) => ReactNode;
+	renderTablePagination?: (args: PaginationRendererArgs<T>) => ReactNode;
 	renderSearchInput?: (args: SearchInputRendererArgs) => ReactNode;
 	renderCheckbox?: (args: CheckboxRendererArgs) => ReactNode;
 	onRowSelectionChange?: (rowId: string, selected: boolean) => void;
 	onAllRowsSelectionChange?: (selected: boolean) => void;
-	onRowMenuOpen?: (row: Row) => void;
-	onRowMenuClose?: (row: Row) => void;
+	onRowMenuOpen?: (row: Row<T>) => void;
+	onRowMenuClose?: (row: Row<T>) => void;
 	defaultRowsPerPage?: number;
 	paginated?: boolean;
 	SortIcon?: JSXElementConstructor<{
@@ -75,10 +81,7 @@ export interface BaseTableProps {
 	classes?: Partial<BaseTableClasses>;
 }
 
-const INTERNAL_ID_CELL_IDENTIFIER = "__id";
-const HEAD_ROW_IDENTIFIER = "__head";
-
-const BaseTable = (props: BaseTableProps) => {
+const BaseTable = <T extends GenericRowInfo>(props: BaseTableProps<T>) => {
 	const {
 		headCells,
 		rows,
@@ -104,6 +107,7 @@ const BaseTable = (props: BaseTableProps) => {
 
 	const {
 		renderCellContent,
+		renderHeadCellContent,
 		makeRowCellId,
 		currentPageRows,
 		filteredRows,
@@ -115,7 +119,9 @@ const BaseTable = (props: BaseTableProps) => {
 		handleAllRowsSelection,
 		state,
 		selectedRowsCount,
-	} = useTable(props);
+		headRow,
+		cellIdsArray,
+	} = useTable<T>(props);
 
 	const { searchValue, sortByColumnId, sortDirection, page } = state;
 
@@ -125,24 +131,32 @@ const BaseTable = (props: BaseTableProps) => {
 		? props.selectedRowIds
 		: state.selectedRowIds;
 
-	const renderRowCell = (row: Row, cell: Cell, cellIndex: number) => {
-		const cellContent = renderCellContent(cell, row.id);
+	const renderRowCell = (
+		row: Row<T>,
+		cell: Cell<T, T[CellId<T>]>,
+		cellId: CellId<T>
+	) => {
+		const cellContent = renderCellContent(cell, row);
 
+		const cellIndex = cellIdsArray.indexOf(cellId);
+		const isLastCell = cellIndex === cellIdsArray.length - 1;
+		const rowActionsPresent = rowActions.length > 0;
+		const key = makeRowCellId(row.id, cellId);
 		return (
 			<TableCell
-				key={makeRowCellId(row.id, cellIndex)}
-				data-testid="table-row-cell"
+				key={key}
+				data-testid={`table-row-cell-${cellId}`}
 				align={cell.numeric ? "right" : "left"}
 				padding={cell.disablePadding ? "none" : "normal"}
 				classes={{
 					...cellClasses,
-					bodyCell: `${cellClasses?.bodyCell ?? ""} BaseTable__Cell__${
-						headCells[cellIndex].id
-					}`,
+					bodyCell: `${cellClasses?.bodyCell ?? ""} BaseTable__Cell__${String(
+						cellId
+					)}`,
 				}}
 				SortIcon={SortIcon}
 			>
-				{cellIndex === row.cells.length - 1 && rowActions.length > 0 ? (
+				{isLastCell && rowActionsPresent ? (
 					<EllipsisCellContent
 						row={row}
 						label={cellContent}
@@ -175,22 +189,23 @@ const BaseTable = (props: BaseTableProps) => {
 		}
 		return (
 			<TableFooter className={classes.footer?.root}>
-				<TablePagination
-					className={classes.footer?.cell}
-					data-testid="table-pagination"
-					rowsPerPageOptions={[5, 10, 15, 20, 25]}
-					count={filteredRows.length}
-					rowsPerPage={defaultRowsPerPage}
-					page={page}
-					SelectProps={{
-						inputProps: {
-							"aria-label": "rows per page",
-						},
-						native: true,
-					}}
-					onPageChange={handleChangePage}
-					onRowsPerPageChange={handleRowsPerPageChange}
-				/>
+				<TableRow>
+					<TablePagination
+						className={classes.footer?.cell}
+						data-testid="table-pagination"
+						rowsPerPageOptions={[5, 10, 15, 20, 25]}
+						count={filteredRows.length}
+						rowsPerPage={defaultRowsPerPage}
+						page={page}
+						SelectProps={{
+							inputProps: {
+								"aria-label": "rows per page",
+							},
+						}}
+						onPageChange={handleChangePage}
+						onRowsPerPageChange={handleRowsPerPageChange}
+					/>
+				</TableRow>
 			</TableFooter>
 		);
 	};
@@ -266,34 +281,37 @@ const BaseTable = (props: BaseTableProps) => {
 									SortIcon={SortIcon}
 								>
 									{headIdCell
-										? renderCellContent(headIdCell, INTERNAL_ID_CELL_IDENTIFIER)
+										? renderHeadCellContent(headIdCell, headRow)
 										: "ID"}
 								</TableCell>
 							)}
-							{headCells.map((headCell) => (
-								<TableCell
-									key={headCell.id}
-									isHeadCell
-									align={headCell.numeric ? "right" : "left"}
-									active={sortByColumnId === headCell.id}
-									sortDirection={
-										headCell.id === sortByColumnId ? sortDirection : "desc"
-									}
-									SortIcon={SortIcon}
-									onClick={() => {
-										if (!headCell.sortable) {
-											return;
+							{cellIdsArray.map((cellId) => {
+								const headCell = headCells[cellId];
+								return (
+									<TableCell
+										key={HEAD_ROW_IDENTIFIER + cellId}
+										isHeadCell
+										align={headCell.numeric ? "right" : "left"}
+										active={sortByColumnId === cellId}
+										sortDirection={
+											cellId === sortByColumnId ? sortDirection : "desc"
 										}
+										SortIcon={SortIcon}
+										onClick={() => {
+											if (!headCell.sortable) {
+												return;
+											}
 
-										handleSortCellClick(headCell.id);
-									}}
-									padding={headCell.disablePadding ? "none" : "normal"}
-									sortable={headCell.sortable}
-									classes={cellClasses}
-								>
-									{renderCellContent(headCell, HEAD_ROW_IDENTIFIER)}
-								</TableCell>
-							))}
+											handleSortCellClick(cellId);
+										}}
+										padding={headCell.disablePadding ? "none" : "normal"}
+										sortable={headCell.sortable}
+										classes={cellClasses}
+									>
+										{renderHeadCellContent(headCell, headRow)}
+									</TableCell>
+								);
+							})}
 						</TableRow>
 					</TableHead>
 					<TableBody data-testid="table-body">
@@ -339,14 +357,12 @@ const BaseTable = (props: BaseTableProps) => {
 										data-testid="table-row-cell"
 										padding="none"
 									>
-										{renderCellContent({ ...rowIdCell, label: row.id }, row.id)}
+										{renderCellContent({ ...rowIdCell, value: row.id }, row)}
 									</TableCell>
 								)}
-								{row.cells
-									.slice(0, headCells.length)
-									.map((rowCell, cellIndex) =>
-										renderRowCell(row, rowCell, cellIndex)
-									)}
+								{cellIdsArray.map((cellId) =>
+									renderRowCell(row, row.cells[cellId], cellId)
+								)}
 							</TableRow>
 						))}
 					</TableBody>

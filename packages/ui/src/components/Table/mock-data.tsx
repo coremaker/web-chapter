@@ -1,59 +1,67 @@
 import { range } from "@web-chapter/lib";
-
-import { HeadCell, Row } from "./types";
+import { HeadRowCells, Row } from "./types";
 import { Chip } from "@mui/material";
 
 const names = ["John Doe", "Jane Doe", "Jason Statham"];
 const emails = ["johndoe@mail.io", "jasonstatham@mail.io", "janedoe@mail.io"];
 
-export const headCells: HeadCell[] = [
-	{
+export interface RowInfo {
+	username: string;
+	fullName: string;
+	role: string;
+	lastActive: string;
+	status: string;
+}
+
+export const headCells: HeadRowCells<RowInfo> = {
+	username: {
 		id: "username",
 		numeric: false,
-		label: "Username",
+		value: "Username",
 	},
-	{
+	fullName: {
 		id: "fullName",
-		label: "Name",
+		value: "Name",
 		sortable: true,
 	},
-	{
+	lastActive: {
 		id: "role",
-		label: "Role",
+		value: "Role",
 		sortable: true,
 	},
-	{
+	role: {
 		id: "lastActive",
-		label: "Last Active",
+		value: "Last Active",
 		sortable: true,
 	},
-	{
+	status: {
 		id: "status",
-		label: "Status",
+		value: "Status",
 		sortable: true,
 	},
-];
+};
 
-export const rows: Row[] = range(40).map((i) => ({
+export const rows: Row<RowInfo>[] = range(40).map((i) => ({
 	id: `#685065645${i % 2 === 0 ? i : 12 - i}`,
-	cells: [
-		{
-			label: `${i % 2 === 0 ? i : 12 - i}${
-				emails[Math.ceil(Math.random() * 2)]
+	cells: {
+		username: {
+			value: `${i % 2 === 0 ? i : 12 - i}${
+				emails[Math.ceil(Math.random() * 2)] + i
 			}`,
 		},
-		{
-			label: names[Math.ceil(Math.random() * 2)],
+		fullName: {
+			value: names[Math.ceil(Math.random() * 2)] + i,
 		},
-		{
-			label: "Contributor",
+		role: {
+			value: "Contributor",
 		},
-		{
-			label: "7 Feb 2023",
+		lastActive: {
+			value: "12/01/2023",
+			renderComponent: ({ value }) => <div>{value}</div>,
 		},
-		{
-			label: i > 6 ? "Pending" : "Active",
+		status: {
+			value: i > 6 ? "Pending" : "Active",
 			renderComponent: ({ value }) => <Chip label={value} />,
 		},
-	],
+	},
 }));

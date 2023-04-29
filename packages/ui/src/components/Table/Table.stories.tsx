@@ -1,6 +1,6 @@
 import { Meta, StoryFn } from "@storybook/react";
 import Table from "./BaseTable";
-import { headCells, rows } from "./mock-data";
+import { RowInfo, headCells, rows } from "./mock-data";
 import { SelectedRowIds } from "../../hooks/useTable/reducer";
 import Styles from "./styles.module.css";
 import { Chip } from "@mui/material";
@@ -11,7 +11,9 @@ export default {
 	component: Table,
 } as Meta<typeof Table>;
 
-const Template: StoryFn<typeof Table> = (args) => <Table {...args} />;
+const Template: StoryFn<typeof Table<RowInfo>> = (args) => (
+	<Table<RowInfo> {...args} />
+);
 
 export const Base = Template.bind({});
 Base.args = {
@@ -34,7 +36,7 @@ Searchable.args = {
 	defaultRowsPerPage: 5,
 	paginated: true,
 	makeSearchableRowContent: (row) => {
-		return `${row.cells[0].label} ${row.cells[1].label}`;
+		return `${row.cells.fullName.value} ${row.cells.username.value}`;
 	},
 };
 
@@ -58,7 +60,7 @@ Selectable.args = {
 		return <Chip color="primary" label={`Total selected: ${selectedCount}`} />;
 	},
 	makeSearchableRowContent: (row) => {
-		return `${row.cells[0].label} ${row.cells[1].label}`;
+		return `${row.cells.fullName.value} ${row.cells.username.value}`;
 	},
 };
 
@@ -87,7 +89,7 @@ SelectableWithCustomHandlers.args = {
 		return <Chip color="primary" label={`Total selected: ${selectedCount}`} />;
 	},
 	makeSearchableRowContent: (row) => {
-		return `${row.cells[0].label} ${row.cells[1].label}`;
+		return `${row.cells.fullName.value} ${row.cells.username.value}`;
 	},
 };
 
