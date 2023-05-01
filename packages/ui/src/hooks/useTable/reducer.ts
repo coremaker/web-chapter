@@ -1,11 +1,11 @@
 import { SortDirection } from "@mui/material";
 import { produce } from "immer";
 import mergeWith from "lodash.mergewith";
-import { CellId, GenericRowInfo } from "src/components/Table";
+import { CellId, GenericRowStructure } from "src/components/Table";
 
 export type SelectedRowIds = Record<string, boolean>;
 
-export interface TableState<T extends GenericRowInfo> {
+export interface TableState<T extends GenericRowStructure> {
 	selectedRowIds: SelectedRowIds;
 	page: number;
 	rowsPerPage: number;
@@ -14,12 +14,12 @@ export interface TableState<T extends GenericRowInfo> {
 	sortDirection: SortDirection;
 }
 
-export type Action<T extends GenericRowInfo> = {
+export type Action<T extends GenericRowStructure> = {
 	type: "update";
 	payload: Partial<TableState<T>>;
 };
 
-export function reducer<T extends GenericRowInfo>(
+export function reducer<T extends GenericRowStructure>(
 	state: TableState<T>,
 	action: Action<T>
 ) {

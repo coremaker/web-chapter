@@ -1,13 +1,13 @@
 import { IconButton, Menu, MenuClasses, MenuItem, styled } from "@mui/material";
 import { MouseEvent, ReactNode, useState } from "react";
-import { GenericRowInfo, Row, RowAction } from "../types";
+import { GenericRowStructure, Row, RowAction } from "../types";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 export interface EllipsisCellContentClasses {
 	root: string;
 	menu: Partial<MenuClasses>;
 }
-interface EllipsisCellContentProps<T extends GenericRowInfo> {
+interface EllipsisCellContentProps<T extends GenericRowStructure> {
 	row: Row<T>;
 	label: string | ReactNode;
 	classes?: Partial<EllipsisCellContentClasses>;
@@ -22,7 +22,7 @@ const StyledDivContainer = styled("div")({
 	justifyContent: "space-between",
 });
 
-const EllipsisCellContent = <T extends GenericRowInfo>({
+const EllipsisCellContent = <T extends GenericRowStructure>({
 	row,
 	label,
 	rowActions,

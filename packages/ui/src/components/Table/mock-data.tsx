@@ -5,7 +5,7 @@ import { Chip } from "@mui/material";
 const names = ["John Doe", "Jane Doe", "Jason Statham"];
 const emails = ["johndoe@mail.io", "jasonstatham@mail.io", "janedoe@mail.io"];
 
-export interface RowInfo {
+export interface RowStructure {
 	username: string;
 	fullName: string;
 	role: string;
@@ -13,7 +13,7 @@ export interface RowInfo {
 	status: string;
 }
 
-export const headCells: HeadRowCells<RowInfo> = {
+export const headCells: HeadRowCells<RowStructure> = {
 	username: {
 		id: "username",
 		numeric: false,
@@ -41,7 +41,7 @@ export const headCells: HeadRowCells<RowInfo> = {
 	},
 };
 
-export const rows: Row<RowInfo>[] = range(40).map((i) => ({
+export const rows: Row<RowStructure>[] = range(40).map((i) => ({
 	id: `#685065645${i % 2 === 0 ? i : 12 - i}`,
 	cells: {
 		username: {

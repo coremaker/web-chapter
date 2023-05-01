@@ -1,6 +1,6 @@
 import { Meta, StoryFn } from "@storybook/react";
 import Table from "./BaseTable";
-import { RowInfo, headCells, rows } from "./mock-data";
+import { RowStructure, headCells, rows } from "./mock-data";
 import { SelectedRowIds } from "../../hooks/useTable/reducer";
 import Styles from "./styles.module.css";
 import { Chip } from "@mui/material";
@@ -11,8 +11,8 @@ export default {
 	component: Table,
 } as Meta<typeof Table>;
 
-const Template: StoryFn<typeof Table<RowInfo>> = (args) => (
-	<Table<RowInfo> {...args} />
+const Template: StoryFn<typeof Table<RowStructure>> = (args) => (
+	<Table<RowStructure> {...args} />
 );
 
 export const Base = Template.bind({});

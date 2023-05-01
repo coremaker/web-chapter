@@ -1,7 +1,7 @@
 import { ChangeEvent, MouseEvent, ReactNode } from "react";
 import { TableState } from "src/hooks/useTable/reducer";
 
-interface CellRendererArgs<T extends GenericRowInfo, U> {
+interface CellRendererArgs<T extends GenericRowStructure, U> {
 	value: U;
 	numeric?: boolean;
 	disablePadding?: boolean;
@@ -9,41 +9,42 @@ interface CellRendererArgs<T extends GenericRowInfo, U> {
 	state: TableState<T>;
 }
 
-export type GenericRowInfo = object;
+export type GenericRowStructure = object;
 
-export type CellId<T extends GenericRowInfo> = Extract<keyof T, string>;
+export type CellId<T extends GenericRowStructure> = Extract<keyof T, string>;
 
-export interface Cell<T extends GenericRowInfo, U> {
+export interface Cell<T extends GenericRowStructure, U> {
 	numeric?: boolean;
 	disablePadding?: boolean;
 	value: U;
 	renderComponent?: (args: CellRendererArgs<T, U>) => ReactNode;
 }
-export type CellComparator<T extends GenericRowInfo, U> = (
+export type CellComparator<T extends GenericRowStructure, U> = (
 	firstCell: Cell<T, U>,
 	secondCell: Cell<T, U>
 ) => number;
 
-export interface HeadRow<T extends GenericRowInfo> {
+export interface HeadRow<T extends GenericRowStructure> {
 	id: string;
 	cells: HeadRowCells<T>;
 }
-export type HeadRowCells<T extends GenericRowInfo> = {
+export type HeadRowCells<T extends GenericRowStructure> = {
 	[K in CellId<T>]: HeadCell<T>;
 };
 
-export interface HeadCell<T extends GenericRowInfo> extends Cell<T, string> {
+export interface HeadCell<T extends GenericRowStructure>
+	extends Cell<T, string> {
 	id: CellId<T>;
 	sortable?: boolean;
 	comparator?: CellComparator<T, T[CellId<T>]>;
 }
 
-export interface Row<T extends GenericRowInfo> {
+export interface Row<T extends GenericRowStructure> {
 	id: string;
 	cells: { [K in CellId<T>]: Cell<T, T[K]> };
 }
 
-export interface RowAction<T extends GenericRowInfo> {
+export interface RowAction<T extends GenericRowStructure> {
 	id: string;
 	label?: string;
 	renderComponent?: () => ReactNode;
@@ -60,7 +61,7 @@ export type PageChangeHandler = (
 	newPage: number
 ) => void;
 
-export interface PaginationRendererArgs<T extends GenericRowInfo> {
+export interface PaginationRendererArgs<T extends GenericRowStructure> {
 	page: number;
 	defaultRowsPerPage: number;
 	rows: Row<T>[];

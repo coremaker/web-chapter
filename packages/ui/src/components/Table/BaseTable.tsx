@@ -19,7 +19,7 @@ import {
 	Cell,
 	CellId,
 	CheckboxRendererArgs,
-	GenericRowInfo,
+	GenericRowStructure,
 	HeadCell,
 	HeadRowCells,
 	PaginationRendererArgs,
@@ -50,7 +50,7 @@ export interface BaseTableClasses {
 	footer: Partial<BaseTableFooterClasses>;
 }
 
-export interface BaseTableProps<T extends GenericRowInfo> {
+export interface BaseTableProps<T extends GenericRowStructure> {
 	showIdCell?: boolean;
 	headIdCell?: Omit<HeadCell<T>, "id">;
 	rowIdCell?: Omit<Cell<T, string>, "value">;
@@ -81,7 +81,7 @@ export interface BaseTableProps<T extends GenericRowInfo> {
 	classes?: Partial<BaseTableClasses>;
 }
 
-const BaseTable = <T extends GenericRowInfo>(props: BaseTableProps<T>) => {
+const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 	const {
 		headCells,
 		rows,
