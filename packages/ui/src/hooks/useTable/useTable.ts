@@ -10,10 +10,11 @@ import {
 	Cell,
 	CellComparator,
 	CellId,
-	GenericRowInfo,
+	GenericRowStructure,
 	HeadCell,
 	HeadRow,
 	Row,
+	ValueOf,
 } from "../../components/Table/types";
 import { TableState, reducer } from "./reducer";
 import { getTablePropsWithDefaults } from "./utils";
@@ -28,7 +29,7 @@ const compareAlphabetically = (
 ) => firstCell.value.localeCompare(secondCell.value);
 
 const makeSortRowByIdComparator =
-	<T extends GenericRowInfo>(
+	<T extends GenericRowStructure>(
 		sortDirection: SortDirection,
 		customComparator?: CellComparator<T, T[CellId<T>]>
 	) =>
@@ -55,7 +56,7 @@ const compare = (
 	return comparator(secondCell, firstCell);
 };
 const makeSortRowByCellComparator =
-	<T extends GenericRowInfo>(
+	<T extends GenericRowStructure>(
 		sortDirection: SortDirection,
 		sortByCellId: CellId<T>,
 		customComparator?: CellComparator<T, T[CellId<T>]>
@@ -65,11 +66,16 @@ const makeSortRowByCellComparator =
 		const secondCell = secondRow.cells[sortByCellId];
 
 		if (customComparator) {
-			compare(customComparator, firstCell, secondCell, sortDirection);
+			return compare(customComparator, firstCell, secondCell, sortDirection);
 		}
 
 		if (typeof firstCell.value === "string") {
-			compare(compareAlphabetically, firstCell, secondCell, sortDirection);
+			return compare(
+				compareAlphabetically,
+				firstCell,
+				secondCell,
+				sortDirection
+			);
 		}
 
 		throw Error(
@@ -77,7 +83,7 @@ const makeSortRowByCellComparator =
 		);
 	};
 
-export default function useTable<T extends GenericRowInfo>(
+export default function useTable<T extends GenericRowStructure>(
 	props: BaseTableProps<T>
 ) {
 	const {
@@ -156,7 +162,7 @@ export default function useTable<T extends GenericRowInfo>(
 	};
 
 	const renderHeadCellContent = (
-		cell: Omit<HeadCell<T>, "id">,
+		cell: Omit<HeadCell<T, ValueOf<T>>, "id">,
 		row: HeadRow<T>
 	) => {
 		if (cell.renderComponent) {

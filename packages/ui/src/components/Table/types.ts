@@ -13,6 +13,8 @@ export type GenericRowStructure = object;
 
 export type CellId<T extends GenericRowStructure> = Extract<keyof T, string>;
 
+export type ValueOf<T extends GenericRowStructure> = T[CellId<T>];
+
 export interface Cell<T extends GenericRowStructure, U> {
 	numeric?: boolean;
 	disablePadding?: boolean;
@@ -29,14 +31,14 @@ export interface HeadRow<T extends GenericRowStructure> {
 	cells: HeadRowCells<T>;
 }
 export type HeadRowCells<T extends GenericRowStructure> = {
-	[K in CellId<T>]: HeadCell<T>;
+	[K in CellId<T>]: HeadCell<T, T[K]>;
 };
 
-export interface HeadCell<T extends GenericRowStructure>
+export interface HeadCell<T extends GenericRowStructure, U>
 	extends Cell<T, string> {
-	id: CellId<T>;
+	// id: CellId<T>;
 	sortable?: boolean;
-	comparator?: CellComparator<T, T[CellId<T>]>;
+	comparator?: CellComparator<T, U>;
 }
 
 export interface Row<T extends GenericRowStructure> {

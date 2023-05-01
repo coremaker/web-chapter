@@ -11,33 +11,38 @@ export interface RowStructure {
 	role: string;
 	lastActive: string;
 	status: string;
+	address: {
+		city: string;
+		street: string;
+	};
 }
 
 export const headCells: HeadRowCells<RowStructure> = {
 	username: {
-		id: "username",
 		numeric: false,
 		value: "Username",
 	},
 	fullName: {
-		id: "fullName",
 		value: "Name",
 		sortable: true,
 	},
 	lastActive: {
-		id: "role",
 		value: "Role",
 		sortable: true,
 	},
 	role: {
-		id: "lastActive",
 		value: "Last Active",
 		sortable: true,
 	},
 	status: {
-		id: "status",
 		value: "Status",
 		sortable: true,
+	},
+	address: {
+		value: "Address",
+		sortable: true,
+		comparator: (firstCell, secondCell) =>
+			firstCell.value.city.localeCompare(secondCell.value.city),
 	},
 };
 
@@ -62,6 +67,18 @@ export const rows: Row<RowStructure>[] = range(40).map((i) => ({
 		status: {
 			value: i > 6 ? "Pending" : "Active",
 			renderComponent: ({ value }) => <Chip label={value} />,
+		},
+		address: {
+			value: {
+				city: `City ${i}`,
+				street: `Street ${i}`,
+			},
+			renderComponent: ({ value }) => (
+				<div>
+					<div>{value.city}</div>
+					<div>{value.street}</div>
+				</div>
+			),
 		},
 	},
 }));

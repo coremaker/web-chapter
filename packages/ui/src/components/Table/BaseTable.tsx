@@ -26,6 +26,7 @@ import {
 	Row,
 	RowAction,
 	SearchInputRendererArgs,
+	ValueOf,
 } from "./types";
 import useTable, {
 	HEAD_ROW_IDENTIFIER,
@@ -50,10 +51,15 @@ export interface BaseTableClasses {
 	footer: Partial<BaseTableFooterClasses>;
 }
 
+type TableBodyIDCellProps<T extends GenericRowStructure> = Omit<
+	Cell<T, string>,
+	"value"
+>;
+
 export interface BaseTableProps<T extends GenericRowStructure> {
 	showIdCell?: boolean;
-	headIdCell?: Omit<HeadCell<T>, "id">;
-	rowIdCell?: Omit<Cell<T, string>, "value">;
+	headIdCell?: HeadCell<T, ValueOf<T>>;
+	rowIdCell?: TableBodyIDCellProps<T>;
 	makeSearchableRowContent?: (row: Row<T>) => string;
 	searchInputPlaceholder?: string;
 	selectable?: boolean;
@@ -182,7 +188,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 			return renderTablePagination({
 				page,
 				defaultRowsPerPage,
-				rows,
+				rows: filteredRows,
 				handleChangePage,
 				handleRowsPerPageChange,
 			});
