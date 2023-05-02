@@ -55,8 +55,6 @@ type TableBodyIDCellProps<T extends GenericRowStructure> = Omit<
 
 export interface BaseTableProps<T extends GenericRowStructure> {
 	showIdCell?: boolean;
-	// headIdCell?: HeadCell<T, ValueOf<T>>;
-	// rowIdCell?: TableBodyIDCellProps<T>;
 	makeSearchableRowContent?: (row: Row<T>) => string;
 	searchInputPlaceholder?: string;
 	selectable?: boolean;
@@ -92,8 +90,6 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 		makeSearchableRowContent,
 		searchInputPlaceholder = "Search",
 		showIdCell,
-		// headIdCell,
-		// rowIdCell,
 		rowActions,
 		ellipsisIcon,
 		renderTableActions,

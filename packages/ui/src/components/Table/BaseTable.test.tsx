@@ -1,4 +1,4 @@
-import { render, within } from "@testing-library/react";
+import { getByText, render, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
@@ -37,6 +37,13 @@ describe("<Table />", () => {
 		expect(
 			within(renderedRow).getByText(address.value.street)
 		).toBeInTheDocument();
+	});
+
+	it("doesn't render the ID row when showIdCell is not given", () => {
+		const { queryByText } = render(
+			<Table headCells={headCells} rows={rows.slice(0, 1)} />
+		);
+		expect(queryByText(rows[0].cells.id.value)).toBeFalsy();
 	});
 
 	it("renders custom label text for the id column if passed as prop", () => {
