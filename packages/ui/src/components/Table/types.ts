@@ -1,7 +1,7 @@
 import { ChangeEvent, MouseEvent, ReactNode } from "react";
 import { TableState } from "src/hooks/useTable/reducer";
 
-interface CellRendererArgs<T extends GenericRowStructure, U> {
+export interface CellRendererArgs<T extends GenericRowStructure, U> {
 	value: U;
 	numeric?: boolean;
 	disablePadding?: boolean;
