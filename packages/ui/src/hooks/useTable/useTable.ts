@@ -6,44 +6,86 @@ import {
 	useReducer,
 } from "react";
 import { BaseTableProps } from "../../components/Table/BaseTable";
-import { Cell, CellComparator, Row } from "../../components/Table/types";
+import {
+	Cell,
+	CellComparator,
+	CellId,
+	GenericRowStructure,
+	HeadCell,
+	HeadRow,
+	Row,
+	ValueOf,
+} from "../../components/Table/types";
 import { TableState, reducer } from "./reducer";
 import { getTablePropsWithDefaults } from "./utils";
 import { SortDirection } from "@mui/material";
 
-const compareAlphabetically = (firstCell: string, secondCell: string) =>
-	firstCell.localeCompare(secondCell);
+export const INTERNAL_ID_CELL_IDENTIFIER = "__id";
+export const HEAD_ROW_IDENTIFIER = "__head";
+
+const compareAlphabetically = (
+	firstCell: Cell<any, string>,
+	secondCell: Cell<any, string>
+) => firstCell.value.localeCompare(secondCell.value);
 
 const makeSortRowByIdComparator =
-	(sortDirection: SortDirection, customComparator?: CellComparator) =>
-	(firstRow: Row, secondRow: Row) => {
-		const comparator = customComparator ?? compareAlphabetically;
-
-		if (sortDirection === "asc") {
-			return comparator(firstRow.id, secondRow.id);
-		}
-		return comparator(secondRow.id, firstRow.id);
-	};
-
-const makeSortRowByCellComparator =
-	(
+	<T extends GenericRowStructure>(
 		sortDirection: SortDirection,
-		sortByCellIndex: number,
-		customComparator?: CellComparator
+		customComparator?: CellComparator<T, T[CellId<T>]>
 	) =>
-	(firstRow: Row, secondRow: Row) => {
-		const firstCell = firstRow.cells[sortByCellIndex];
-		const secondCell = secondRow.cells[sortByCellIndex];
-
+	(firstRow: Row<T>, secondRow: Row<T>) => {
 		const comparator = customComparator ?? compareAlphabetically;
 
-		if (sortDirection === "asc") {
-			return comparator(firstCell.label, secondCell.label);
-		}
-		return comparator(secondCell.label, firstCell.label);
+		return compare(
+			comparator,
+			{ value: firstRow.id },
+			{ value: secondRow.id },
+			sortDirection
+		);
 	};
 
-export default function useTable(props: BaseTableProps) {
+const compare = (
+	comparator: CellComparator<any, any>,
+	firstCell: Cell<any, any>,
+	secondCell: Cell<any, any>,
+	sortDirection: SortDirection
+) => {
+	if (sortDirection === "asc") {
+		return comparator(firstCell, secondCell);
+	}
+	return comparator(secondCell, firstCell);
+};
+const makeSortRowByCellComparator =
+	<T extends GenericRowStructure>(
+		sortDirection: SortDirection,
+		sortByCellId: CellId<T>,
+		customComparator?: CellComparator<T, T[CellId<T>]>
+	) =>
+	(firstRow: Row<T>, secondRow: Row<T>) => {
+		const firstCell = firstRow.cells[sortByCellId];
+		const secondCell = secondRow.cells[sortByCellId];
+
+		if (customComparator) {
+			return compare(customComparator, firstCell, secondCell, sortDirection);
+		}
+
+		if (typeof firstCell.value === "string") {
+			return compare(
+				compareAlphabetically,
+				firstCell,
+				secondCell,
+				sortDirection
+			);
+		}
+
+		throw Error(
+			"Cannot sort non-string cell values without a custom comparator"
+		);
+	};
+
+export default function useTable<T extends GenericRowStructure>(
+	props: BaseTableProps<T>
+) {
 	const {
 		defaultRowsPerPage,
 		headCells,
@@ -54,9 +96,9 @@ export default function useTable(props: BaseTableProps) {
 		onAllRowsSelectionChange,
 		onRowSelectionChange,
 		selectedRowIds,
-	} = getTablePropsWithDefaults(props);
+	} = getTablePropsWithDefaults<T>(props);
 
-	const [state, dispatch] = useReducer(reducer, {
+	const [state, dispatch] = useReducer(reducer<T>, {
 		selectedRowIds: {},
 		page: 0,
 		rowsPerPage: defaultRowsPerPage,
@@ -77,25 +119,62 @@ export default function useTable(props: BaseTableProps) {
 		[selectedRowIdsState]
 	);
 
+	const headRow: HeadRow<T> = useMemo(
+		() => ({
+			id: INTERNAL_ID_CELL_IDENTIFIER,
+			cells: headCells,
+		}),
+		[headCells]
+	);
+
+	const cellIdsArray = useMemo(
+		() => Object.keys(headCells) as unknown as CellId<T>[],
+		[headIdCell]
+	);
+
 	const updateState = useCallback(
-		(updates: Partial<TableState>) => {
+		(updates: Partial<TableState<T>>) => {
 			dispatch({ type: "update", payload: updates });
 		},
 		[dispatch]
 	);
 
-	const makeRowCellId = (rowId: string, rowCellIndex: number) => {
-		return `${rowId}-${headCells[rowCellIndex].id}`;
+	const makeRowCellId = (rowId: string, cellId: CellId<T>) => {
+		return `${rowId}-${String(cellId)}`;
 	};
 
-	const renderCellContent = (cell: Cell, rowId: string) =>
-		cell.renderComponent
-			? cell.renderComponent({
-					value: cell.label,
-					selectedRowIds: selectedRowIdsState,
-					rowId,
-			  })
-			: cell.label;
+	const renderCellContent = (cell: Cell<T, any>, row: Row<T>) => {
+		if (cell.renderComponent) {
+			return cell.renderComponent({
+				...cell,
+				currentRow: row,
+				state,
+			});
+		}
+
+		if (typeof cell.value === "string") {
+			return cell.value;
+		}
+
+		throw new Error(
+			"Cannot render non-string cell content without a custom renderer"
+		);
+	};
+
+	const renderHeadCellContent = (
+		cell: Omit<HeadCell<T, ValueOf<T>>, "id">,
+		row: HeadRow<T>
+	) => {
+		if (cell.renderComponent) {
+			return cell.renderComponent({
+				...cell,
+				currentRow: row,
+				state,
+			});
+		}
+
+		return cell.value;
+	};
 
 	const handleChangePage = (
 		_e: MouseEvent<HTMLButtonElement> | null,
@@ -138,7 +217,7 @@ export default function useTable(props: BaseTableProps) {
 		updateState({ rowsPerPage: updatedRowsPerPage, page: 0 });
 	};
 
-	const handleSortCellClick = (cellId: string) => {
+	const handleSortCellClick = (cellId: CellId<T> | "__id") => {
 		if (state.sortByColumnId === cellId) {
 			updateState({
 				sortDirection: state.sortDirection === "asc" ? "desc" : "asc",
@@ -160,30 +239,23 @@ export default function useTable(props: BaseTableProps) {
 	}, [makeSearchableRowContent, rows, state.searchValue]);
 
 	const applySorting = useCallback(
-		(rowsToSort: Row[]) => {
+		(rowsToSort: Row<T>[]) => {
 			if (!state.sortByColumnId) {
 				return rowsToSort;
 			}
 
-			if (state.sortByColumnId === "__id") {
+			if (state.sortByColumnId === INTERNAL_ID_CELL_IDENTIFIER) {
 				return rowsToSort.sort(
 					makeSortRowByIdComparator(state.sortDirection, headIdCell?.comparator)
 				);
 			}
 
-			const sortByCellIndex = headCells.findIndex(
-				(cell) => cell.id === state.sortByColumnId
-			);
-			const customComparator = headCells[sortByCellIndex].comparator;
-
-			if (!sortByCellIndex) {
-				return rowsToSort;
-			}
+			const customComparator = headCells[state.sortByColumnId].comparator;
 
 			return rowsToSort.sort(
 				makeSortRowByCellComparator(
 					state.sortDirection,
-					sortByCellIndex,
+					state.sortByColumnId,
 					customComparator
 				)
 			);
@@ -191,7 +263,7 @@ export default function useTable(props: BaseTableProps) {
 		[state.sortByColumnId, state.sortDirection, headCells, headIdCell]
 	);
 	const applyPageSplitting = useCallback(
-		(rowsToSplit: Row[]) => {
+		(rowsToSplit: Row<T>[]) => {
 			if (!paginated) {
 				return rowsToSplit;
 			}
@@ -223,9 +295,12 @@ export default function useTable(props: BaseTableProps) {
 		handleRowSelection,
 		handleAllRowsSelection,
 		renderCellContent,
+		renderHeadCellContent,
 		makeRowCellId,
 		state,
 		selectedRowsCount,
 		updateState,
+		headRow,
+		cellIdsArray,
 	};
 }

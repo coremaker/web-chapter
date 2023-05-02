@@ -1,20 +1,20 @@
 import { IconButton, Menu, MenuClasses, MenuItem, styled } from "@mui/material";
 import { MouseEvent, ReactNode, useState } from "react";
-import { Row, RowAction } from "../types";
+import { GenericRowStructure, Row, RowAction } from "../types";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 export interface EllipsisCellContentClasses {
 	root: string;
 	menu: Partial<MenuClasses>;
 }
-interface EllipsisCellContentProps {
-	row: Row;
+interface EllipsisCellContentProps<T extends GenericRowStructure> {
+	row: Row<T>;
 	label: string | ReactNode;
 	classes?: Partial<EllipsisCellContentClasses>;
-	rowActions: RowAction[];
+	rowActions: RowAction<T>[];
 	icon?: ReactNode;
-	onMenuOpen?: (row: Row) => void;
-	onMenuClose?: (row: Row) => void;
+	onMenuOpen?: (row: Row<T>) => void;
+	onMenuClose?: (row: Row<T>) => void;
 }
 const StyledDivContainer = styled("div")({
 	display: "flex",
@@ -22,7 +22,7 @@ const StyledDivContainer = styled("div")({
 	justifyContent: "space-between",
 });
 
-const EllipsisCellContent = ({
+const EllipsisCellContent = <T extends GenericRowStructure>({
 	row,
 	label,
 	rowActions,
@@ -30,7 +30,7 @@ const EllipsisCellContent = ({
 	classes = {},
 	onMenuOpen,
 	onMenuClose,
-}: EllipsisCellContentProps) => {
+}: EllipsisCellContentProps<T>) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
 	const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -41,13 +41,14 @@ const EllipsisCellContent = ({
 		onMenuClose?.(row);
 		setAnchorEl(null);
 	};
+	const menuId = `table-row-menu-${row.id}`;
 	return (
 		<StyledDivContainer className={classes.root ?? ""}>
 			<div>{label}</div>
 			<div>
 				<IconButton
 					data-testid={`ellipsis-button-${row.id}`}
-					aria-controls={open ? `table-row-menu-${row.id}` : undefined}
+					aria-controls={open ? menuId : undefined}
 					aria-haspopup="true"
 					className="BaseTable__EllipsisCellContent__Button"
 					aria-expanded={open ? "true" : undefined}
@@ -57,7 +58,7 @@ const EllipsisCellContent = ({
 				</IconButton>
 				<Menu
 					classes={classes.menu}
-					id={`table-row-menu-${row.id}`}
+					id={menuId}
 					open={open}
 					onClose={handleClose}
 					anchorEl={anchorEl}

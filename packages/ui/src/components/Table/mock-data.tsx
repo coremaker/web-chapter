@@ -1,59 +1,84 @@
 import { range } from "@web-chapter/lib";
-
-import { HeadCell, Row } from "./types";
+import { HeadRowCells, Row } from "./types";
 import { Chip } from "@mui/material";
 
 const names = ["John Doe", "Jane Doe", "Jason Statham"];
 const emails = ["johndoe@mail.io", "jasonstatham@mail.io", "janedoe@mail.io"];
 
-export const headCells: HeadCell[] = [
-	{
-		id: "username",
-		numeric: false,
-		label: "Username",
-	},
-	{
-		id: "fullName",
-		label: "Name",
-		sortable: true,
-	},
-	{
-		id: "role",
-		label: "Role",
-		sortable: true,
-	},
-	{
-		id: "lastActive",
-		label: "Last Active",
-		sortable: true,
-	},
-	{
-		id: "status",
-		label: "Status",
-		sortable: true,
-	},
-];
+export interface RowStructure {
+	username: string;
+	fullName: string;
+	role: string;
+	lastActive: string;
+	status: string;
+	address: {
+		city: string;
+		street: string;
+	};
+}
 
-export const rows: Row[] = range(40).map((i) => ({
+export const headCells: HeadRowCells<RowStructure> = {
+	username: {
+		numeric: false,
+		value: "Username",
+	},
+	fullName: {
+		value: "Name",
+		sortable: true,
+	},
+	lastActive: {
+		value: "Role",
+		sortable: true,
+	},
+	role: {
+		value: "Last Active",
+		sortable: true,
+	},
+	status: {
+		value: "Status",
+		sortable: true,
+	},
+	address: {
+		value: "Address",
+		sortable: true,
+		comparator: (firstCell, secondCell) =>
+			firstCell.value.city.localeCompare(secondCell.value.city),
+	},
+};
+
+export const rows: Row<RowStructure>[] = range(40).map((i) => ({
 	id: `#685065645${i % 2 === 0 ? i : 12 - i}`,
-	cells: [
-		{
-			label: `${i % 2 === 0 ? i : 12 - i}${
-				emails[Math.ceil(Math.random() * 2)]
+	cells: {
+		username: {
+			value: `${i % 2 === 0 ? i : 12 - i}${
+				emails[Math.ceil(Math.random() * 2)] + i
 			}`,
 		},
-		{
-			label: names[Math.ceil(Math.random() * 2)],
+		fullName: {
+			value: names[Math.ceil(Math.random() * 2)] + i,
 		},
-		{
-			label: "Contributor",
+		role: {
+			value: "Contributor",
 		},
-		{
-			label: "7 Feb 2023",
+		lastActive: {
+			value: "12/01/2023",
+			renderComponent: ({ value }) => <div>{value}</div>,
 		},
-		{
-			label: i > 6 ? "Pending" : "Active",
+		status: {
+			value: i > 6 ? "Pending" : "Active",
 			renderComponent: ({ value }) => <Chip label={value} />,
 		},
-	],
+		address: {
+			value: {
+				city: `City ${i}`,
+				street: `Street ${i}`,
+			},
+			renderComponent: ({ value }) => (
+				<div>
+					<div>{value.city}</div>
+					<div>{value.street}</div>
+				</div>
+			),
+		},
+	},
 }));

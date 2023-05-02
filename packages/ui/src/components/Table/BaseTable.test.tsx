@@ -4,18 +4,19 @@ import { describe, expect, it, vi } from "vitest";
 
 import Table from "./BaseTable";
 import { headCells, rows } from "./mock-data";
+import { GenericRowStructure } from "./types";
 
 describe("<Table />", () => {
-	it.each(headCells)("renders the header cell: %s", (cell) => {
+	it.each(Object.values(headCells))("renders the header cell: %s", (cell) => {
 		const { getByText } = render(<Table headCells={headCells} rows={[]} />);
-		expect(getByText(cell.label)).toBeInTheDocument();
+		expect(getByText(cell.value)).toBeInTheDocument();
 	});
 
 	it("renders the row", () => {
 		const { getByText } = render(
 			<Table headCells={headCells} rows={rows.slice(0, 1)} />
 		);
-		expect(getByText(rows[0].cells[0].label)).toBeInTheDocument();
+		expect(getByText(rows[0].cells.username.value)).toBeInTheDocument();
 	});
 
 	it("renders each cell of the row", () => {
@@ -24,9 +25,17 @@ describe("<Table />", () => {
 		);
 		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
 
-		rows[0].cells.forEach((cell) =>
-			expect(within(renderedRow).getByText(cell.label)).toBeInTheDocument()
-		);
+		const { address, ...cells } = rows[0].cells;
+
+		Object.values(cells).forEach((cell) => {
+			expect(within(renderedRow).getByText(cell.value)).toBeInTheDocument();
+		});
+		expect(
+			within(renderedRow).getByText(address.value.city)
+		).toBeInTheDocument();
+		expect(
+			within(renderedRow).getByText(address.value.street)
+		).toBeInTheDocument();
 	});
 
 	it('renders column with default text "Id" and the row id', () => {
@@ -44,7 +53,7 @@ describe("<Table />", () => {
 			<Table
 				showIdCell
 				headIdCell={{
-					label: "Test custom id label",
+					value: "Test custom id label",
 				}}
 				headCells={headCells}
 				rows={rows}
@@ -66,7 +75,7 @@ describe("<Table />", () => {
 		);
 
 		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
-		const cells = within(renderedRow).getAllByTestId("table-row-cell");
+		const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
 		const ellipsisButton = within(cells[cells.length - 1]).getByTestId(
 			`ellipsis-button-${rows[0].id}`
 		);
@@ -87,7 +96,7 @@ describe("<Table />", () => {
 		);
 
 		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
-		const cells = within(renderedRow).getAllByTestId("table-row-cell");
+		const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
 		const ellipsisButton = within(cells[cells.length - 1]).getByTestId(
 			`ellipsis-button-${rows[0].id}`
 		);
@@ -111,7 +120,7 @@ describe("<Table />", () => {
 		);
 
 		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
-		const cells = within(renderedRow).getAllByTestId("table-row-cell");
+		const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
 		const ellipsisButton = within(cells[cells.length - 1]).getByTestId(
 			`ellipsis-button-${rows[0].id}`
 		);
@@ -142,7 +151,7 @@ describe("<Table />", () => {
 		);
 
 		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
-		const cells = within(renderedRow).getAllByTestId("table-row-cell");
+		const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
 		const ellipsisButton = within(cells[cells.length - 1]).getByTestId(
 			`ellipsis-button-${rows[0].id}`
 		);
@@ -164,7 +173,7 @@ describe("<Table />", () => {
 		);
 
 		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
-		const cells = within(renderedRow).getAllByTestId("table-row-cell");
+		const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
 		const ellipsisButton = within(cells[cells.length - 1]).getByTestId(
 			`ellipsis-button-${rows[0].id}`
 		);
@@ -180,7 +189,7 @@ describe("<Table />", () => {
 	it("renders the search input", () => {
 		const { getByRole } = render(
 			<Table
-				makeSearchableRowContent={(row) => row.cells[0].label}
+				makeSearchableRowContent={(row) => row.cells.fullName.value}
 				headCells={headCells}
 				rows={rows}
 			/>
@@ -191,18 +200,18 @@ describe("<Table />", () => {
 	it("filters the rendered rows based when the search input has any value", async () => {
 		const { getByRole, findAllByTestId } = render(
 			<Table
-				makeSearchableRowContent={(row) => row.cells[0].label}
+				makeSearchableRowContent={(row) => row.cells.fullName.value}
 				headCells={headCells}
 				rows={rows}
 			/>
 		);
 		const searchInput = getByRole("textbox");
-		await userEvent.type(searchInput, rows[5].cells[0].label);
+		await userEvent.type(searchInput, rows[5].cells.fullName.value);
 		const renderedRows = await findAllByTestId(/table-body-row/);
 
 		renderedRows.forEach((row) => {
 			expect(
-				within(row).getByText(rows[5].cells[0].label, { exact: false })
+				within(row).getByText(rows[5].cells.fullName.value, { exact: false })
 			).toBeInTheDocument();
 		});
 	});
@@ -469,8 +478,8 @@ describe("<Table />", () => {
 			/>
 		);
 
-		expect(getByText(rows[0].cells[0].label)).toBeInTheDocument();
-		expect(getByText(rows[1].cells[0].label)).toBeInTheDocument();
+		expect(getByText(rows[0].cells.fullName.value)).toBeInTheDocument();
+		expect(getByText(rows[1].cells.fullName.value)).toBeInTheDocument();
 	});
 
 	it('moves to the next page when the prop "paginated" is given and we click the next button', async () => {
@@ -485,14 +494,15 @@ describe("<Table />", () => {
 		);
 
 		const paginationComponent = getByTestId("table-pagination");
+
 		const renderedNextButton = within(paginationComponent).getByRole("button", {
 			name: /next/i,
 		});
 
 		await userEvent.click(renderedNextButton);
 
-		expect(getByText(rows[2].cells[0].label)).toBeInTheDocument();
-		expect(getByText(rows[3].cells[0].label)).toBeInTheDocument();
+		expect(getByText(rows[2].cells.fullName.value)).toBeInTheDocument();
+		expect(getByText(rows[3].cells.fullName.value)).toBeInTheDocument();
 	});
 
 	it('moves to the prev page when the prop "paginated" is given and we click the prev button', async () => {
@@ -518,8 +528,8 @@ describe("<Table />", () => {
 		await userEvent.click(renderedNextButton);
 		await userEvent.click(renderedPrevButton);
 
-		expect(getByText(rows[2].cells[0].label)).toBeInTheDocument();
-		expect(getByText(rows[3].cells[0].label)).toBeInTheDocument();
+		expect(getByText(rows[2].cells.fullName.value)).toBeInTheDocument();
+		expect(getByText(rows[3].cells.fullName.value)).toBeInTheDocument();
 	});
 
 	it("initially renders all the rows int the order they were given as props", () => {
@@ -534,14 +544,14 @@ describe("<Table />", () => {
 		});
 	});
 
-	it("sorts alphabetically by any column when the column head is clicked", async () => {
+	it("sorts alphabetically by the ID column when the column head is clicked", async () => {
 		const { getByText, getAllByTestId } = render(
 			<Table
 				selectable
 				showIdCell
 				headCells={headCells}
 				rows={rows}
-				headIdCell={{ label: "User ID" }}
+				headIdCell={{ value: "User ID" }}
 			/>
 		);
 
@@ -559,20 +569,64 @@ describe("<Table />", () => {
 		});
 	});
 
-	it("sorts alphabetically in descending order by any column when the column head is clicked two times", async () => {
+	it("sorts alphabetically by a column when the column head is clicked", async () => {
+		const { getAllByTestId, getByTestId } = render(
+			<Table selectable showIdCell headCells={headCells} rows={rows} />
+		);
+
+		const renderedHead = getByTestId("table-head");
+		const nameHeadCell = within(renderedHead).getByText(/Name/);
+
+		const sortedRows = [...rows].sort((row1, row2) => {
+			return row1.cells.fullName.value.localeCompare(row2.cells.fullName.value);
+		});
+
+		await userEvent.click(nameHeadCell);
+
+		const renderedRows = getAllByTestId(/table-body-row/);
+		renderedRows.forEach((row, index) => {
+			expect(
+				within(row).getByText(sortedRows[index].cells.fullName.value)
+			).toBeInTheDocument();
+		});
+	});
+
+	it("sorts alphabetically in descending order by a column when the column head is clicked", async () => {
+		const { getAllByTestId, getByTestId } = render(
+			<Table selectable showIdCell headCells={headCells} rows={rows} />
+		);
+		const renderedHead = getByTestId("table-head");
+		const nameHeadCell = within(renderedHead).getByText(/Name/);
+
+		const descendingSorted = [...rows].sort((row1, row2) => {
+			return row2.cells.fullName.value.localeCompare(row1.cells.fullName.value);
+		});
+
+		await userEvent.click(nameHeadCell);
+		await userEvent.click(nameHeadCell);
+
+		const renderedRows = getAllByTestId(/table-body-row/);
+		renderedRows.forEach((row, index) => {
+			expect(
+				within(row).getByText(descendingSorted[index].cells.fullName.value)
+			).toBeInTheDocument();
+		});
+	});
+
+	it("sorts alphabetically in descending order by ID column when the column head is clicked two times", async () => {
 		const { getByText, getAllByTestId } = render(
 			<Table
 				selectable
 				showIdCell
 				headCells={headCells}
 				rows={rows}
-				headIdCell={{ label: "User ID" }}
+				headIdCell={{ value: "User ID" }}
 			/>
 		);
 
 		const userIdHeadCell = getByText(/User ID/);
 
-		const sortedRows = [...rows].sort((row1, row2) => {
+		const descendingSorted = [...rows].sort((row1, row2) => {
 			return row2.id.localeCompare(row1.id);
 		});
 
@@ -581,7 +635,23 @@ describe("<Table />", () => {
 
 		const renderedRows = getAllByTestId(/table-body-row/);
 		renderedRows.forEach((row, index) => {
-			expect(within(row).getByText(sortedRows[index].id)).toBeInTheDocument();
+			expect(
+				within(row).getByText(descendingSorted[index].id)
+			).toBeInTheDocument();
 		});
+	});
+
+	it("renders the generic value using a custom renderer", async () => {
+		const { getByText } = render(
+			<Table
+				selectable
+				showIdCell
+				headCells={headCells}
+				rows={rows}
+				headIdCell={{ value: "User ID" }}
+			/>
+		);
+
+		expect(getByText(/Street 12/)).toBeInTheDocument();
 	});
 });
