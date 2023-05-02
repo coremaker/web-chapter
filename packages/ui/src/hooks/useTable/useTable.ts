@@ -20,7 +20,6 @@ import { TableState, reducer } from "./reducer";
 import { getTablePropsWithDefaults } from "./utils";
 import { SortDirection } from "@mui/material";
 
-export const INTERNAL_ID_CELL_IDENTIFIER = "__id";
 export const HEAD_ROW_IDENTIFIER = "__head";
 
 const compareAlphabetically = (
@@ -38,8 +37,8 @@ const makeSortRowByIdComparator =
 
 		return compare(
 			comparator,
-			{ value: firstRow.id },
-			{ value: secondRow.id },
+			{ value: firstRow.cells.id.value },
+			{ value: secondRow.cells.id.value },
 			sortDirection
 		);
 	};
@@ -91,7 +90,7 @@ export default function useTable<T extends GenericRowStructure>(
 		headCells,
 		makeSearchableRowContent,
 		rows,
-		headIdCell,
+		// headIdCell,
 		paginated,
 		onAllRowsSelectionChange,
 		onRowSelectionChange,
@@ -121,7 +120,7 @@ export default function useTable<T extends GenericRowStructure>(
 
 	const headRow: HeadRow<T> = useMemo(
 		() => ({
-			id: INTERNAL_ID_CELL_IDENTIFIER,
+			id: HEAD_ROW_IDENTIFIER,
 			cells: headCells,
 		}),
 		[headCells]
@@ -129,7 +128,7 @@ export default function useTable<T extends GenericRowStructure>(
 
 	const cellIdsArray = useMemo(
 		() => Object.keys(headCells) as unknown as CellId<T>[],
-		[headIdCell]
+		[headCells.id]
 	);
 
 	const updateState = useCallback(
@@ -198,7 +197,7 @@ export default function useTable<T extends GenericRowStructure>(
 
 		if (!isSelectionControlled) {
 			const updatedSelectedRows = rows
-				.map((row) => row.id)
+				.map((row) => row.cells.id.value)
 				.reduce(
 					(acc: Record<string, boolean>, currentRowId: string) => ({
 						...acc,
@@ -217,7 +216,7 @@ export default function useTable<T extends GenericRowStructure>(
 		updateState({ rowsPerPage: updatedRowsPerPage, page: 0 });
 	};
 
-	const handleSortCellClick = (cellId: CellId<T> | "__id") => {
+	const handleSortCellClick = (cellId: CellId<T>) => {
 		if (state.sortByColumnId === cellId) {
 			updateState({
 				sortDirection: state.sortDirection === "asc" ? "desc" : "asc",
@@ -244,9 +243,12 @@ export default function useTable<T extends GenericRowStructure>(
 				return rowsToSort;
 			}
 
-			if (state.sortByColumnId === INTERNAL_ID_CELL_IDENTIFIER) {
+			if (state.sortByColumnId === "id") {
 				return rowsToSort.sort(
-					makeSortRowByIdComparator(state.sortDirection, headIdCell?.comparator)
+					makeSortRowByIdComparator(
+						state.sortDirection,
+						headCells.id.comparator
+					)
 				);
 			}
 
@@ -260,7 +262,7 @@ export default function useTable<T extends GenericRowStructure>(
 				)
 			);
 		},
-		[state.sortByColumnId, state.sortDirection, headCells, headIdCell]
+		[state.sortByColumnId, state.sortDirection, headCells, headCells.id]
 	);
 	const applyPageSplitting = useCallback(
 		(rowsToSplit: Row<T>[]) => {

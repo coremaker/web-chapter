@@ -41,13 +41,13 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
 		onMenuClose?.(row);
 		setAnchorEl(null);
 	};
-	const menuId = `table-row-menu-${row.id}`;
+	const menuId = `table-row-menu-${row.cells.id.value}`;
 	return (
 		<StyledDivContainer className={classes.root ?? ""}>
 			<div>{label}</div>
 			<div>
 				<IconButton
-					data-testid={`ellipsis-button-${row.id}`}
+					data-testid={`ellipsis-button-${row.cells.id.value}`}
 					aria-controls={open ? menuId : undefined}
 					aria-haspopup="true"
 					className="BaseTable__EllipsisCellContent__Button"
@@ -68,8 +68,8 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
 							rowAction.renderComponent()
 						) : (
 							<MenuItem
-								key={`${row.id}-${rowAction.id}`}
-								data-testid={`menu-item-${row.id}-${rowAction.id}`}
+								key={`${row.cells.id.value}-${rowAction.id}`}
+								data-testid={`menu-item-${row.cells.id.value}-${rowAction.id}`}
 								className={rowAction.labelClassName}
 								onClick={() => rowAction.onClick?.(row)}
 							>

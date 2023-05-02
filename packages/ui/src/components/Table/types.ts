@@ -9,7 +9,9 @@ export interface CellRendererArgs<T extends GenericRowStructure, U> {
 	state: TableState<T>;
 }
 
-export type GenericRowStructure = object;
+export interface GenericRowStructure extends Object {
+	id: string;
+}
 
 export type CellId<T extends GenericRowStructure> = Extract<keyof T, string>;
 
@@ -36,13 +38,11 @@ export type HeadRowCells<T extends GenericRowStructure> = {
 
 export interface HeadCell<T extends GenericRowStructure, U>
 	extends Cell<T, string> {
-	// id: CellId<T>;
 	sortable?: boolean;
 	comparator?: CellComparator<T, U>;
 }
 
 export interface Row<T extends GenericRowStructure> {
-	id: string;
 	cells: { [K in CellId<T>]: Cell<T, T[K]> };
 }
 

@@ -28,10 +28,7 @@ import {
 	SearchInputRendererArgs,
 	ValueOf,
 } from "./types";
-import useTable, {
-	HEAD_ROW_IDENTIFIER,
-	INTERNAL_ID_CELL_IDENTIFIER,
-} from "../../hooks/useTable/useTable";
+import useTable, { HEAD_ROW_IDENTIFIER } from "../../hooks/useTable/useTable";
 import { getTablePropsWithDefaults } from "../../hooks/useTable/utils";
 import { SelectedRowIds } from "../../hooks/useTable/reducer";
 
@@ -58,8 +55,8 @@ type TableBodyIDCellProps<T extends GenericRowStructure> = Omit<
 
 export interface BaseTableProps<T extends GenericRowStructure> {
 	showIdCell?: boolean;
-	headIdCell?: HeadCell<T, ValueOf<T>>;
-	rowIdCell?: TableBodyIDCellProps<T>;
+	// headIdCell?: HeadCell<T, ValueOf<T>>;
+	// rowIdCell?: TableBodyIDCellProps<T>;
 	makeSearchableRowContent?: (row: Row<T>) => string;
 	searchInputPlaceholder?: string;
 	selectable?: boolean;
@@ -95,8 +92,8 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 		makeSearchableRowContent,
 		searchInputPlaceholder = "Search",
 		showIdCell,
-		headIdCell,
-		rowIdCell,
+		// headIdCell,
+		// rowIdCell,
 		rowActions,
 		ellipsisIcon,
 		renderTableActions,
@@ -147,7 +144,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 		const cellIndex = cellIdsArray.indexOf(cellId);
 		const isLastCell = cellIndex === cellIdsArray.length - 1;
 		const rowActionsPresent = rowActions.length > 0;
-		const key = makeRowCellId(row.id, cellId);
+		const key = makeRowCellId(row.cells.id.value, cellId);
 		return (
 			<TableCell
 				key={key}
@@ -268,55 +265,57 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 									)}
 								</TableCell>
 							)}
-							{showIdCell && (
-								<TableCell
-									isHeadCell
-									sortable={headIdCell?.sortable}
-									active={sortByColumnId === INTERNAL_ID_CELL_IDENTIFIER}
-									align="left"
-									sortDirection={
-										sortByColumnId === INTERNAL_ID_CELL_IDENTIFIER
-											? sortDirection
-											: "desc"
-									}
-									padding={headIdCell?.disablePadding ? "none" : "normal"}
-									onClick={() =>
-										handleSortCellClick(INTERNAL_ID_CELL_IDENTIFIER)
-									}
-									classes={cellClasses}
-									SortIcon={SortIcon}
-								>
-									{headIdCell
-										? renderHeadCellContent(headIdCell, headRow)
-										: "ID"}
-								</TableCell>
-							)}
-							{cellIdsArray.map((cellId) => {
-								const headCell = headCells[cellId];
-								return (
-									<TableCell
-										key={HEAD_ROW_IDENTIFIER + cellId}
-										isHeadCell
-										align={headCell.numeric ? "right" : "left"}
-										active={sortByColumnId === cellId}
-										sortDirection={
-											cellId === sortByColumnId ? sortDirection : "desc"
-										}
-										SortIcon={SortIcon}
-										onClick={() => {
-											if (!headCell.sortable) {
-												return;
-											}
 
-											handleSortCellClick(cellId);
-										}}
-										padding={headCell.disablePadding ? "none" : "normal"}
-										sortable={headCell.sortable}
-										classes={cellClasses}
-									>
-										{renderHeadCellContent(headCell, headRow)}
-									</TableCell>
-								);
+							{cellIdsArray.map((cellId) => {
+								if (cellId !== "id") {
+									const headCell = headCells[cellId];
+									return (
+										<TableCell
+											key={HEAD_ROW_IDENTIFIER + cellId}
+											isHeadCell
+											align={headCell.numeric ? "right" : "left"}
+											active={sortByColumnId === cellId}
+											sortDirection={
+												cellId === sortByColumnId ? sortDirection : "desc"
+											}
+											SortIcon={SortIcon}
+											onClick={() => {
+												if (!headCell.sortable) {
+													return;
+												}
+
+												handleSortCellClick(cellId);
+											}}
+											padding={headCell.disablePadding ? "none" : "normal"}
+											sortable={headCell.sortable}
+											classes={cellClasses}
+										>
+											{renderHeadCellContent(headCell, headRow)}
+										</TableCell>
+									);
+								}
+								if (showIdCell) {
+									return (
+										<TableCell
+											isHeadCell
+											sortable={headCells.id.sortable}
+											active={sortByColumnId === cellId}
+											align="left"
+											sortDirection={
+												sortByColumnId === cellId ? sortDirection : "desc"
+											}
+											padding={headCells.id.disablePadding ? "none" : "normal"}
+											onClick={() => handleSortCellClick(cellId)}
+											classes={cellClasses}
+											SortIcon={SortIcon}
+										>
+											{headCells.id
+												? renderHeadCellContent(headCells.id, headRow)
+												: "ID"}
+										</TableCell>
+									);
+								}
+								return null;
 							})}
 						</TableRow>
 					</TableHead>
@@ -325,10 +324,12 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 							<TableRow
 								hover
 								tabIndex={-1}
-								key={row.id}
-								data-testid={`table-body-row-${row.id}`}
+								key={row.cells.id.value}
+								data-testid={`table-body-row-${row.cells.id.value}`}
 								className={
-									selectedRowIdsState[row.id] ? "BaseTable__Row--selected" : ""
+									selectedRowIdsState[row.cells.id.value]
+										? "BaseTable__Row--selected"
+										: ""
 								}
 							>
 								{selectable && (
@@ -339,36 +340,48 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 									>
 										{renderCheckbox ? (
 											renderCheckbox({
-												rowId: row.id,
-												checked: !!selectedRowIdsState[row.id],
+												rowId: row.cells.id.value,
+												checked: !!selectedRowIdsState[row.cells.id.value],
 												onChange: (e) =>
-													handleRowSelection(row.id, e.target.checked),
+													handleRowSelection(
+														row.cells.id.value,
+														e.target.checked
+													),
 											})
 										) : (
 											<Checkbox
 												onChange={(e) =>
-													handleRowSelection(row.id, e.target.checked)
+													handleRowSelection(
+														row.cells.id.value,
+														e.target.checked
+													)
 												}
-												checked={!!selectedRowIdsState[row.id]}
+												checked={!!selectedRowIdsState[row.cells.id.value]}
 												inputProps={{
-													"aria-label": `select row ${row.id}`,
+													"aria-label": `select row ${row.cells.id.value}`,
 												}}
 											/>
 										)}
 									</TableCell>
 								)}
-								{showIdCell && (
-									<TableCell
-										classes={cellClasses}
-										data-testid="table-row-cell"
-										padding="none"
-									>
-										{renderCellContent({ ...rowIdCell, value: row.id }, row)}
-									</TableCell>
-								)}
-								{cellIdsArray.map((cellId) =>
-									renderRowCell(row, row.cells[cellId], cellId)
-								)}
+
+								{cellIdsArray.map((cellId) => {
+									if (cellId !== "id") {
+										return renderRowCell(row, row.cells[cellId], cellId);
+									}
+									if (showIdCell) {
+										return (
+											<TableCell
+												classes={cellClasses}
+												data-testid="table-row-cell"
+												padding="none"
+											>
+												{renderCellContent(row.cells.id, row)}
+											</TableCell>
+										);
+									}
+									return null;
+								})}
 							</TableRow>
 						))}
 					</TableBody>
