@@ -90,7 +90,6 @@ export default function useTable<T extends GenericRowStructure>(
 		headCells,
 		makeSearchableRowContent,
 		rows,
-		// headIdCell,
 		paginated,
 		onAllRowsSelectionChange,
 		onRowSelectionChange,
