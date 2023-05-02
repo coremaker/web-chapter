@@ -6,64 +6,104 @@ import {
   useReducer,
 } from "react";
 import { BaseTableProps } from "../../components/Table/BaseTable";
-import { Cell, CellComparator, Row } from "../../components/Table/types";
+import {
+	Cell,
+	CellComparator,
+	CellId,
+	GenericRowStructure,
+	HeadCell,
+	HeadRow,
+	Row,
+	ValueOf,
+} from "../../components/Table/types";
 import { TableState, reducer } from "./reducer";
 import { getTablePropsWithDefaults } from "./utils";
 import { SortDirection } from "@mui/material";
 
-const compareAlphabetically = (firstCell: string, secondCell: string) =>
-  firstCell.localeCompare(secondCell);
+export const HEAD_ROW_IDENTIFIER = "__head";
+
+const compareAlphabetically = (
+	firstCell: Cell<any, string>,
+	secondCell: Cell<any, string>
+) => firstCell.value.localeCompare(secondCell.value);
 
 const makeSortRowByIdComparator =
-  (sortDirection: SortDirection, customComparator?: CellComparator) =>
-  (firstRow: Row, secondRow: Row) => {
-    const comparator = customComparator ?? compareAlphabetically;
+	<T extends GenericRowStructure>(
+		sortDirection: SortDirection,
+		customComparator?: CellComparator<T, T[CellId<T>]>
+	) =>
+	(firstRow: Row<T>, secondRow: Row<T>) => {
+		const comparator = customComparator ?? compareAlphabetically;
 
-    if (sortDirection === "asc") {
-      return comparator(firstRow.id, secondRow.id);
-    }
-    return comparator(secondRow.id, firstRow.id);
-  };
+		return compare(
+			comparator,
+			{ value: firstRow.cells.id.value },
+			{ value: secondRow.cells.id.value },
+			sortDirection
+		);
+	};
 
+const compare = (
+	comparator: CellComparator<any, any>,
+	firstCell: Cell<any, any>,
+	secondCell: Cell<any, any>,
+	sortDirection: SortDirection
+) => {
+	if (sortDirection === "asc") {
+		return comparator(firstCell, secondCell);
+	}
+	return comparator(secondCell, firstCell);
+};
 const makeSortRowByCellComparator =
-  (
-    sortDirection: SortDirection,
-    sortByCellIndex: number,
-    customComparator?: CellComparator
-  ) =>
-  (firstRow: Row, secondRow: Row) => {
-    const firstCell = firstRow.cells[sortByCellIndex];
-    const secondCell = secondRow.cells[sortByCellIndex];
+	<T extends GenericRowStructure>(
+		sortDirection: SortDirection,
+		sortByCellId: CellId<T>,
+		customComparator?: CellComparator<T, T[CellId<T>]>
+	) =>
+	(firstRow: Row<T>, secondRow: Row<T>) => {
+		const firstCell = firstRow.cells[sortByCellId];
+		const secondCell = secondRow.cells[sortByCellId];
 
-    const comparator = customComparator ?? compareAlphabetically;
+		if (customComparator) {
+			return compare(customComparator, firstCell, secondCell, sortDirection);
+		}
 
-    if (sortDirection === "asc") {
-      return comparator(firstCell.label, secondCell.label);
-    }
-    return comparator(secondCell.label, firstCell.label);
-  };
+		if (typeof firstCell.value === "string") {
+			return compare(
+				compareAlphabetically,
+				firstCell,
+				secondCell,
+				sortDirection
+			);
+		}
 
-export default function useTable(props: BaseTableProps) {
-  const {
-    defaultRowsPerPage,
-    headCells,
-    makeSearchableRowContent,
-    rows,
-    headIdCell,
-    paginated,
-    onAllRowsSelectionChange,
-    onRowSelectionChange,
-    selectedRowIds,
-  } = getTablePropsWithDefaults(props);
+		throw Error(
+			"Cannot sort non-string cell values without a custom comparator"
+		);
+	};
 
-  const [state, dispatch] = useReducer(reducer, {
-    selectedRowIds: {},
-    page: 0,
-    rowsPerPage: defaultRowsPerPage,
-    sortByColumnId: null,
-    searchValue: "",
-    sortDirection: "asc",
-  });
+export default function useTable<T extends GenericRowStructure>(
+	props: BaseTableProps<T>
+) {
+	const {
+		defaultRowsPerPage,
+		headCells,
+		makeSearchableRowContent,
+		rows,
+		paginated,
+		onAllRowsSelectionChange,
+		onRowSelectionChange,
+		selectedRowIds,
+	} = getTablePropsWithDefaults<T>(props);
+
+	const [state, dispatch] = useReducer(reducer<T>, {
+		selectedRowIds: {},
+		page: 0,
+		rowsPerPage: defaultRowsPerPage,
+		sortByColumnId: null,
+		searchValue: "",
+		sortDirection: "asc",
+	});
 
   const isSelectionControlled = !!selectedRowIds;
 
@@ -77,19 +117,62 @@ export default function useTable(props: BaseTableProps) {
     [selectedRowIdsState]
   );
 
-  const updateState = useCallback(
-    (updates: Partial<TableState>) => {
-      dispatch({ type: "update", payload: updates });
-    },
-    [dispatch]
-  );
+	const headRow: HeadRow<T> = useMemo(
+		() => ({
+			id: HEAD_ROW_IDENTIFIER,
+			cells: headCells,
+		}),
+		[headCells]
+	);
 
-  const makeRowCellId = (rowId: string, rowCellIndex: number) => {
-    return `${rowId}-${headCells[rowCellIndex].id}`;
-  };
+	const cellIdsArray = useMemo(
+		() => Object.keys(headCells) as unknown as CellId<T>[],
+		[headCells.id]
+	);
 
-  const renderCellContent = (cell: Cell) =>
-    cell.renderComponent ? cell.renderComponent(cell.label) : cell.label;
+	const updateState = useCallback(
+		(updates: Partial<TableState<T>>) => {
+			dispatch({ type: "update", payload: updates });
+		},
+		[dispatch]
+	);
+
+	const makeRowCellId = (rowId: string, cellId: CellId<T>) => {
+		return `${rowId}-${String(cellId)}`;
+	};
+
+	const renderCellContent = (cell: Cell<T, any>, row: Row<T>) => {
+		if (cell.renderComponent) {
+			return cell.renderComponent({
+				...cell,
+				currentRow: row,
+				state,
+			});
+		}
+
+		if (typeof cell.value === "string") {
+			return cell.value;
+		}
+
+		throw new Error(
+			"Cannot render non-string cell content without a custom renderer"
+		);
+	};
+
+	const renderHeadCellContent = (
+		cell: Omit<HeadCell<T, ValueOf<T>>, "id">,
+		row: HeadRow<T>
+	) => {
+		if (cell.renderComponent) {
+			return cell.renderComponent({
+				...cell,
+				currentRow: row,
+				state,
+			});
+		}
+
+		return cell.value;
+	};
 
   const handleChangePage = (
     _e: MouseEvent<HTMLButtonElement> | null,
@@ -111,18 +194,18 @@ export default function useTable(props: BaseTableProps) {
   const handleAllRowsSelection = () => {
     const shouldSelectAll = selectedRowsCount === 0 ? true : false;
 
-    if (!isSelectionControlled) {
-      const updatedSelectedRows = rows
-        .map((row) => row.id)
-        .reduce(
-          (acc: Record<string, boolean>, currentRowId: string) => ({
-            ...acc,
-            [currentRowId]: shouldSelectAll,
-          }),
-          {}
-        );
-      updateState({ selectedRowIds: updatedSelectedRows });
-    }
+		if (!isSelectionControlled) {
+			const updatedSelectedRows = rows
+				.map((row) => row.cells.id.value)
+				.reduce(
+					(acc: Record<string, boolean>, currentRowId: string) => ({
+						...acc,
+						[currentRowId]: shouldSelectAll,
+					}),
+					{}
+				);
+			updateState({ selectedRowIds: updatedSelectedRows });
+		}
 
     onAllRowsSelectionChange?.(shouldSelectAll);
   };
@@ -132,15 +215,15 @@ export default function useTable(props: BaseTableProps) {
     updateState({ rowsPerPage: updatedRowsPerPage, page: 0 });
   };
 
-  const handleSortCellClick = (cellId: string) => {
-    if (state.sortByColumnId === cellId) {
-      updateState({
-        sortDirection: state.sortDirection === "asc" ? "desc" : "asc",
-      });
-    } else {
-      updateState({ sortByColumnId: cellId, sortDirection: "asc" });
-    }
-  };
+	const handleSortCellClick = (cellId: CellId<T>) => {
+		if (state.sortByColumnId === cellId) {
+			updateState({
+				sortDirection: state.sortDirection === "asc" ? "desc" : "asc",
+			});
+		} else {
+			updateState({ sortByColumnId: cellId, sortDirection: "asc" });
+		}
+	};
 
   const applyFiltering = useCallback(() => {
     if (!makeSearchableRowContent) {
@@ -153,50 +236,46 @@ export default function useTable(props: BaseTableProps) {
     });
   }, [makeSearchableRowContent, rows, state.searchValue]);
 
-  const applySorting = useCallback(
-    (rowsToSort: Row[]) => {
-      if (!state.sortByColumnId) {
-        return rowsToSort;
-      }
+	const applySorting = useCallback(
+		(rowsToSort: Row<T>[]) => {
+			if (!state.sortByColumnId) {
+				return rowsToSort;
+			}
 
-      if (state.sortByColumnId === "__id") {
-        return rowsToSort.sort(
-          makeSortRowByIdComparator(state.sortDirection, headIdCell?.comparator)
-        );
-      }
+			if (state.sortByColumnId === "id") {
+				return rowsToSort.sort(
+					makeSortRowByIdComparator(
+						state.sortDirection,
+						headCells.id.comparator
+					)
+				);
+			}
 
-      const sortByCellIndex = headCells.findIndex(
-        (cell) => cell.id === state.sortByColumnId
-      );
-      const customComparator = headCells[sortByCellIndex].comparator;
+			const customComparator = headCells[state.sortByColumnId].comparator;
 
-      if (!sortByCellIndex) {
-        return rowsToSort;
-      }
-
-      return rowsToSort.sort(
-        makeSortRowByCellComparator(
-          state.sortDirection,
-          sortByCellIndex,
-          customComparator
-        )
-      );
-    },
-    [state.sortByColumnId, state.sortDirection, headCells, headIdCell]
-  );
-  const applyPageSplitting = useCallback(
-    (rowsToSplit: Row[]) => {
-      if (!paginated) {
-        return rowsToSplit;
-      }
-      const currentPageRows = rowsToSplit.slice(
-        state.page * state.rowsPerPage,
-        (state.page + 1) * state.rowsPerPage
-      );
-      return currentPageRows;
-    },
-    [state.rowsPerPage, state.page]
-  );
+			return rowsToSort.sort(
+				makeSortRowByCellComparator(
+					state.sortDirection,
+					state.sortByColumnId,
+					customComparator
+				)
+			);
+		},
+		[state.sortByColumnId, state.sortDirection, headCells, headCells.id]
+	);
+	const applyPageSplitting = useCallback(
+		(rowsToSplit: Row<T>[]) => {
+			if (!paginated) {
+				return rowsToSplit;
+			}
+			const currentPageRows = rowsToSplit.slice(
+				state.page * state.rowsPerPage,
+				(state.page + 1) * state.rowsPerPage
+			);
+			return currentPageRows;
+		},
+		[state.rowsPerPage, state.page]
+	);
 
   const filteredRows = useMemo(() => {
     return applyFiltering();
@@ -207,19 +286,22 @@ export default function useTable(props: BaseTableProps) {
     return applySorting(slicedRows);
   }, [filteredRows, applySorting, applyPageSplitting]);
 
-  return {
-    currentPageRows,
-    filteredRows,
-    handleSortCellClick,
-    handleRowsPerPageChange,
-    handleChangePage,
-    handleChangeSearchValue,
-    handleRowSelection,
-    handleAllRowsSelection,
-    renderCellContent,
-    makeRowCellId,
-    state,
-    selectedRowsCount,
-    updateState,
-  };
+	return {
+		currentPageRows,
+		filteredRows,
+		handleSortCellClick,
+		handleRowsPerPageChange,
+		handleChangePage,
+		handleChangeSearchValue,
+		handleRowSelection,
+		handleAllRowsSelection,
+		renderCellContent,
+		renderHeadCellContent,
+		makeRowCellId,
+		state,
+		selectedRowsCount,
+		updateState,
+		headRow,
+		cellIdsArray,
+	};
 }

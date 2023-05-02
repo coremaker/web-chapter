@@ -1,46 +1,74 @@
 import { ChangeEvent, MouseEvent, ReactNode } from "react";
+import { TableState } from "src/hooks/useTable/reducer";
 
-export interface Cell {
-  numeric?: boolean;
-  disablePadding?: boolean;
-  label: string;
-  renderComponent?: (value: string) => ReactNode;
-}
-export type CellComparator = (firstCell: string, secondCell: string) => number;
-
-export interface HeadCell extends Cell {
-  id: string;
-  sortable?: boolean;
-  comparator?: CellComparator;
+export interface CellRendererArgs<T extends GenericRowStructure, U> {
+	value: U;
+	numeric?: boolean;
+	disablePadding?: boolean;
+	currentRow: Row<T> | HeadRow<T>;
+	state: TableState<T>;
 }
 
-export interface Row {
-  id: string;
-  cells: Cell[];
+export interface GenericRowStructure extends Object {
+	id: string;
 }
 
-export interface RowAction {
-  id: string;
-  label?: string;
-  renderComponent?: () => ReactNode;
-  labelClassName?: string;
-  onClick?: (row: Row) => void;
+export type CellId<T extends GenericRowStructure> = Extract<keyof T, string>;
+
+export type ValueOf<T extends GenericRowStructure> = T[CellId<T>];
+
+export interface Cell<T extends GenericRowStructure, U> {
+	numeric?: boolean;
+	disablePadding?: boolean;
+	value: U;
+	renderComponent?: (args: CellRendererArgs<T, U>) => ReactNode;
+}
+export type CellComparator<T extends GenericRowStructure, U> = (
+	firstCell: Cell<T, U>,
+	secondCell: Cell<T, U>
+) => number;
+
+export interface HeadRow<T extends GenericRowStructure> {
+	id: string;
+	cells: HeadRowCells<T>;
+}
+export type HeadRowCells<T extends GenericRowStructure> = {
+	[K in CellId<T>]: HeadCell<T, T[K]>;
+};
+
+export interface HeadCell<T extends GenericRowStructure, U>
+	extends Cell<T, string> {
+	sortable?: boolean;
+	comparator?: CellComparator<T, U>;
+}
+
+export interface Row<T extends GenericRowStructure> {
+	cells: { [K in CellId<T>]: Cell<T, T[K]> };
+}
+
+export interface RowAction<T extends GenericRowStructure> {
+	id: string;
+	label?: string;
+	renderComponent?: () => ReactNode;
+	labelClassName?: string;
+	onClick?: (row: Row<T>) => void;
 }
 
 export type RowsPerPageChangeHandler = (
   event: ChangeEvent<HTMLInputElement>
 ) => void;
+
 export type PageChangeHandler = (
   _e: MouseEvent<HTMLButtonElement> | null,
   newPage: number
 ) => void;
 
-export interface PaginationRendererArgs {
-  page: number;
-  defaultRowsPerPage: number;
-  rows: Row[];
-  handleChangePage: PageChangeHandler;
-  handleRowsPerPageChange: RowsPerPageChangeHandler;
+export interface PaginationRendererArgs<T extends GenericRowStructure> {
+	page: number;
+	defaultRowsPerPage: number;
+	rows: Row<T>[];
+	handleChangePage: PageChangeHandler;
+	handleRowsPerPageChange: RowsPerPageChangeHandler;
 }
 
 export interface CheckboxRendererArgs {

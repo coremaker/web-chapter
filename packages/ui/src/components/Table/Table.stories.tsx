@@ -1,6 +1,6 @@
 import { Meta, StoryFn } from "@storybook/react";
 import Table from "./BaseTable";
-import { headCells, rows } from "./mock-data";
+import { RowStructure, headCells, rows } from "./mock-data";
 import { SelectedRowIds } from "../../hooks/useTable/reducer";
 import Styles from "./styles.module.css";
 import { Chip } from "@mui/material";
@@ -11,12 +11,15 @@ export default {
   component: Table,
 } as Meta<typeof Table>;
 
-const Template: StoryFn<typeof Table> = (args) => <Table {...args} />;
+const Template: StoryFn<typeof Table<RowStructure>> = (args) => (
+	<Table<RowStructure> {...args} />
+);
 
 export const Base = Template.bind({});
 Base.args = {
-  rows: rows,
-  headCells: headCells,
+	showIdCell: true,
+	rows: rows,
+	headCells: headCells,
 };
 
 export const Pagination = Template.bind({});
@@ -29,13 +32,13 @@ Pagination.args = {
 
 export const Searchable = Template.bind({});
 Searchable.args = {
-  rows: rows,
-  headCells: headCells,
-  defaultRowsPerPage: 5,
-  paginated: true,
-  makeSearchableRowContent: (row) => {
-    return `${row.cells[0].label} ${row.cells[1].label}`;
-  },
+	rows: rows,
+	headCells: headCells,
+	defaultRowsPerPage: 5,
+	paginated: true,
+	makeSearchableRowContent: (row) => {
+		return `${row.cells.fullName.value} ${row.cells.username.value}`;
+	},
 };
 
 export const Selectable = Template.bind({});
@@ -55,11 +58,11 @@ Selectable.args = {
       (selected) => selected
     ).length;
 
-    return <Chip color="primary" label={`Total selected: ${selectedCount}`} />;
-  },
-  makeSearchableRowContent: (row) => {
-    return `${row.cells[0].label} ${row.cells[1].label}`;
-  },
+		return <Chip color="primary" label={`Total selected: ${selectedCount}`} />;
+	},
+	makeSearchableRowContent: (row) => {
+		return `${row.cells.fullName.value} ${row.cells.username.value}`;
+	},
 };
 
 export const SelectableWithCustomHandlers = Template.bind({});
@@ -84,11 +87,11 @@ SelectableWithCustomHandlers.args = {
       (selected) => selected
     ).length;
 
-    return <Chip color="primary" label={`Total selected: ${selectedCount}`} />;
-  },
-  makeSearchableRowContent: (row) => {
-    return `${row.cells[0].label} ${row.cells[1].label}`;
-  },
+		return <Chip color="primary" label={`Total selected: ${selectedCount}`} />;
+	},
+	makeSearchableRowContent: (row) => {
+		return `${row.cells.fullName.value} ${row.cells.username.value}`;
+	},
 };
 
 export const RowActions = Template.bind({});

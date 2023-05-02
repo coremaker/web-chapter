@@ -90,7 +90,6 @@ declare module "@mui/material/Button" {
   }
 }
 
-// Update the Typography's variant prop options
 declare module "@mui/material/Typography" {
   interface TypographyPropsVariantOverrides {
     displayLarge: true;
