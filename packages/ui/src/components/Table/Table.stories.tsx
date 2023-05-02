@@ -17,6 +17,7 @@ const Template: StoryFn<typeof Table<RowStructure>> = (args) => (
 
 export const Base = Template.bind({});
 Base.args = {
+	showIdCell: true,
 	rows: rows,
 	headCells: headCells,
 };

@@ -6,6 +6,7 @@ const names = ["John Doe", "Jane Doe", "Jason Statham"];
 const emails = ["johndoe@mail.io", "jasonstatham@mail.io", "janedoe@mail.io"];
 
 export interface RowStructure {
+	id: string;
 	username: string;
 	fullName: string;
 	role: string;
@@ -18,6 +19,10 @@ export interface RowStructure {
 }
 
 export const headCells: HeadRowCells<RowStructure> = {
+	id: {
+		value: "Id",
+		sortable: true,
+	},
 	username: {
 		numeric: false,
 		value: "Username",
@@ -47,8 +52,8 @@ export const headCells: HeadRowCells<RowStructure> = {
 };
 
 export const rows: Row<RowStructure>[] = range(40).map((i) => ({
-	id: `#685065645${i % 2 === 0 ? i : 12 - i}`,
 	cells: {
+		id: { value: `#685065645${i % 2 === 0 ? i : 12 - i}` },
 		username: {
 			value: `${i % 2 === 0 ? i : 12 - i}${
 				emails[Math.ceil(Math.random() * 2)] + i

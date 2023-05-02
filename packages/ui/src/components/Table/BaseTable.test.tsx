@@ -1,14 +1,15 @@
-import { render, waitFor, within } from "@testing-library/react";
+import { render, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import Table from "./BaseTable";
 import { headCells, rows } from "./mock-data";
-import { GenericRowStructure } from "./types";
 
 describe("<Table />", () => {
-	it.each(Object.values(headCells))("renders the header cell: %s", (cell) => {
-		const { getByText } = render(<Table headCells={headCells} rows={[]} />);
+	it.each(Object.values(headCells))("renders the head cell: %s", (cell) => {
+		const { getByText } = render(
+			<Table showIdCell headCells={headCells} rows={[]} />
+		);
 		expect(getByText(cell.value)).toBeInTheDocument();
 	});
 
@@ -21,9 +22,9 @@ describe("<Table />", () => {
 
 	it("renders each cell of the row", () => {
 		const { getByTestId } = render(
-			<Table headCells={headCells} rows={rows.slice(0, 1)} />
+			<Table showIdCell headCells={headCells} rows={rows.slice(0, 1)} />
 		);
-		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
+		const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
 
 		const { address, ...cells } = rows[0].cells;
 
@@ -38,24 +39,11 @@ describe("<Table />", () => {
 		).toBeInTheDocument();
 	});
 
-	it('renders column with default text "Id" and the row id', () => {
-		const { getByText, getByTestId } = render(
-			<Table showIdCell headCells={headCells} rows={rows.slice(0, 1)} />
-		);
-
-		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
-		expect(within(renderedRow).getByText(rows[0].id)).toBeInTheDocument();
-		expect(getByText("ID")).toBeInTheDocument();
-	});
-
 	it("renders custom label text for the id column if passed as prop", () => {
 		const { getByTestId } = render(
 			<Table
 				showIdCell
-				headIdCell={{
-					value: "Test custom id label",
-				}}
-				headCells={headCells}
+				headCells={{ ...headCells, id: { value: "Test custom id label" } }}
 				rows={rows}
 			/>
 		);
@@ -74,10 +62,10 @@ describe("<Table />", () => {
 			/>
 		);
 
-		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
+		const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
 		const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
 		const ellipsisButton = within(cells[cells.length - 1]).getByTestId(
-			`ellipsis-button-${rows[0].id}`
+			`ellipsis-button-${rows[0].cells.id.value}`
 		);
 
 		expect(ellipsisButton).toBeInTheDocument();
@@ -95,10 +83,10 @@ describe("<Table />", () => {
 			/>
 		);
 
-		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
+		const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
 		const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
 		const ellipsisButton = within(cells[cells.length - 1]).getByTestId(
-			`ellipsis-button-${rows[0].id}`
+			`ellipsis-button-${rows[0].cells.id.value}`
 		);
 
 		await userEvent.click(ellipsisButton);
@@ -119,10 +107,10 @@ describe("<Table />", () => {
 			/>
 		);
 
-		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
+		const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
 		const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
 		const ellipsisButton = within(cells[cells.length - 1]).getByTestId(
-			`ellipsis-button-${rows[0].id}`
+			`ellipsis-button-${rows[0].cells.id.value}`
 		);
 
 		await userEvent.click(ellipsisButton);
@@ -150,10 +138,10 @@ describe("<Table />", () => {
 			/>
 		);
 
-		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
+		const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
 		const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
 		const ellipsisButton = within(cells[cells.length - 1]).getByTestId(
-			`ellipsis-button-${rows[0].id}`
+			`ellipsis-button-${rows[0].cells.id.value}`
 		);
 
 		await userEvent.click(ellipsisButton);
@@ -172,14 +160,14 @@ describe("<Table />", () => {
 			/>
 		);
 
-		const renderedRow = getByTestId(`table-body-row-${rows[0].id}`);
+		const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
 		const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
 		const ellipsisButton = within(cells[cells.length - 1]).getByTestId(
-			`ellipsis-button-${rows[0].id}`
+			`ellipsis-button-${rows[0].cells.id.value}`
 		);
 
 		await userEvent.click(ellipsisButton);
-		const menuItem = getByTestId(`menu-item-${rows[0].id}-1`);
+		const menuItem = getByTestId(`menu-item-${rows[0].cells.id.value}-1`);
 		await userEvent.click(menuItem);
 
 		expect(mockRowAction).toHaveBeenCalledTimes(1);
@@ -249,8 +237,8 @@ describe("<Table />", () => {
 			<Table
 				selectable
 				selectedRowIds={{
-					[rows[0].id]: true,
-					[rows[2].id]: true,
+					[rows[0].cells.id.value]: true,
+					[rows[2].cells.id.value]: true,
 				}}
 				headCells={headCells}
 				rows={rows}
@@ -273,8 +261,8 @@ describe("<Table />", () => {
 			<Table
 				selectable
 				selectedRowIds={{
-					[rows[0].id]: true,
-					[rows[2].id]: true,
+					[rows[0].cells.id.value]: true,
+					[rows[2].cells.id.value]: true,
 				}}
 				headCells={headCells}
 				rows={rows}
@@ -285,9 +273,9 @@ describe("<Table />", () => {
 			<Table
 				selectable
 				selectedRowIds={{
-					[rows[5].id]: true,
-					[rows[2].id]: false,
-					[rows[0].id]: false,
+					[rows[5].cells.id.value]: true,
+					[rows[2].cells.id.value]: false,
+					[rows[0].cells.id.value]: false,
 				}}
 				headCells={headCells}
 				rows={rows}
@@ -540,7 +528,9 @@ describe("<Table />", () => {
 		const renderedRows = getAllByTestId(/table-body-row/);
 
 		renderedRows.forEach((row, index) => {
-			expect(within(row).getByText(rows[index].id)).toBeInTheDocument();
+			expect(
+				within(row).getByText(rows[index].cells.id.value)
+			).toBeInTheDocument();
 		});
 	});
 
@@ -549,23 +539,24 @@ describe("<Table />", () => {
 			<Table
 				selectable
 				showIdCell
-				headCells={headCells}
+				headCells={{ ...headCells, id: { value: "User ID" } }}
 				rows={rows}
-				headIdCell={{ value: "User ID" }}
 			/>
 		);
 
 		const userIdHeadCell = getByText(/User ID/);
 
 		const sortedRows = [...rows].sort((row1, row2) => {
-			return row1.id.localeCompare(row2.id);
+			return row1.cells.id.value.localeCompare(row2.cells.id.value);
 		});
 
 		await userEvent.click(userIdHeadCell);
 
 		const renderedRows = getAllByTestId(/table-body-row/);
 		renderedRows.forEach((row, index) => {
-			expect(within(row).getByText(sortedRows[index].id)).toBeInTheDocument();
+			expect(
+				within(row).getByText(sortedRows[index].cells.id.value)
+			).toBeInTheDocument();
 		});
 	});
 
@@ -618,16 +609,15 @@ describe("<Table />", () => {
 			<Table
 				selectable
 				showIdCell
-				headCells={headCells}
+				headCells={{ ...headCells, id: { value: "User ID" } }}
 				rows={rows}
-				headIdCell={{ value: "User ID" }}
 			/>
 		);
 
 		const userIdHeadCell = getByText(/User ID/);
 
 		const descendingSorted = [...rows].sort((row1, row2) => {
-			return row2.id.localeCompare(row1.id);
+			return row2.cells.id.value.localeCompare(row1.cells.id.value);
 		});
 
 		await userEvent.click(userIdHeadCell);
@@ -636,7 +626,7 @@ describe("<Table />", () => {
 		const renderedRows = getAllByTestId(/table-body-row/);
 		renderedRows.forEach((row, index) => {
 			expect(
-				within(row).getByText(descendingSorted[index].id)
+				within(row).getByText(descendingSorted[index].cells.id.value)
 			).toBeInTheDocument();
 		});
 	});
@@ -646,9 +636,8 @@ describe("<Table />", () => {
 			<Table
 				selectable
 				showIdCell
-				headCells={headCells}
+				headCells={{ ...headCells, id: { value: "User ID" } }}
 				rows={rows}
-				headIdCell={{ value: "User ID" }}
 			/>
 		);
 

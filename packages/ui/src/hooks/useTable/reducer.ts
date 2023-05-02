@@ -10,7 +10,7 @@ export interface TableState<T extends GenericRowStructure> {
 	page: number;
 	rowsPerPage: number;
 	searchValue: string;
-	sortByColumnId: CellId<T> | "__id" | null;
+	sortByColumnId: CellId<T> | null;
 	sortDirection: SortDirection;
 }
 
