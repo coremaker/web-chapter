@@ -12,7 +12,7 @@ import {
     ValueOf,
 } from '../../components/Table/types';
 import { TableState, reducer } from './reducer';
-import { HEAD_ROW_IDENTIFIER, getTablePropsWithDefaults } from './utils';
+import { HEAD_ROW_IDENTIFIER } from './utils';
 
 const compareAlphabetically = (firstCell: Cell<any, string>, secondCell: Cell<any, string>) =>
     firstCell.value.localeCompare(secondCell.value);
@@ -63,18 +63,16 @@ const makeSortRowByCellComparator =
         throw Error('Cannot sort non-string cell values without a custom comparator');
     };
 
-export default function useTable<T extends GenericRowStructure>(props: BaseTableProps<T>) {
-    const {
-        defaultRowsPerPage,
-        headCells,
-        makeSearchableRowContent,
-        rows,
-        paginated,
-        onAllRowsSelectionChange,
-        onRowSelectionChange,
-        selectedRowIds,
-    } = getTablePropsWithDefaults<T>(props);
-
+export default function useTable<T extends GenericRowStructure>({
+    defaultRowsPerPage = 10,
+    headCells,
+    makeSearchableRowContent,
+    rows,
+    paginated,
+    onAllRowsSelectionChange,
+    onRowSelectionChange,
+    selectedRowIds,
+}: BaseTableProps<T>) {
     const [state, dispatch] = useReducer(reducer<T>, {
         selectedRowIds: {},
         page: 0,

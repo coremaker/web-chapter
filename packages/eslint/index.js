@@ -11,7 +11,6 @@ module.exports = {
         'plugin:react/recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:prettier/recommended',
-        // 'plugin:import/recommended',
         'plugin:import/typescript',
         'plugin:storybook/recommended',
         'plugin:jsx-a11y/recommended',
@@ -22,7 +21,6 @@ module.exports = {
     plugins: ['react', 'prettier', '@typescript-eslint'],
     rules: {
         'react/jsx-props-no-spreading': 0,
-        // "@typescript-eslint/no-empty-function": 0,
         'react/function-component-definition': [
             2,
             {
@@ -53,7 +51,6 @@ module.exports = {
         'react/react-in-jsx-scope': 0,
         'react/require-default-props': 0,
         'import/extensions': 0,
-        // indent: ["error", "tab", { SwitchCase: 1, VariableDeclarator: 1 }],
         'jsx-a11y/label-has-associated-control': [
             2,
             {

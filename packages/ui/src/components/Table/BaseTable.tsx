@@ -25,7 +25,7 @@ import {
     SearchInputRendererArgs,
 } from './types';
 import useTable from '../../hooks/useTable/useTable';
-import { HEAD_ROW_IDENTIFIER, getTablePropsWithDefaults } from '../../hooks/useTable/utils';
+import { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/utils';
 import { SelectedRowIds } from '../../hooks/useTable/reducer';
 
 interface BaseTableFooterClasses {
@@ -73,7 +73,11 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     classes?: Partial<BaseTableClasses>;
 }
 
-const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
+const BaseTable = <T extends GenericRowStructure>({
+    onRowSelectionChange,
+    onAllRowsSelectionChange,
+    ...props
+}: BaseTableProps<T>) => {
     const {
         headCells,
         rows,
@@ -81,19 +85,20 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
         makeSearchableRowContent,
         searchInputPlaceholder = 'Search',
         showIdCell,
-        rowActions,
+        rowActions = [],
         ellipsisIcon,
         renderTableActions,
         renderTablePagination,
         renderSearchInput,
         renderCheckbox,
-        defaultRowsPerPage,
+        defaultRowsPerPage = 10,
         paginated,
         SortIcon,
-        classes,
+        classes = {},
         onRowMenuOpen,
         onRowMenuClose,
-    } = getTablePropsWithDefaults(props);
+        selectedRowIds,
+    } = props;
 
     const {
         renderCellContent,
@@ -111,13 +116,13 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
         selectedRowsCount,
         headRow,
         cellIdsArray,
-    } = useTable<T>(props);
+    } = useTable<T>({ ...props, onAllRowsSelectionChange, onRowSelectionChange });
 
     const { searchValue, sortByColumnId, sortDirection, page } = state;
 
     const { cell: cellClasses } = classes;
 
-    const selectedRowIdsState = props.selectedRowIds ? props.selectedRowIds : state.selectedRowIds;
+    const selectedRowIdsState = selectedRowIds || state.selectedRowIds;
 
     const renderRowCell = (row: Row<T>, cell: Cell<T, T[CellId<T>]>, cellId: CellId<T>, key: string) => {
         const cellContent = renderCellContent(cell, row);
