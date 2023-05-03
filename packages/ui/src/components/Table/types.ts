@@ -55,7 +55,10 @@ export interface RowAction<T extends GenericRowStructure> {
 	label?: string;
 	renderComponent?: (args: RowActionRendererArgs<T>) => ReactNode;
 	labelClassName?: string;
-	onClick?: (row: Row<T>) => void;
+	onClick?: (
+		row: Row<T>,
+		e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>
+	) => void;
 }
 
 export type RowsPerPageChangeHandler = (
