@@ -63,20 +63,22 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
 					onClose={handleClose}
 					anchorEl={anchorEl}
 				>
-					{rowActions.map((rowAction) =>
-						rowAction.renderComponent ? (
-							rowAction.renderComponent()
-						) : (
+					{rowActions.map((rowAction) => {
+						const key = `${row.cells.id.value}-${rowAction.id}`;
+						if (rowAction.renderComponent) {
+							return rowAction.renderComponent({ key, row });
+						}
+						return (
 							<MenuItem
-								key={`${row.cells.id.value}-${rowAction.id}`}
+								key={key}
 								data-testid={`menu-item-${row.cells.id.value}-${rowAction.id}`}
 								className={rowAction.labelClassName}
-								onClick={() => rowAction.onClick?.(row)}
+								onClick={(e) => rowAction.onClick?.(row, e)}
 							>
 								{rowAction.label}
 							</MenuItem>
-						)
-					)}
+						);
+					})}
 				</Menu>
 			</div>
 		</StyledDivContainer>
