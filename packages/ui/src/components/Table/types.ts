@@ -46,10 +46,14 @@ export interface Row<T extends GenericRowStructure> {
 	cells: { [K in CellId<T>]: Cell<T, T[K]> };
 }
 
+export interface RowActionRendererArgs<T extends GenericRowStructure> {
+	row: Row<T>;
+	key: string;
+}
 export interface RowAction<T extends GenericRowStructure> {
 	id: string;
 	label?: string;
-	renderComponent?: () => ReactNode;
+	renderComponent?: (args: RowActionRendererArgs<T>) => ReactNode;
 	labelClassName?: string;
 	onClick?: (row: Row<T>) => void;
 }
