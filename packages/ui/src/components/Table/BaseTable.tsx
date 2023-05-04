@@ -293,6 +293,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 								if (showIdCell) {
 									return (
 										<TableCell
+											key={cellId}
 											isHeadCell
 											sortable={headCells.id.sortable}
 											active={sortByColumnId === cellId}
@@ -330,6 +331,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 							>
 								{selectable && (
 									<TableCell
+										key={row.cells.id.value}
 										classes={cellClasses}
 										data-testid="table-row-cell"
 										padding="checkbox"
@@ -368,6 +370,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 									if (showIdCell) {
 										return (
 											<TableCell
+												key={row.cells.id.value}
 												classes={cellClasses}
 												data-testid="table-row-cell"
 												padding="none"
