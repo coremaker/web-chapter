@@ -116,7 +116,7 @@ export const RowActionsCustomIcon = Template.bind({});
 RowActionsCustomIcon.args = {
 	rows: rows,
 	headCells: headCells,
-	ellipsisIcon: <AppleIcon fontSize="small" />,
+	ellipsisIcon: <AppleIcon width={100} height={100} />,
 	rowActions: [
 		{
 			id: "1",
