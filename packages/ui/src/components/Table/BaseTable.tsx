@@ -268,6 +268,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 									return (
 										<TableCell
 											key={HEAD_ROW_IDENTIFIER + cellId}
+											cellId={cellId}
 											isHeadCell
 											align={headCell.numeric ? "right" : "left"}
 											active={sortByColumnId === cellId}

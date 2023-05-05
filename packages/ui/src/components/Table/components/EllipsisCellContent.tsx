@@ -48,6 +48,7 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
 			<div>
 				<IconButton
 					data-testid={`ellipsis-button-${row.cells.id.value}`}
+					aria-label="open table row menu"
 					aria-controls={open ? menuId : undefined}
 					aria-haspopup="true"
 					className="BaseTable__EllipsisCellContent__Button"
