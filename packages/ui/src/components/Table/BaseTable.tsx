@@ -296,6 +296,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 										<TableCell
 											key={cellId}
 											isHeadCell
+											cellId={cellId}
 											sortable={headCells.id.sortable}
 											active={sortByColumnId === cellId}
 											align="left"
