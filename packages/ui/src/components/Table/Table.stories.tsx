@@ -1,6 +1,6 @@
 import { Meta, StoryFn } from "@storybook/react";
 import Table from "./BaseTable";
-import { RowStructure, headCells, rows } from "./mock-data";
+import { RowStructure, headCells, rows } from "./MockData";
 import { SelectedRowIds } from "../../hooks/useTable/reducer";
 import Styles from "./styles.module.css";
 import { Chip } from "@mui/material";

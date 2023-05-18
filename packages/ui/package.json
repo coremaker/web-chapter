@@ -23,7 +23,8 @@
 		"build-storybook": "storybook build",
 		"test": "vitest run --coverage",
 		"test:watch": "vitest watch --ui",
-		"test:profile": "DEBUG=vite-node:* node --cpu-prof --cpu-prof-dir=./profiling ./node_modules/vitest/vitest.mjs --reporter verbose --no-threads"
+		"test:profile": "DEBUG=vite-node:* node --cpu-prof --cpu-prof-dir=./profiling ./node_modules/vitest/vitest.mjs --reporter verbose --no-threads",
+		"lint": "eslint --ext .js,.jsx,.ts,.tsx src"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.10.6",
@@ -51,8 +52,13 @@
 		"@types/node": "^18.13.0",
 		"@types/react": "^18.0.27",
 		"@types/react-dom": "^18.0.10",
+		"@typescript-eslint/eslint-plugin": "^5.59.6",
 		"@vitejs/plugin-react": "^3.1.0",
 		"babel-loader": "^8.3.0",
+		"eslint": "^8.40.0",
+		"eslint-plugin-prettier": "^4.2.1",
+		"eslint-plugin-react": "^7.32.2",
+		"eslint-plugin-repo-structure": "^0.1.0",
 		"jsdom": "^21.1.1",
 		"prop-types": "^15.8.1",
 		"react": "^18.2.0",
