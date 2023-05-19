@@ -12,7 +12,8 @@ import {
     ValueOf,
 } from '../../components/Table/types';
 import { TableState, reducer } from './reducer';
-import { HEAD_ROW_IDENTIFIER } from './utils';
+
+export const HEAD_ROW_IDENTIFIER = '__head';
 
 const compareAlphabetically = (firstCell: Cell<any, string>, secondCell: Cell<any, string>) =>
     firstCell.value.localeCompare(secondCell.value);

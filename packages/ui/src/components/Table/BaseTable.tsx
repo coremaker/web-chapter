@@ -43,8 +43,6 @@ export interface BaseTableClasses {
     footer: Partial<BaseTableFooterClasses>;
 }
 
-type TableBodyIDCellProps<T extends GenericRowStructure> = Omit<Cell<T, string>, 'value'>;
-
 export interface BaseTableProps<T extends GenericRowStructure> {
     showIdCell?: boolean;
     makeSearchableRowContent?: (row: Row<T>) => string;
@@ -75,8 +73,32 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     classes?: Partial<BaseTableClasses>;
 }
 
-const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
-    const { classes, SortIcon } = props;
+const BaseTable = <T extends GenericRowStructure>({
+    onRowSelectionChange,
+    onAllRowsSelectionChange,
+    ...props
+}: BaseTableProps<T>) => {
+    const {
+        headCells,
+        rows,
+        selectable,
+        makeSearchableRowContent,
+        searchInputPlaceholder = 'Search',
+        showIdCell,
+        rowActions = [],
+        ellipsisIcon,
+        renderTableActions,
+        renderTablePagination,
+        renderSearchInput,
+        renderCheckbox,
+        renderSearchEmptyState,
+        defaultRowsPerPage = 10,
+        paginated,
+        SortIcon,
+        classes = {},
+        onRowMenuOpen,
+        onRowMenuClose,
+    } = props;
 
     const {
         renderCellContent,
@@ -94,7 +116,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
         selectedRowsCount,
         headRow,
         cellIdsArray,
-    } = useTable<T>(props);
+    } = useTable<T>({ ...props, onAllRowsSelectionChange, onRowSelectionChange });
 
     const { searchValue, sortByColumnId, sortDirection, page } = state;
     const hasTableData = Boolean(currentPageRows.length);
