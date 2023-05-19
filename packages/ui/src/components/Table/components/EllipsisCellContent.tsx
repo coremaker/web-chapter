@@ -48,6 +48,7 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
             <div>
                 <IconButton
                     data-testid={`ellipsis-button-${row.cells.id.value}`}
+                    aria-label="open table row menu"
                     aria-controls={open ? menuId : undefined}
                     aria-haspopup="true"
                     className="BaseTable__EllipsisCellContent__Button"
@@ -57,20 +58,22 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
                     {icon ?? <MoreHorizIcon fontSize="small" />}
                 </IconButton>
                 <Menu classes={classes.menu} id={menuId} open={open} onClose={handleClose} anchorEl={anchorEl}>
-                    {rowActions.map((rowAction) =>
-                        rowAction.renderComponent ? (
-                            rowAction.renderComponent()
-                        ) : (
+                    {rowActions.map((rowAction) => {
+                        const key = `${row.cells.id.value}-${rowAction.id}`;
+                        if (rowAction.renderComponent) {
+                            return rowAction.renderComponent({ key, row });
+                        }
+                        return (
                             <MenuItem
-                                key={`${row.cells.id.value}-${rowAction.id}`}
+                                key={key}
                                 data-testid={`menu-item-${row.cells.id.value}-${rowAction.id}`}
                                 className={rowAction.labelClassName}
-                                onClick={() => rowAction.onClick?.(row)}
+                                onClick={(e) => rowAction.onClick?.(row, e)}
                             >
                                 {rowAction.label}
                             </MenuItem>
-                        )
-                    )}
+                        );
+                    })}
                 </Menu>
             </div>
         </StyledDivContainer>

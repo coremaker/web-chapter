@@ -20,6 +20,7 @@ interface TableCellProps extends Omit<MuiTableCellProps, 'classes'> {
     isHeadCell?: boolean;
     sortable?: boolean;
     sortDirection?: SortDirection;
+    cellId?: string;
     active?: boolean;
     SortIcon?: JSXElementConstructor<{
         className: string;
@@ -29,7 +30,17 @@ interface TableCellProps extends Omit<MuiTableCellProps, 'classes'> {
 
 const TableCell = forwardRef(
     (
-        { isHeadCell, classes = {}, sortable, children, sortDirection, active, SortIcon, ...props }: TableCellProps,
+        {
+            isHeadCell,
+            classes = {},
+            sortable,
+            children,
+            sortDirection,
+            active,
+            SortIcon,
+            cellId,
+            ...props
+        }: TableCellProps,
         ref
     ) => {
         const rootClasses = isHeadCell ? classes.headCell : classes.bodyCell;
@@ -40,6 +51,7 @@ const TableCell = forwardRef(
                         IconComponent={SortIcon}
                         direction={sortDirection || 'asc'}
                         active={active}
+                        aria-label={cellId ? `sort by ${cellId}` : 'sort by cell'}
                         classes={classes.sortLabel}
                     >
                         {children}

@@ -168,6 +168,17 @@ describe('<Table />', () => {
             expect(within(row).getByText(rows[5].cells.fullName.value, { exact: false })).toBeInTheDocument();
         });
     });
+    it('correctly shows the empty search fallback if no results were found', async () => {
+        const { getByRole, queryByTestId, getByText } = render(
+            <Table makeSearchableRowContent={(row) => row.cells.fullName.value} headCells={headCells} rows={rows} />
+        );
+        const searchInput = getByRole('textbox');
+        await userEvent.type(searchInput, 'non-existing-value');
+
+        expect(getByText('No results found')).toBeInTheDocument();
+
+        expect(queryByTestId('table-pagination')).not.toBeInTheDocument();
+    });
 
     it('renders checkboxes for every row when the table is selectable', () => {
         const { getAllByRole } = render(<Table selectable headCells={headCells} rows={rows} />);
