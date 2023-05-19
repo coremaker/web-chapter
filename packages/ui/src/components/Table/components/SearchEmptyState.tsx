@@ -1,5 +1,5 @@
 const SearchEmptyState = () => {
-  return <div>No results found</div>;
+    return <div>No results found</div>;
 };
 
 export default SearchEmptyState;
