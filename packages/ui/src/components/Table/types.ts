@@ -1,5 +1,5 @@
-import { ChangeEvent, MouseEvent, ReactNode } from "react";
-import { TableState } from "src/hooks/useTable/reducer";
+import { ChangeEvent, MouseEvent, ReactNode } from 'react';
+import { TableState } from 'src/hooks/useTable/reducer';
 
 export interface CellRendererArgs<T extends GenericRowStructure, U> {
     value: U;
@@ -33,11 +33,10 @@ export interface HeadRow<T extends GenericRowStructure> {
     cells: HeadRowCells<T>;
 }
 export type HeadRowCells<T extends GenericRowStructure> = {
-    [K in CellId<T>]?: HeadCell<T, T[K]>;
+    [K in CellId<T>]: HeadCell<T, T[K]>;
 };
 
-export interface HeadCell<T extends GenericRowStructure, U>
-    extends Cell<T, string> {
+export interface HeadCell<T extends GenericRowStructure, U> extends Cell<T, string> {
     sortable?: boolean;
     comparator?: CellComparator<T, U>;
 }
@@ -55,20 +54,12 @@ export interface RowAction<T extends GenericRowStructure> {
     label?: string;
     renderComponent?: (args: RowActionRendererArgs<T>) => ReactNode;
     labelClassName?: string;
-    onClick?: (
-        row: Row<T>,
-        e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>
-    ) => void;
+    onClick?: (row: Row<T>, e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => void;
 }
 
-export type RowsPerPageChangeHandler = (
-    event: ChangeEvent<HTMLInputElement>
-) => void;
+export type RowsPerPageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => void;
 
-export type PageChangeHandler = (
-    _e: MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-) => void;
+export type PageChangeHandler = (_e: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
 
 export interface PaginationRendererArgs<T extends GenericRowStructure> {
     page: number;
