@@ -20,6 +20,9 @@
 		"build": "tsc && vite build",
 		"rm:build": "tsc --build --clean && rm -rf dist"
 	},
+	"eslintConfig": {
+		"extends": "../../.eslintrc"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/coremaker/web-chapter.git"

@@ -1,2 +1,2 @@
-export { default } from "./useTable";
-export * from "./utils";
+export default './useTable';
+export * from './utils';
