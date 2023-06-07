@@ -33,7 +33,7 @@ export interface HeadRow<T extends GenericRowStructure> {
     cells: HeadRowCells<T>;
 }
 export type HeadRowCells<T extends GenericRowStructure> = {
-    [K in CellId<T>]: HeadCell<T, T[K]>;
+    [K in CellId<T>]?: HeadCell<T, T[K]>;
 };
 
 export interface HeadCell<T extends GenericRowStructure, U> extends Cell<T, string> {
