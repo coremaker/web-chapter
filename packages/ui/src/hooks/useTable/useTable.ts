@@ -32,10 +32,7 @@ const compare = (
 };
 
 const makeSortRowByIdComparator =
-    <T extends GenericRowStructure>(
-        sortDirection: SortDirection,
-        customComparator?: CellComparator<T, T[CellId<T>] | T['id']>
-    ) =>
+    <T extends GenericRowStructure>(sortDirection: SortDirection, customComparator?: CellComparator<T, T['id']>) =>
     (firstRow: Row<T>, secondRow: Row<T>) => {
         const comparator = customComparator ?? compareAlphabetically;
 
