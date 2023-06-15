@@ -1,23 +1,23 @@
+import { TypographyOptions, Variant } from '@mui/material/styles/createTypography';
+
 export { default as ThemeProvider } from '@mui/material/styles/ThemeProvider';
-
 export { default as defaultTheme } from './components/theme/theme';
-
 export { default as createTheme } from '@mui/material/styles/createTheme';
-
 export { default as SelectUnstyled } from '@mui/base/SelectUnstyled';
 export { default as OptionUnstyled } from '@mui/base/OptionUnstyled';
-
 export { default as ButtonUnstyled } from '@mui/base/ButtonUnstyled';
 export { default as InputUnstyled } from '@mui/base/InputUnstyled';
-
 export * from './hooks/usePagination/index';
+export { TypographyOptions, Variant };
+export * as Icons from '@mui/icons-material';
 
 export * from '@mui/material';
 export * from '@mui/material/styles';
-
 export * from '@mui/material/Button';
-export * from '@mui/material/Typography';
+export * from '@mui/material/styles/overrides';
+export * from '@mui/material/transitions';
 
-export * from 'src/components/Table';
-export { default as BaseTable } from 'src/components/Table';
+export * from '@mui/material/Typography';
+export * from './components/Table';
+export { default as BaseTable } from './components/Table';
 export { default as useTable } from './hooks/useTable';
