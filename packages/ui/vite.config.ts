@@ -20,7 +20,7 @@ export default defineConfig(() => ({
             fileName: (format, entryName) => `${entryName}.${format}.js`,
         },
         rollupOptions: {
-            external: ['react', 'react-dom', '@mui/material/styles/overrides'],
+            external: ['react', 'react-dom'],
             output: {
                 globals: {
                     react: 'React',

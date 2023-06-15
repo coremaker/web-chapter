@@ -14,6 +14,7 @@ import { JSXElementConstructor, ReactNode } from 'react';
 import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import useTable, { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
 import EllipsisCellContent, { EllipsisCellContentClasses } from './components/EllipsisCellContent';
+import SearchEmptyState from './components/SearchEmptyState';
 import TableCell, { TableCellClasses } from './components/TableCell';
 import {
     Cell,
@@ -91,7 +92,7 @@ const BaseTable = <T extends GenericRowStructure>({
         renderTablePagination,
         renderSearchInput,
         renderCheckbox,
-        renderSearchEmptyState,
+        renderSearchEmptyState = () => <SearchEmptyState />,
         defaultRowsPerPage = 10,
         paginated,
         SortIcon,
@@ -258,7 +259,7 @@ const BaseTable = <T extends GenericRowStructure>({
                                             isHeadCell
                                             align={headCell.align}
                                             active={sortByColumnId === cellId}
-                                            sortDirection={sortDirection ?? 'desc'}
+                                            sortDirection={cellId === sortByColumnId ? sortDirection : 'desc'}
                                             SortIcon={SortIcon}
                                             onClick={() => {
                                                 if (!headCell.sortable) {

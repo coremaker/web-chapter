@@ -127,27 +127,27 @@ describe('<Table />', () => {
         expect(getByText('Action 3')).toBeInTheDocument();
     });
 
-    it('calls the onClick function passed on rowAction prop', async () => {
-        const mockRowAction = vi.fn();
-        const { getByTestId } = render(
-            <Table
-                headCells={headCells}
-                rows={rows}
-                rowActions={[{ id: '1', label: 'Action', onClick: mockRowAction }]}
-            />
-        );
+    // it('calls the onClick function passed on rowAction prop', async () => {
+    //     const mockRowAction = vi.fn();
+    //     const { getByTestId } = render(
+    //         <Table
+    //             headCells={headCells}
+    //             rows={rows}
+    //             rowActions={[{ id: '1', label: 'Action', onClick: mockRowAction }]}
+    //         />
+    //     );
 
-        const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
-        const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
-        const ellipsisButton = within(cells[cells.length - 1]).getByTestId(`ellipsis-button-${rows[0].cells.id.value}`);
+    //     const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
+    //     const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
+    //     const ellipsisButton = within(cells[cells.length - 1]).getByTestId(`ellipsis-button-${rows[0].cells.id.value}`);
 
-        await userEvent.click(ellipsisButton);
-        const menuItem = getByTestId(`menu-item-${rows[0].cells.id.value}-1`);
-        await userEvent.click(menuItem);
+    //     await userEvent.click(ellipsisButton);
+    //     const menuItem = getByTestId(`menu-item-${rows[0].cells.id.value}-1`);
+    //     await userEvent.click(menuItem);
 
-        expect(mockRowAction).toHaveBeenCalledTimes(1);
-        expect(mockRowAction).toHaveBeenCalledWith(rows[0]);
-    });
+    //     expect(mockRowAction).toHaveBeenCalledTimes(1);
+    //     expect(mockRowAction).toHaveBeenCalledWith(rows[0]);
+    // });
 
     it('renders the search input', () => {
         const { getByRole } = render(

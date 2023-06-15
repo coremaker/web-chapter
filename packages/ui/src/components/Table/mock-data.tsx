@@ -52,7 +52,7 @@ export const headCells: HeadRowCells<RowStructure> = {
 
 export const rows: Row<RowStructure>[] = range(40).map((i) => ({
     cells: {
-        id: { value: `#685065645${i % 2 === 0 ? i : 12 - i}` },
+        id: { value: i.toString() },
         username: {
             value: `${i % 2 === 0 ? i : 12 - i}${emails[Math.ceil(Math.random() * 2)] + i}`,
         },
