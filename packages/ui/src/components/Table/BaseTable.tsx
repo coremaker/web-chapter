@@ -265,6 +265,7 @@ const BaseTable = <T extends GenericRowStructure>({
                                                 if (!headCell.sortable) {
                                                     return;
                                                 }
+                                                console.log('clicked sort on cell id' + cellId);
 
                                                 handleSortCellClick(cellId);
                                             }}
@@ -283,10 +284,10 @@ const BaseTable = <T extends GenericRowStructure>({
                         {hasTableData
                             ? currentPageRows.map((row) => (
                                   <TableRow
-                                      hover
-                                      tabIndex={-1}
                                       key={row.cells.id.value}
                                       data-testid={`table-body-row-${row.cells.id.value}`}
+                                      hover
+                                      tabIndex={-1}
                                       className={
                                           selectedRowIdsState[row.cells.id.value] ? 'BaseTable__Row--selected' : ''
                                       }

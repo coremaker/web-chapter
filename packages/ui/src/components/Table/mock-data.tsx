@@ -21,7 +21,7 @@ export interface RowStructure {
 
 export const headCells: HeadRowCells<RowStructure> = {
     id: {
-        value: 'Id',
+        value: 'User ID',
         sortable: true,
     },
     username: {

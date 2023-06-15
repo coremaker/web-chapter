@@ -127,27 +127,29 @@ describe('<Table />', () => {
         expect(getByText('Action 3')).toBeInTheDocument();
     });
 
-    // it('calls the onClick function passed on rowAction prop', async () => {
-    //     const mockRowAction = vi.fn();
-    //     const { getByTestId } = render(
-    //         <Table
-    //             headCells={headCells}
-    //             rows={rows}
-    //             rowActions={[{ id: '1', label: 'Action', onClick: mockRowAction }]}
-    //         />
-    //     );
+    it('calls the onClick function passed on rowAction prop', async () => {
+        const mockRowAction = vi.fn();
+        const { getByTestId } = render(
+            <Table
+                headCells={headCells}
+                rows={rows}
+                rowActions={[{ id: '1', label: 'Action', onClick: mockRowAction }]}
+            />
+        );
 
-    //     const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
-    //     const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
-    //     const ellipsisButton = within(cells[cells.length - 1]).getByTestId(`ellipsis-button-${rows[0].cells.id.value}`);
+        const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
+        const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
+        const ellipsisButton = within(cells[cells.length - 1]).getByTestId(`ellipsis-button-${rows[0].cells.id.value}`);
 
-    //     await userEvent.click(ellipsisButton);
-    //     const menuItem = getByTestId(`menu-item-${rows[0].cells.id.value}-1`);
-    //     await userEvent.click(menuItem);
+        await userEvent.click(ellipsisButton);
 
-    //     expect(mockRowAction).toHaveBeenCalledTimes(1);
-    //     expect(mockRowAction).toHaveBeenCalledWith(rows[0]);
-    // });
+        const menuItem = getByTestId(`menu-item-${rows[0].cells.id.value}-1`);
+
+        await userEvent.click(menuItem);
+
+        expect(mockRowAction).toHaveBeenCalledTimes(1);
+        expect(mockRowAction).toHaveBeenCalledWith(rows[0]);
+    });
 
     it('renders the search input', () => {
         const { getByRole } = render(
@@ -445,9 +447,7 @@ describe('<Table />', () => {
     });
 
     it('sorts alphabetically by the ID column when the column head is clicked', async () => {
-        const { getByText, getAllByTestId } = render(
-            <Table selectable showIdCell headCells={{ ...headCells, id: { value: 'User ID' } }} rows={rows} />
-        );
+        const { getByText, getAllByTestId } = render(<Table selectable showIdCell headCells={headCells} rows={rows} />);
 
         const userIdHeadCell = getByText(/User ID/);
 
@@ -504,9 +504,7 @@ describe('<Table />', () => {
     });
 
     it('sorts alphabetically in descending order by ID column when the column head is clicked two times', async () => {
-        const { getByText, getAllByTestId } = render(
-            <Table selectable showIdCell headCells={{ ...headCells, id: { value: 'User ID' } }} rows={rows} />
-        );
+        const { getByText, getAllByTestId } = render(<Table selectable showIdCell headCells={headCells} rows={rows} />);
 
         const userIdHeadCell = getByText(/User ID/);
 
@@ -524,9 +522,7 @@ describe('<Table />', () => {
     });
 
     it('renders the generic value using a custom renderer', async () => {
-        const { getByText } = render(
-            <Table selectable showIdCell headCells={{ ...headCells, id: { value: 'User ID' } }} rows={rows} />
-        );
+        const { getByText } = render(<Table selectable showIdCell headCells={headCells} rows={rows} />);
 
         expect(getByText(/Street 12/)).toBeInTheDocument();
     });
