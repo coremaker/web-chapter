@@ -11,6 +11,8 @@ import {
 } from '@mui/material';
 import { JSXElementConstructor, ReactNode } from 'react';
 
+import { SelectedRowIds } from '../../hooks/useTable/reducer';
+import useTable, { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
 import EllipsisCellContent, { EllipsisCellContentClasses } from './components/EllipsisCellContent';
 import TableCell, { TableCellClasses } from './components/TableCell';
 import {
@@ -24,8 +26,6 @@ import {
     RowAction,
     SearchInputRendererArgs,
 } from './types';
-import useTable, { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
-import { SelectedRowIds } from '../../hooks/useTable/reducer';
 
 interface BaseTableFooterClasses {
     root: string;
