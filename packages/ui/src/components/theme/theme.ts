@@ -258,7 +258,6 @@ export default createTheme({
             lineHeight: '1.25rem',
             textDecorationLine: 'underline',
         },
-
         captionLarge: {
             fontSize: '0.875rem',
             fontWeight: '400',
@@ -273,6 +272,15 @@ export default createTheme({
             fontSize: '0.75rem',
             fontWeight: '700',
             lineHeight: '1rem',
+        },
+    },
+    components: {
+        MuiTable: {
+            defaultProps: {
+                style: {
+                    backgroundColor: '#F06666',
+                },
+            },
         },
     },
 });
