@@ -365,7 +365,6 @@ describe('<Table />', () => {
 
     it('renders a checkbox in the header area when the table is selectable', () => {
         const { getByTestId } = render(<Table selectable headCells={headCells} rows={rows} />);
-
         const renderedHead = getByTestId('table-head');
 
         expect(within(renderedHead).getByRole('checkbox')).toBeInTheDocument();

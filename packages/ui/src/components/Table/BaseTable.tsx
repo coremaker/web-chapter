@@ -136,7 +136,7 @@ const BaseTable = <T extends GenericRowStructure>({
             <TableCell
                 key={key}
                 data-testid={`table-row-cell-${cellId}`}
-                align={cell.numeric ? 'right' : 'left'}
+                align={cell.align}
                 padding={cell.disablePadding ? 'none' : 'normal'}
                 classes={{
                     ...cellClasses,
@@ -198,6 +198,9 @@ const BaseTable = <T extends GenericRowStructure>({
         );
     };
 
+    const decideCellRender = (render: (cellId: CellId<T>) => JSX.Element) => (cellId: CellId<T>) =>
+        cellId !== 'id' || showIdCell ? render(cellId) : null;
+
     return (
         <div className={classes.root}>
             <div className={classes.headArea}>
@@ -245,17 +248,17 @@ const BaseTable = <T extends GenericRowStructure>({
                                 </TableCell>
                             )}
 
-                            {cellIdsArray.map((cellId) => {
-                                if (cellId !== 'id') {
+                            {cellIdsArray.map(
+                                decideCellRender((cellId) => {
                                     const headCell = headCells[cellId];
                                     return (
                                         <TableCell
                                             key={HEAD_ROW_IDENTIFIER + cellId}
                                             cellId={cellId}
                                             isHeadCell
-                                            align={headCell.numeric ? 'right' : 'left'}
+                                            align={headCell.align}
                                             active={sortByColumnId === cellId}
-                                            sortDirection={cellId === sortByColumnId ? sortDirection : 'desc'}
+                                            sortDirection={sortDirection ?? 'desc'}
                                             SortIcon={SortIcon}
                                             onClick={() => {
                                                 if (!headCell.sortable) {
@@ -271,28 +274,8 @@ const BaseTable = <T extends GenericRowStructure>({
                                             {renderHeadCellContent(headCell, headRow)}
                                         </TableCell>
                                     );
-                                }
-                                if (showIdCell) {
-                                    return (
-                                        <TableCell
-                                            key={cellId}
-                                            isHeadCell
-                                            cellId={cellId}
-                                            sortable={headCells.id.sortable}
-                                            active={sortByColumnId === cellId}
-                                            align="left"
-                                            sortDirection={sortByColumnId === cellId ? sortDirection : 'desc'}
-                                            padding={headCells.id.disablePadding ? 'none' : 'normal'}
-                                            onClick={() => handleSortCellClick(cellId)}
-                                            classes={cellClasses}
-                                            SortIcon={SortIcon}
-                                        >
-                                            {headCells.id ? renderHeadCellContent(headCells.id, headRow) : 'ID'}
-                                        </TableCell>
-                                    );
-                                }
-                                return null;
-                            })}
+                                })
+                            )}
                         </TableRow>
                     </TableHead>
                     <TableBody data-testid="table-body">
@@ -335,24 +318,9 @@ const BaseTable = <T extends GenericRowStructure>({
                                           </TableCell>
                                       )}
 
-                                      {cellIdsArray.map((cellId) => {
-                                          if (cellId !== 'id') {
-                                              return renderRowCell(row, row.cells[cellId], cellId);
-                                          }
-                                          if (showIdCell) {
-                                              return (
-                                                  <TableCell
-                                                      key={row.cells.id.value}
-                                                      classes={cellClasses}
-                                                      data-testid="table-row-cell"
-                                                      padding="none"
-                                                  >
-                                                      {renderCellContent(row.cells.id, row)}
-                                                  </TableCell>
-                                              );
-                                          }
-                                          return null;
-                                      })}
+                                      {cellIdsArray.map(
+                                          decideCellRender((cellId) => renderRowCell(row, row.cells[cellId], cellId))
+                                      )}
                                   </TableRow>
                               ))
                             : renderSearchEmptyState?.()}

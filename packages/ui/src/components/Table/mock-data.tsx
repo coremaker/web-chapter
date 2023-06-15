@@ -1,5 +1,6 @@
-import { range } from '@web-chapter/lib';
 import { Chip } from '@mui/material';
+import { range } from '@web-chapter/lib';
+
 import { HeadRowCells, Row } from './types';
 
 const names = ['John Doe', 'Jane Doe', 'Jason Statham'];
@@ -24,7 +25,6 @@ export const headCells: HeadRowCells<RowStructure> = {
         sortable: true,
     },
     username: {
-        numeric: false,
         value: 'Username',
     },
     fullName: {

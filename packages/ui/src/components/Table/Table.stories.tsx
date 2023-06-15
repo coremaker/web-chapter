@@ -1,9 +1,10 @@
-import { Meta, StoryFn } from '@storybook/react';
-import { Chip } from '@mui/material';
 import AppleIcon from '@mui/icons-material/Apple';
+import { Chip } from '@mui/material';
+import { Meta, StoryFn } from '@storybook/react';
+
+import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import Table from './BaseTable';
 import { RowStructure, headCells, rows } from './mock-data';
-import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import Styles from './styles.module.css';
 
 export default {
