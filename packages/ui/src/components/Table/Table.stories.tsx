@@ -91,13 +91,6 @@ export const RowActions = Template.bind({});
 RowActions.args = {
     rows,
     headCells,
-    classes: {
-        ellipsis: {
-            menu: {
-                root: 'bg-red',
-            },
-        },
-    },
     rowActions: [
         {
             id: '1',
