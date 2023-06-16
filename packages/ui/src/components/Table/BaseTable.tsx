@@ -265,7 +265,6 @@ const BaseTable = <T extends GenericRowStructure>({
                                                 if (!headCell.sortable) {
                                                     return;
                                                 }
-                                                console.log('clicked sort on cell id' + cellId);
 
                                                 handleSortCellClick(cellId);
                                             }}
