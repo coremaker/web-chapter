@@ -128,7 +128,7 @@ export default function useTable<T extends GenericRowStructure>({
         throw new Error('Cannot render non-string cell content without a custom renderer');
     };
 
-    const renderHeadCellContent = (cell: Omit<HeadCell<T, ValueOf<T>>, 'id'>, row: HeadRow<T>) => {
+    const renderHeadCellContent = (cell: HeadCell<T, ValueOf<T>> | HeadCell<T, T['id']>, row: HeadRow<T>) => {
         if (cell.renderComponent) {
             return cell.renderComponent({
                 ...cell,

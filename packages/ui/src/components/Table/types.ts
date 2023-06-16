@@ -18,7 +18,7 @@ export type CellId<T extends GenericRowStructure> = Extract<keyof T, string>;
 export type ValueOf<T extends GenericRowStructure> = T[CellId<T>];
 
 export interface Cell<T extends GenericRowStructure, U> {
-    numeric?: boolean;
+    align?: 'inherit' | 'left' | 'center' | 'right' | 'justify';
     disablePadding?: boolean;
     value: U;
     renderComponent?: (args: CellRendererArgs<T, U>) => ReactNode;

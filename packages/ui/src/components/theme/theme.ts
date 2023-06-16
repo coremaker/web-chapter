@@ -274,13 +274,4 @@ export default createTheme({
             lineHeight: '1rem',
         },
     },
-    components: {
-        MuiTable: {
-            defaultProps: {
-                style: {
-                    backgroundColor: '#F06666',
-                },
-            },
-        },
-    },
 });

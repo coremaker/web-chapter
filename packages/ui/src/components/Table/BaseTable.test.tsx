@@ -142,7 +142,9 @@ describe('<Table />', () => {
         const ellipsisButton = within(cells[cells.length - 1]).getByTestId(`ellipsis-button-${rows[0].cells.id.value}`);
 
         await userEvent.click(ellipsisButton);
+
         const menuItem = getByTestId(`menu-item-${rows[0].cells.id.value}-1`);
+
         await userEvent.click(menuItem);
 
         expect(mockRowAction).toHaveBeenCalledTimes(1);
@@ -365,7 +367,6 @@ describe('<Table />', () => {
 
     it('renders a checkbox in the header area when the table is selectable', () => {
         const { getByTestId } = render(<Table selectable headCells={headCells} rows={rows} />);
-
         const renderedHead = getByTestId('table-head');
 
         expect(within(renderedHead).getByRole('checkbox')).toBeInTheDocument();
@@ -446,9 +447,7 @@ describe('<Table />', () => {
     });
 
     it('sorts alphabetically by the ID column when the column head is clicked', async () => {
-        const { getByText, getAllByTestId } = render(
-            <Table selectable showIdCell headCells={{ ...headCells, id: { value: 'User ID' } }} rows={rows} />
-        );
+        const { getByText, getAllByTestId } = render(<Table selectable showIdCell headCells={headCells} rows={rows} />);
 
         const userIdHeadCell = getByText(/User ID/);
 
@@ -505,9 +504,7 @@ describe('<Table />', () => {
     });
 
     it('sorts alphabetically in descending order by ID column when the column head is clicked two times', async () => {
-        const { getByText, getAllByTestId } = render(
-            <Table selectable showIdCell headCells={{ ...headCells, id: { value: 'User ID' } }} rows={rows} />
-        );
+        const { getByText, getAllByTestId } = render(<Table selectable showIdCell headCells={headCells} rows={rows} />);
 
         const userIdHeadCell = getByText(/User ID/);
 
@@ -525,9 +522,7 @@ describe('<Table />', () => {
     });
 
     it('renders the generic value using a custom renderer', async () => {
-        const { getByText } = render(
-            <Table selectable showIdCell headCells={{ ...headCells, id: { value: 'User ID' } }} rows={rows} />
-        );
+        const { getByText } = render(<Table selectable showIdCell headCells={headCells} rows={rows} />);
 
         expect(getByText(/Street 12/)).toBeInTheDocument();
     });

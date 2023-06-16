@@ -1,5 +1,6 @@
-import { range } from '@web-chapter/lib';
 import { Chip } from '@mui/material';
+import { range } from '@web-chapter/lib';
+
 import { HeadRowCells, Row } from './types';
 
 const names = ['John Doe', 'Jane Doe', 'Jason Statham'];
@@ -20,11 +21,10 @@ export interface RowStructure {
 
 export const headCells: HeadRowCells<RowStructure> = {
     id: {
-        value: 'Id',
+        value: 'User ID',
         sortable: true,
     },
     username: {
-        numeric: false,
         value: 'Username',
     },
     fullName: {
@@ -52,7 +52,7 @@ export const headCells: HeadRowCells<RowStructure> = {
 
 export const rows: Row<RowStructure>[] = range(40).map((i) => ({
     cells: {
-        id: { value: `#685065645${i % 2 === 0 ? i : 12 - i}` },
+        id: { value: i.toString() },
         username: {
             value: `${i % 2 === 0 ? i : 12 - i}${emails[Math.ceil(Math.random() * 2)] + i}`,
         },
