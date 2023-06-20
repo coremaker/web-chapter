@@ -1,12 +1,18 @@
 import { ChangeEvent, MouseEvent, ReactNode } from 'react';
 import { TableState } from 'src/hooks/useTable/reducer';
 
-export interface CellRendererArgs<T extends GenericRowStructure, U> {
+export interface AbstractCellRendererArgs<T extends GenericRowStructure, U> {
     value: U;
-    numeric?: boolean;
     disablePadding?: boolean;
-    currentRow: Row<T> | HeadRow<T>;
     state: TableState<T>;
+}
+
+export interface RowCellRendererArgs<T extends GenericRowStructure, U> extends AbstractCellRendererArgs<T, U> {
+    currentRow: Row<T>;
+}
+
+export interface HeadCellRendererArgs<T extends GenericRowStructure, U> extends AbstractCellRendererArgs<T, U> {
+    currentRow: HeadRow<T>;
 }
 
 export interface GenericRowStructure extends Object {
@@ -17,16 +23,16 @@ export type CellId<T extends GenericRowStructure> = Extract<keyof T, string>;
 
 export type ValueOf<T extends GenericRowStructure> = T[CellId<T>];
 
-export interface Cell<T extends GenericRowStructure, U> {
+export interface Cell<U> {
     align?: 'inherit' | 'left' | 'center' | 'right' | 'justify';
     disablePadding?: boolean;
     value: U;
-    renderComponent?: (args: CellRendererArgs<T, U>) => ReactNode;
 }
-export type CellComparator<T extends GenericRowStructure, U> = (
-    firstCell: Cell<T, U>,
-    secondCell: Cell<T, U>
-) => number;
+export interface RowCell<T extends GenericRowStructure, U> extends Cell<U> {
+    renderComponent?: (args: RowCellRendererArgs<T, U>) => ReactNode;
+}
+
+export type CellComparator<U> = (firstCell: Cell<U>, secondCell: Cell<U>) => number;
 
 export interface HeadRow<T extends GenericRowStructure> {
     id: string;
@@ -36,13 +42,14 @@ export type HeadRowCells<T extends GenericRowStructure> = {
     [K in CellId<T>]: HeadCell<T, T[K]>;
 };
 
-export interface HeadCell<T extends GenericRowStructure, U> extends Cell<T, string> {
+export interface HeadCell<T extends GenericRowStructure, U> extends Cell<string> {
     sortable?: boolean;
-    comparator?: CellComparator<T, U>;
+    comparator?: CellComparator<U>;
+    renderComponent?: (args: HeadCellRendererArgs<T, string>) => ReactNode;
 }
 
 export interface Row<T extends GenericRowStructure> {
-    cells: { [K in CellId<T>]: Cell<T, T[K]> };
+    cells: { [K in CellId<T>]: RowCell<T, T[K]> };
 }
 
 export interface RowActionRendererArgs<T extends GenericRowStructure> {

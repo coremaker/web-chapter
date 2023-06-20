@@ -25,6 +25,7 @@ import {
     PaginationRendererArgs,
     Row,
     RowAction,
+    RowCell,
     SearchInputRendererArgs,
 } from './types';
 
@@ -126,7 +127,7 @@ const BaseTable = <T extends GenericRowStructure>({
 
     const selectedRowIdsState = props.selectedRowIds ? props.selectedRowIds : state.selectedRowIds;
 
-    const renderRowCell = (row: Row<T>, cell: Cell<T, T[CellId<T>]>, cellId: CellId<T>) => {
+    const renderRowCell = (row: Row<T>, cell: RowCell<T, T[CellId<T>]>, cellId: CellId<T>) => {
         const cellContent = renderCellContent(cell, row);
 
         const cellIndex = cellIdsArray.indexOf(cellId);
