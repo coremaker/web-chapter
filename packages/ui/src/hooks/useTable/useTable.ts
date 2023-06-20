@@ -10,19 +10,20 @@ import {
     HeadCell,
     HeadRow,
     Row,
+    RowCell,
     ValueOf,
 } from '../../components/Table/types';
 import { TableState, reducer } from './reducer';
 
 export const HEAD_ROW_IDENTIFIER = '__head';
 
-const compareAlphabetically = (firstCell: Cell<any, string>, secondCell: Cell<any, string>) =>
+const compareAlphabetically = (firstCell: Cell<string>, secondCell: Cell<string>) =>
     firstCell.value.localeCompare(secondCell.value);
 
 const compare = (
-    comparator: CellComparator<any, any>,
-    firstCell: Cell<any, any>,
-    secondCell: Cell<any, any>,
+    comparator: CellComparator<any>,
+    firstCell: Cell<any>,
+    secondCell: Cell<any>,
     sortDirection: SortDirection
 ) => {
     if (sortDirection === 'asc') {
@@ -32,7 +33,7 @@ const compare = (
 };
 
 const makeSortRowByIdComparator =
-    <T extends GenericRowStructure>(sortDirection: SortDirection, customComparator?: CellComparator<T, T['id']>) =>
+    <T extends GenericRowStructure>(sortDirection: SortDirection, customComparator?: CellComparator<T['id']>) =>
     (firstRow: Row<T>, secondRow: Row<T>) => {
         const comparator = customComparator ?? compareAlphabetically;
 
@@ -48,7 +49,7 @@ const makeSortRowByCellComparator =
     <T extends GenericRowStructure>(
         sortDirection: SortDirection,
         sortByCellId: CellId<T>,
-        customComparator?: CellComparator<T, T[CellId<T>]>
+        customComparator?: CellComparator<T[CellId<T>]>
     ) =>
     (firstRow: Row<T>, secondRow: Row<T>) => {
         const firstCell = firstRow.cells[sortByCellId];
@@ -112,7 +113,7 @@ export default function useTable<T extends GenericRowStructure>({
 
     const makeRowCellId = (rowId: string, cellId: CellId<T>) => `${rowId}-${String(cellId)}`;
 
-    const renderCellContent = (cell: Cell<T, any>, row: Row<T>) => {
+    const renderCellContent = (cell: RowCell<T, any>, row: Row<T>) => {
         if (cell.renderComponent) {
             return cell.renderComponent({
                 ...cell,
@@ -128,7 +129,7 @@ export default function useTable<T extends GenericRowStructure>({
         throw new Error('Cannot render non-string cell content without a custom renderer');
     };
 
-    const renderHeadCellContent = (cell: HeadCell<T, ValueOf<T>> | HeadCell<T, T['id']>, row: HeadRow<T>) => {
+    const renderHeadCellContent = (cell: HeadCell<T, ValueOf<T>>, row: HeadRow<T>) => {
         if (cell.renderComponent) {
             return cell.renderComponent({
                 ...cell,
