@@ -216,7 +216,7 @@ const BaseTable = <T extends GenericRowStructure>({
     return (
         <div className={classes.root}>
             <div className={classes.headArea}>
-                {searchProps?.onChange ? (
+                {makeSearchableRowContent || searchProps ? (
                     <div className={classes.searchInputContainer}>
                         {renderSearchInput ? (
                             renderSearchInput({
