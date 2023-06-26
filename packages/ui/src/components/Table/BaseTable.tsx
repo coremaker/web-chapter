@@ -54,6 +54,10 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     /**
      * This prop changes the selected rows state from uncontrolled to controlled
      */
+    searchProps?: {
+        value: string;
+        onChange: (value: string) => void;
+    };
     selectedRowIds?: SelectedRowIds;
     headCells: HeadRowCells<T>;
     rows: Row<T>[];
@@ -92,6 +96,7 @@ const BaseTable = <T extends GenericRowStructure>({
         renderTableActions,
         renderTablePagination,
         renderSearchInput,
+        searchProps,
         renderCheckbox,
         renderSearchEmptyState = () => <SearchEmptyState />,
         defaultRowsPerPage = 10,
@@ -203,21 +208,26 @@ const BaseTable = <T extends GenericRowStructure>({
     const decideCellRender = (render: (cellId: CellId<T>) => JSX.Element) => (cellId: CellId<T>) =>
         cellId !== 'id' || showIdCell ? render(cellId) : null;
 
+    const searchInputProps = searchProps ?? {
+        value: searchValue,
+        onChange: handleChangeSearchValue,
+    };
+
     return (
         <div className={classes.root}>
             <div className={classes.headArea}>
-                {makeSearchableRowContent || renderSearchInput ? (
+                {makeSearchableRowContent || searchProps?.onChange ? (
                     <div className={classes.searchInputContainer}>
                         {renderSearchInput ? (
                             renderSearchInput({
-                                searchValue,
-                                handleChangeSearchValue,
+                                searchValue: searchInputProps.value,
+                                handleChangeSearchValue: searchInputProps.onChange,
                             })
                         ) : (
                             <TextField
                                 placeholder={searchInputPlaceholder}
-                                onChange={(e) => handleChangeSearchValue(e.target.value)}
-                                value={searchValue}
+                                onChange={(e) => searchInputProps.onChange(e.target.value)}
+                                value={searchInputProps.value}
                             />
                         )}
                     </div>
