@@ -206,7 +206,7 @@ const BaseTable = <T extends GenericRowStructure>({
     return (
         <div className={classes.root}>
             <div className={classes.headArea}>
-                {makeSearchableRowContent && (
+                {makeSearchableRowContent || renderSearchInput ? (
                     <div className={classes.searchInputContainer}>
                         {renderSearchInput ? (
                             renderSearchInput({
@@ -221,7 +221,7 @@ const BaseTable = <T extends GenericRowStructure>({
                             />
                         )}
                     </div>
-                )}
+                ) : null}
                 <div className={classes.actionsContainer}>{renderTableActions?.(selectedRowIdsState)}</div>
             </div>
 
