@@ -29,8 +29,6 @@ import {
     SearchInputRendererArgs,
 } from './types';
 import Spinner from '../Spinner/Spinner';
-import classNames from 'classnames';
-import styles from './styles.module.css';
 
 interface BaseTableFooterClasses {
     root: string;
@@ -82,7 +80,7 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     }>;
     classes?: Partial<BaseTableClasses>;
     loading?: boolean;
-    LoaderComponent?: JSXElementConstructor<CircularProgressProps>;
+    SpinnerComponent?: JSXElementConstructor<CircularProgressProps>;
 }
 
 const BaseTable = <T extends GenericRowStructure>({
@@ -112,7 +110,7 @@ const BaseTable = <T extends GenericRowStructure>({
         onRowMenuOpen,
         onRowMenuClose,
         loading,
-        LoaderComponent = Spinner,
+        SpinnerComponent = Spinner,
     } = props;
 
     const {
@@ -300,8 +298,8 @@ const BaseTable = <T extends GenericRowStructure>({
                         </TableRow>
                     </TableHead>
                     {loading ? (
-                        <td colSpan={10000} className={classNames(styles.loaderContainer, classes?.loaderContainer)}>
-                            <LoaderComponent />
+                        <td colSpan={10000} className={classes?.loaderContainer}>
+                            <SpinnerComponent />
                         </td>
                     ) : (
                         <TableBody data-testid="table-body">
