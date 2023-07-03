@@ -344,14 +344,16 @@ const BaseTable = <T extends GenericRowStructure>({
                                               </TableCell>
                                           )}
 
-
-                                      {cellIdsArray.map(
-                                          shouldRenderCell((cellId) => renderRowCell(row, row.cells[cellId], cellId))
-                                      )}
-                                  </TableRow>
-                              ))
-                            : renderSearchEmptyState?.()}
-                    </TableBody>
+                                          {cellIdsArray.map(
+                                              shouldRenderCell((cellId) =>
+                                                  renderRowCell(row, row.cells[cellId], cellId)
+                                              )
+                                          )}
+                                      </TableRow>
+                                  ))
+                                : renderSearchEmptyState?.()}
+                        </TableBody>
+                    )}
                     {hasTableData && !loading && renderPaginationComponent()}
                 </MuiTable>
             </TableContainer>
