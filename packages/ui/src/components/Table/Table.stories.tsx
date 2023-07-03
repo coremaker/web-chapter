@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import AppleIcon from '@mui/icons-material/Apple';
 import { Chip } from '@mui/material';
 import { Meta, StoryFn } from '@storybook/react';
