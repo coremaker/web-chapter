@@ -102,8 +102,6 @@ export default function useTable<T extends GenericRowStructure>({
         [headCells]
     );
 
-    const cellIdsArray = useMemo(() => Object.keys(headCells) as unknown as CellId<T>[], [headCells]);
-
     const updateState = useCallback(
         (updates: Partial<TableState<T>>) => {
             dispatch({ type: 'update', payload: updates });
@@ -252,6 +250,5 @@ export default function useTable<T extends GenericRowStructure>({
         selectedRowsCount,
         updateState,
         headRow,
-        cellIdsArray,
     };
 }

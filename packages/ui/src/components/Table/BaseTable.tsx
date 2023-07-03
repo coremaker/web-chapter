@@ -9,7 +9,7 @@ import {
     TableRow,
     TextField,
 } from '@mui/material';
-import { JSXElementConstructor, ReactNode } from 'react';
+import { JSXElementConstructor, ReactNode, useMemo } from 'react';
 
 import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import useTable, { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
@@ -17,7 +17,6 @@ import EllipsisCellContent, { EllipsisCellContentClasses } from './components/El
 import SearchEmptyState from './components/SearchEmptyState';
 import TableCell, { TableCellClasses } from './components/TableCell';
 import {
-    Cell,
     CellId,
     CheckboxRendererArgs,
     GenericRowStructure,
@@ -122,7 +121,6 @@ const BaseTable = <T extends GenericRowStructure>({
         state,
         selectedRowsCount,
         headRow,
-        cellIdsArray,
     } = useTable<T>({ ...props, onAllRowsSelectionChange, onRowSelectionChange });
 
     const { searchValue, sortByColumnId, sortDirection, page } = state;
@@ -131,6 +129,8 @@ const BaseTable = <T extends GenericRowStructure>({
     const { cell: cellClasses } = classes;
 
     const selectedRowIdsState = props.selectedRowIds ? props.selectedRowIds : state.selectedRowIds;
+
+    const cellIdsArray = useMemo(() => Object.keys(headCells) as unknown as CellId<T>[], [headCells]);
 
     const renderRowCell = (row: Row<T>, cell: RowCell<T, T[CellId<T>]>, cellId: CellId<T>) => {
         const cellContent = renderCellContent(cell, row);
@@ -205,7 +205,7 @@ const BaseTable = <T extends GenericRowStructure>({
         );
     };
 
-    const decideCellRender = (render: (cellId: CellId<T>) => JSX.Element) => (cellId: CellId<T>) =>
+    const shouldRenderCell = (render: (cellId: CellId<T>) => JSX.Element) => (cellId: CellId<T>) =>
         cellId !== 'id' || showIdCell ? render(cellId) : null;
 
     const searchInputProps = searchProps ?? {
@@ -261,7 +261,7 @@ const BaseTable = <T extends GenericRowStructure>({
                             )}
 
                             {cellIdsArray.map(
-                                decideCellRender((cellId) => {
+                                shouldRenderCell((cellId) => {
                                     const headCell = headCells[cellId];
                                     return (
                                         <TableCell
@@ -331,7 +331,7 @@ const BaseTable = <T extends GenericRowStructure>({
                                       )}
 
                                       {cellIdsArray.map(
-                                          decideCellRender((cellId) => renderRowCell(row, row.cells[cellId], cellId))
+                                          shouldRenderCell((cellId) => renderRowCell(row, row.cells[cellId], cellId))
                                       )}
                                   </TableRow>
                               ))
