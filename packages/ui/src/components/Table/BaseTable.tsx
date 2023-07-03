@@ -1,5 +1,6 @@
 import {
     Checkbox,
+    CircularProgressProps,
     Table as MuiTable,
     TableBody,
     TableContainer,
@@ -17,7 +18,6 @@ import EllipsisCellContent, { EllipsisCellContentClasses } from './components/El
 import SearchEmptyState from './components/SearchEmptyState';
 import TableCell, { TableCellClasses } from './components/TableCell';
 import {
-    Cell,
     CellId,
     CheckboxRendererArgs,
     GenericRowStructure,
@@ -28,6 +28,7 @@ import {
     RowCell,
     SearchInputRendererArgs,
 } from './types';
+import Spinner from '../Spinner/Spinner';
 
 interface BaseTableFooterClasses {
     root: string;
@@ -43,6 +44,7 @@ export interface BaseTableClasses {
     cell: Partial<TableCellClasses>;
     ellipsis: Partial<EllipsisCellContentClasses>;
     footer: Partial<BaseTableFooterClasses>;
+    loaderContainer: string;
 }
 
 export interface BaseTableProps<T extends GenericRowStructure> {
@@ -77,6 +79,8 @@ export interface BaseTableProps<T extends GenericRowStructure> {
         className: string;
     }>;
     classes?: Partial<BaseTableClasses>;
+    loading?: boolean;
+    LoaderComponent?: JSXElementConstructor<CircularProgressProps>;
 }
 
 const BaseTable = <T extends GenericRowStructure>({
@@ -105,6 +109,8 @@ const BaseTable = <T extends GenericRowStructure>({
         classes = {},
         onRowMenuOpen,
         onRowMenuClose,
+        loading,
+        LoaderComponent = Spinner,
     } = props;
 
     const {
@@ -212,6 +218,14 @@ const BaseTable = <T extends GenericRowStructure>({
         value: searchValue,
         onChange: handleChangeSearchValue,
     };
+
+    if (loading) {
+        return (
+            <div className={classes?.loaderContainer}>
+                <LoaderComponent />
+            </div>
+        );
+    }
 
     return (
         <div className={classes.root}>
