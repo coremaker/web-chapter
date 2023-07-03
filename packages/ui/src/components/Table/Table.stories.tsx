@@ -7,6 +7,7 @@ import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import Table from './BaseTable';
 import { RowStructure, headCells, rows } from './mock-data';
 import Styles from './styles.module.css';
+import { useState } from 'react';
 
 export default {
     title: 'Example/Table',
@@ -127,4 +128,51 @@ RowActionsCustomIcon.args = {
             onClick: () => alert('Action 2 clicked'),
         },
     ],
+};
+
+type Config = {
+    defaultRowsPerPage: number;
+    paginated: boolean;
+    page: number;
+    sortDirection: 'asc' | 'desc' | false;
+    sortColumn: keyof RowStructure | null;
+};
+const ServerFilterSortPaginationTemplate: StoryFn<typeof Table<RowStructure>> = (args) => {
+    const [config, setConfig] = useState<Config>({
+        defaultRowsPerPage: 5,
+        paginated: true,
+        page: 1,
+        sortDirection: 'asc',
+        sortColumn: null,
+    });
+
+    const handleRowsPerPageChange = (rowsPerPage: number) => {
+        setConfig((prev) => ({ ...prev, defaultRowsPerPage: rowsPerPage }));
+        console.log('rowsPerPage', rowsPerPage);
+    };
+
+    const handlePageChange = (page: number) => {
+        setConfig((prev) => ({ ...prev, page }));
+        console.log('page', page);
+    };
+
+    const handleSortChange = (sortColumn: keyof RowStructure | null, sortDirection: 'asc' | 'desc' | false) => {
+        setConfig((prev) => ({ ...prev, sortColumn, sortDirection }));
+        console.log('sortColumn', sortColumn, sortDirection);
+    };
+
+    return (
+        <Table<RowStructure>
+            {...args}
+            handlePageChange={handlePageChange}
+            handleRowsPerPageChange={handleRowsPerPageChange}
+            handleSortCellClick={handleSortChange}
+            {...config}
+        />
+    );
+};
+export const ServerFilterSortPagination = ServerFilterSortPaginationTemplate.bind({});
+ServerFilterSortPagination.args = {
+    rows,
+    headCells,
 };

@@ -66,12 +66,10 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     rows: Row<T>[];
     rowActions?: RowAction<T>[];
     ellipsisIcon?: ReactNode;
-    //
     rowsPerPageOptions?: number[];
     currentPage?: number;
     sortColumn: CellId<T> | null;
     sortDirection: SortDirection;
-    //
     renderTableActions?: (selectedRows: SelectedRowIds) => ReactNode;
     renderTablePagination?: (args: PaginationRendererArgs<T>) => ReactNode;
     renderSearchInput?: (args: SearchInputRendererArgs) => ReactNode;
@@ -88,7 +86,12 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     classes?: Partial<BaseTableClasses>;
     loading?: boolean;
     SpinnerComponent?: JSXElementConstructor<CircularProgressProps>;
+    handleRowsPerPageChange?: (rowsPerPage: number) => void;
+    handlePageChange?: (page: number) => void;
+    handleSortCellClick?: (cellId: CellId<T> | null, direction: SortDirection) => void;
 }
+
+const defaultRowsPerPageOptions = [5, 10, 15, 20, 25];
 
 const BaseTable = <T extends GenericRowStructure>({
     onRowSelectionChange,
@@ -113,7 +116,6 @@ const BaseTable = <T extends GenericRowStructure>({
         defaultRowsPerPage = 10,
         rowsPerPageOptions,
         sortColumn,
-        sortDirection: tableSortDirection,
         currentPage,
         paginated,
         SortIcon,
@@ -144,12 +146,11 @@ const BaseTable = <T extends GenericRowStructure>({
         onAllRowsSelectionChange,
         onRowSelectionChange,
         sortColumn,
-        sortDirection: tableSortDirection,
         currentPage,
         defaultRowsPerPage,
     });
 
-    const { searchValue, sortByColumnId, sortDirection, page } = state;
+    const { searchValue, sortByColumnId, sortDirection, page, rowsPerPage } = state;
     const hasTableData = Boolean(currentPageRows.length);
 
     const { cell: cellClasses } = classes;
@@ -214,9 +215,9 @@ const BaseTable = <T extends GenericRowStructure>({
                     <TablePagination
                         className={classes.footer?.cell}
                         data-testid="table-pagination"
-                        rowsPerPageOptions={rowsPerPageOptions ?? [5, 10, 15, 20, 25]}
+                        rowsPerPageOptions={rowsPerPageOptions ?? defaultRowsPerPageOptions}
                         count={filteredRows.length}
-                        rowsPerPage={defaultRowsPerPage}
+                        rowsPerPage={rowsPerPage}
                         page={page}
                         SelectProps={{
                             inputProps: {

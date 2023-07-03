@@ -78,6 +78,9 @@ export default function useTable<T extends GenericRowStructure>({
     onAllRowsSelectionChange,
     onRowSelectionChange,
     selectedRowIds,
+    handlePageChange,
+    handleRowsPerPageChange: onChangeRowsPerPage,
+    handleSortCellClick: onClickSortCell,
 }: BaseTableProps<T>) {
     const [state, dispatch] = useReducer(reducer<T>, {
         selectedRowIds: {},
@@ -144,6 +147,7 @@ export default function useTable<T extends GenericRowStructure>({
 
     const handleChangePage = (_e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         updateState({ page: newPage });
+        handlePageChange?.(newPage);
     };
 
     const handleChangeSearchValue = (searchValue: string) => updateState({ searchValue });
@@ -177,15 +181,17 @@ export default function useTable<T extends GenericRowStructure>({
     const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
         const updatedRowsPerPage = parseInt(event.target.value, 10);
         updateState({ rowsPerPage: updatedRowsPerPage, page: 0 });
+        onChangeRowsPerPage?.(updatedRowsPerPage);
     };
 
     const handleSortCellClick = (cellId: CellId<T>) => {
         if (state.sortByColumnId === cellId) {
-            updateState({
-                sortDirection: state.sortDirection === 'asc' ? 'desc' : 'asc',
-            });
+            const sortDirection = state.sortDirection === 'asc' ? 'desc' : 'asc';
+            updateState({ sortDirection: sortDirection });
+            onClickSortCell?.(cellId, sortDirection);
         } else {
             updateState({ sortByColumnId: cellId, sortDirection: 'asc' });
+            onClickSortCell?.(cellId, 'asc');
         }
     };
 
