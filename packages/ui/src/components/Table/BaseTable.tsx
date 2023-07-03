@@ -17,7 +17,6 @@ import EllipsisCellContent, { EllipsisCellContentClasses } from './components/El
 import SearchEmptyState from './components/SearchEmptyState';
 import TableCell, { TableCellClasses } from './components/TableCell';
 import {
-    Cell,
     CellId,
     CheckboxRendererArgs,
     GenericRowStructure,
