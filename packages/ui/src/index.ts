@@ -1,3 +1,2 @@
 export * from './components/Table';
-export * from './hooks/useTable';
-export { default as BaseTable } from './components/Table/BaseTable';
+export { default as useTable } from './hooks/useTable';

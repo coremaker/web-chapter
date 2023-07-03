@@ -1,6 +1,7 @@
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { IconButton, Menu, MenuClasses, MenuItem, styled } from '@mui/material';
 import { MouseEvent, ReactNode, useState } from 'react';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+
 import { GenericRowStructure, Row, RowAction } from '../types';
 
 export interface EllipsisCellContentClasses {
