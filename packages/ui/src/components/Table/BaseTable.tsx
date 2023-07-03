@@ -1,5 +1,6 @@
 import {
     Checkbox,
+    CircularProgressProps,
     Table as MuiTable,
     SortDirection,
     TableBody,
@@ -10,7 +11,7 @@ import {
     TableRow,
     TextField,
 } from '@mui/material';
-import { JSXElementConstructor, ReactNode } from 'react';
+import { JSXElementConstructor, ReactNode, useMemo } from 'react';
 
 import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import useTable, { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
@@ -18,7 +19,6 @@ import EllipsisCellContent, { EllipsisCellContentClasses } from './components/El
 import SearchEmptyState from './components/SearchEmptyState';
 import TableCell, { TableCellClasses } from './components/TableCell';
 import {
-    Cell,
     CellId,
     CheckboxRendererArgs,
     GenericRowStructure,
@@ -29,6 +29,7 @@ import {
     RowCell,
     SearchInputRendererArgs,
 } from './types';
+import Spinner from '../Spinner/Spinner';
 
 interface BaseTableFooterClasses {
     root: string;
@@ -44,6 +45,7 @@ export interface BaseTableClasses {
     cell: Partial<TableCellClasses>;
     ellipsis: Partial<EllipsisCellContentClasses>;
     footer: Partial<BaseTableFooterClasses>;
+    loaderContainer: string;
 }
 
 export interface BaseTableProps<T extends GenericRowStructure> {
@@ -84,6 +86,8 @@ export interface BaseTableProps<T extends GenericRowStructure> {
         className: string;
     }>;
     classes?: Partial<BaseTableClasses>;
+    loading?: boolean;
+    SpinnerComponent?: JSXElementConstructor<CircularProgressProps>;
 }
 
 const BaseTable = <T extends GenericRowStructure>({
@@ -116,6 +120,8 @@ const BaseTable = <T extends GenericRowStructure>({
         classes = {},
         onRowMenuOpen,
         onRowMenuClose,
+        loading,
+        SpinnerComponent = Spinner,
     } = props;
 
     const {
@@ -133,7 +139,6 @@ const BaseTable = <T extends GenericRowStructure>({
         state,
         selectedRowsCount,
         headRow,
-        cellIdsArray,
     } = useTable<T>({
         ...props,
         onAllRowsSelectionChange,
@@ -150,6 +155,8 @@ const BaseTable = <T extends GenericRowStructure>({
     const { cell: cellClasses } = classes;
 
     const selectedRowIdsState = props.selectedRowIds ? props.selectedRowIds : state.selectedRowIds;
+
+    const cellIdsArray = useMemo(() => Object.keys(headCells) as unknown as CellId<T>[], [headCells]);
 
     const renderRowCell = (row: Row<T>, cell: RowCell<T, T[CellId<T>]>, cellId: CellId<T>) => {
         const cellContent = renderCellContent(cell, row);
@@ -224,7 +231,7 @@ const BaseTable = <T extends GenericRowStructure>({
         );
     };
 
-    const decideCellRender = (render: (cellId: CellId<T>) => JSX.Element) => (cellId: CellId<T>) =>
+    const shouldRenderCell = (render: (cellId: CellId<T>) => JSX.Element) => (cellId: CellId<T>) =>
         cellId !== 'id' || showIdCell ? render(cellId) : null;
 
     const searchInputProps = searchProps ?? {
@@ -280,7 +287,7 @@ const BaseTable = <T extends GenericRowStructure>({
                             )}
 
                             {cellIdsArray.map(
-                                decideCellRender((cellId) => {
+                                shouldRenderCell((cellId) => {
                                     const headCell = headCells[cellId];
                                     return (
                                         <TableCell
@@ -309,54 +316,62 @@ const BaseTable = <T extends GenericRowStructure>({
                             )}
                         </TableRow>
                     </TableHead>
-                    <TableBody data-testid="table-body">
-                        {hasTableData
-                            ? currentPageRows.map((row) => (
-                                  <TableRow
-                                      key={row.cells.id.value}
-                                      data-testid={`table-body-row-${row.cells.id.value}`}
-                                      hover
-                                      tabIndex={-1}
-                                      className={
-                                          selectedRowIdsState[row.cells.id.value] ? 'BaseTable__Row--selected' : ''
-                                      }
-                                  >
-                                      {selectable && (
-                                          <TableCell
-                                              key={row.cells.id.value}
-                                              classes={cellClasses}
-                                              data-testid="table-row-cell"
-                                              padding="checkbox"
-                                          >
-                                              {renderCheckbox ? (
-                                                  renderCheckbox({
-                                                      rowId: row.cells.id.value,
-                                                      checked: !!selectedRowIdsState[row.cells.id.value],
-                                                      onChange: (e) =>
-                                                          handleRowSelection(row.cells.id.value, e.target.checked),
-                                                  })
-                                              ) : (
-                                                  <Checkbox
-                                                      onChange={(e) =>
-                                                          handleRowSelection(row.cells.id.value, e.target.checked)
-                                                      }
-                                                      checked={!!selectedRowIdsState[row.cells.id.value]}
-                                                      inputProps={{
-                                                          'aria-label': `select row ${row.cells.id.value}`,
-                                                      }}
-                                                  />
-                                              )}
-                                          </TableCell>
-                                      )}
+                    {loading ? (
+                        <td colSpan={10000} className={classes?.loaderContainer}>
+                            <SpinnerComponent />
+                        </td>
+                    ) : (
+                        <TableBody data-testid="table-body">
+                            {hasTableData
+                                ? currentPageRows.map((row) => (
+                                      <TableRow
+                                          key={row.cells.id.value}
+                                          data-testid={`table-body-row-${row.cells.id.value}`}
+                                          hover
+                                          tabIndex={-1}
+                                          className={
+                                              selectedRowIdsState[row.cells.id.value] ? 'BaseTable__Row--selected' : ''
+                                          }
+                                      >
+                                          {selectable && (
+                                              <TableCell
+                                                  key={row.cells.id.value}
+                                                  classes={cellClasses}
+                                                  data-testid="table-row-cell"
+                                                  padding="checkbox"
+                                              >
+                                                  {renderCheckbox ? (
+                                                      renderCheckbox({
+                                                          rowId: row.cells.id.value,
+                                                          checked: !!selectedRowIdsState[row.cells.id.value],
+                                                          onChange: (e) =>
+                                                              handleRowSelection(row.cells.id.value, e.target.checked),
+                                                      })
+                                                  ) : (
+                                                      <Checkbox
+                                                          onChange={(e) =>
+                                                              handleRowSelection(row.cells.id.value, e.target.checked)
+                                                          }
+                                                          checked={!!selectedRowIdsState[row.cells.id.value]}
+                                                          inputProps={{
+                                                              'aria-label': `select row ${row.cells.id.value}`,
+                                                          }}
+                                                      />
+                                                  )}
+                                              </TableCell>
+                                          )}
 
-                                      {cellIdsArray.map(
-                                          decideCellRender((cellId) => renderRowCell(row, row.cells[cellId], cellId))
-                                      )}
-                                  </TableRow>
-                              ))
-                            : renderSearchEmptyState?.()}
-                    </TableBody>
-                    {hasTableData && renderPaginationComponent()}
+                                          {cellIdsArray.map(
+                                              shouldRenderCell((cellId) =>
+                                                  renderRowCell(row, row.cells[cellId], cellId)
+                                              )
+                                          )}
+                                      </TableRow>
+                                  ))
+                                : renderSearchEmptyState?.()}
+                        </TableBody>
+                    )}
+                    {hasTableData && !loading && renderPaginationComponent()}
                 </MuiTable>
             </TableContainer>
         </div>
