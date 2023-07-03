@@ -1,6 +1,7 @@
 import {
     Checkbox,
     Table as MuiTable,
+    SortDirection,
     TableBody,
     TableContainer,
     TableFooter,
@@ -63,6 +64,12 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     rows: Row<T>[];
     rowActions?: RowAction<T>[];
     ellipsisIcon?: ReactNode;
+    //
+    rowsPerPageOptions?: number[];
+    currentPage?: number;
+    sortColumn: CellId<T> | null;
+    sortDirection: SortDirection;
+    //
     renderTableActions?: (selectedRows: SelectedRowIds) => ReactNode;
     renderTablePagination?: (args: PaginationRendererArgs<T>) => ReactNode;
     renderSearchInput?: (args: SearchInputRendererArgs) => ReactNode;
@@ -100,6 +107,10 @@ const BaseTable = <T extends GenericRowStructure>({
         renderCheckbox,
         renderSearchEmptyState = () => <SearchEmptyState />,
         defaultRowsPerPage = 10,
+        rowsPerPageOptions,
+        sortColumn,
+        sortDirection: tableSortDirection,
+        currentPage,
         paginated,
         SortIcon,
         classes = {},
@@ -123,7 +134,15 @@ const BaseTable = <T extends GenericRowStructure>({
         selectedRowsCount,
         headRow,
         cellIdsArray,
-    } = useTable<T>({ ...props, onAllRowsSelectionChange, onRowSelectionChange });
+    } = useTable<T>({
+        ...props,
+        onAllRowsSelectionChange,
+        onRowSelectionChange,
+        sortColumn,
+        sortDirection: tableSortDirection,
+        currentPage,
+        defaultRowsPerPage,
+    });
 
     const { searchValue, sortByColumnId, sortDirection, page } = state;
     const hasTableData = Boolean(currentPageRows.length);
@@ -188,7 +207,7 @@ const BaseTable = <T extends GenericRowStructure>({
                     <TablePagination
                         className={classes.footer?.cell}
                         data-testid="table-pagination"
-                        rowsPerPageOptions={[5, 10, 15, 20, 25]}
+                        rowsPerPageOptions={rowsPerPageOptions ?? [5, 10, 15, 20, 25]}
                         count={filteredRows.length}
                         rowsPerPage={defaultRowsPerPage}
                         page={page}

@@ -72,17 +72,20 @@ export default function useTable<T extends GenericRowStructure>({
     makeSearchableRowContent,
     rows,
     paginated,
+    currentPage = 0,
+    sortDirection,
+    sortColumn,
     onAllRowsSelectionChange,
     onRowSelectionChange,
     selectedRowIds,
 }: BaseTableProps<T>) {
     const [state, dispatch] = useReducer(reducer<T>, {
         selectedRowIds: {},
-        page: 0,
+        page: currentPage,
         rowsPerPage: defaultRowsPerPage,
-        sortByColumnId: null,
+        sortByColumnId: sortColumn,
         searchValue: '',
-        sortDirection: 'asc',
+        sortDirection,
     });
 
     const isSelectionControlled = !!selectedRowIds;

@@ -25,8 +25,12 @@ export const Pagination = Template.bind({});
 Pagination.args = {
     rows,
     headCells,
-    defaultRowsPerPage: 5,
+    defaultRowsPerPage: 4,
     paginated: true,
+    rowsPerPageOptions: [4, 8, 16],
+    currentPage: 2,
+    sortDirection: 'asc',
+    sortColumn: 'address',
 };
 
 export const Searchable = Template.bind({});
