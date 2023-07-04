@@ -73,7 +73,7 @@ export default function useTable<T extends GenericRowStructure>({
     rows,
     paginated,
     currentPage = 0,
-    sortDirection,
+    sortDirection = 'asc',
     sortColumn,
     onAllRowsSelectionChange,
     onRowSelectionChange,
@@ -91,7 +91,10 @@ export default function useTable<T extends GenericRowStructure>({
         sortDirection,
     });
 
-    const isSelectionControlled = !!selectedRowIds;
+    const isSelectionControlled = !!selectedRowIds && !!onRowSelectionChange;
+    const isPaginationControlled = !!currentPage && !!handlePageChange;
+    const isSortControlled = !!sortColumn && !!onClickSortCell;
+    const isRowsPerPageControlled = !!defaultRowsPerPage && !!onChangeRowsPerPage;
 
     const selectedRowIdsState = isSelectionControlled ? selectedRowIds : state.selectedRowIds;
 
@@ -147,51 +150,40 @@ export default function useTable<T extends GenericRowStructure>({
 
     const handleChangePage = (_e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         updateState({ page: newPage });
-        handlePageChange?.(newPage);
     };
 
     const handleChangeSearchValue = (searchValue: string) => updateState({ searchValue });
 
     const handleRowSelection = (rowId: string, selected: boolean) => {
-        if (!isSelectionControlled) {
-            updateState({ selectedRowIds: { [rowId]: selected } });
-        }
-        onRowSelectionChange?.(rowId, selected);
+        updateState({ selectedRowIds: { [rowId]: selected } });
     };
 
-    const handleAllRowsSelection = () => {
+    const handleAllRowsSelection = (_e: ChangeEvent<HTMLInputElement>, checked: boolean) => {
         const shouldSelectAll = selectedRowsCount === 0;
 
-        if (!isSelectionControlled) {
-            const updatedSelectedRows = rows
-                .map((row) => row.cells.id.value)
-                .reduce(
-                    (acc: Record<string, boolean>, currentRowId: string) => ({
-                        ...acc,
-                        [currentRowId]: shouldSelectAll,
-                    }),
-                    {}
-                );
-            updateState({ selectedRowIds: updatedSelectedRows });
-        }
-
-        onAllRowsSelectionChange?.(shouldSelectAll);
+        const updatedSelectedRows = rows
+            .map((row) => row.cells.id.value)
+            .reduce(
+                (acc: Record<string, boolean>, currentRowId: string) => ({
+                    ...acc,
+                    [currentRowId]: shouldSelectAll,
+                }),
+                {}
+            );
+        updateState({ selectedRowIds: updatedSelectedRows });
     };
 
     const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
         const updatedRowsPerPage = parseInt(event.target.value, 10);
         updateState({ rowsPerPage: updatedRowsPerPage, page: 0 });
-        onChangeRowsPerPage?.(updatedRowsPerPage);
     };
 
     const handleSortCellClick = (cellId: CellId<T>) => {
         if (state.sortByColumnId === cellId) {
             const sortDirection = state.sortDirection === 'asc' ? 'desc' : 'asc';
             updateState({ sortDirection: sortDirection });
-            onClickSortCell?.(cellId, sortDirection);
         } else {
             updateState({ sortByColumnId: cellId, sortDirection: 'asc' });
-            onClickSortCell?.(cellId, 'asc');
         }
     };
 
@@ -246,12 +238,13 @@ export default function useTable<T extends GenericRowStructure>({
     return {
         currentPageRows,
         filteredRows,
-        handleSortCellClick,
-        handleRowsPerPageChange,
-        handleChangePage,
         handleChangeSearchValue,
-        handleRowSelection,
-        handleAllRowsSelection,
+        handleSortCellClick: isSortControlled ? onClickSortCell : handleSortCellClick,
+        handleRowsPerPageChange: isRowsPerPageControlled ? onChangeRowsPerPage : handleRowsPerPageChange,
+        handleChangePage: isPaginationControlled ? handlePageChange : handleChangePage,
+        handleRowSelection: isSelectionControlled ? onRowSelectionChange : handleRowSelection,
+        handleAllRowsSelection:
+            isSelectionControlled && onAllRowsSelectionChange ? onAllRowsSelectionChange : handleAllRowsSelection,
         renderCellContent,
         renderHeadCellContent,
         makeRowCellId,

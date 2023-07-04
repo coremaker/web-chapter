@@ -7,7 +7,7 @@ import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import Table from './BaseTable';
 import { RowStructure, headCells, rows } from './mock-data';
 import Styles from './styles.module.css';
-import { useState } from 'react';
+import { ChangeEvent, MouseEvent, useState } from 'react';
 
 export default {
     title: 'Example/Table',
@@ -143,22 +143,19 @@ const ServerFilterSortPaginationTemplate: StoryFn<typeof Table<RowStructure>> = 
         paginated: true,
         page: 1,
         sortDirection: 'asc',
-        sortColumn: null,
+        sortColumn: 'address',
     });
 
-    const handleRowsPerPageChange = (rowsPerPage: number) => {
-        setConfig((prev) => ({ ...prev, defaultRowsPerPage: rowsPerPage }));
-        console.log('rowsPerPage', rowsPerPage);
+    const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setConfig((prev) => ({ ...prev, defaultRowsPerPage: event.target.valueAsNumber }));
     };
 
-    const handlePageChange = (page: number) => {
-        setConfig((prev) => ({ ...prev, page }));
-        console.log('page', page);
+    const handlePageChange = (e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+        console.log('page', e, newPage);
     };
 
-    const handleSortChange = (sortColumn: keyof RowStructure | null, sortDirection: 'asc' | 'desc' | false) => {
-        setConfig((prev) => ({ ...prev, sortColumn, sortDirection }));
-        console.log('sortColumn', sortColumn, sortDirection);
+    const handleSortChange = (sortColumn: keyof RowStructure | null) => {
+        setConfig((prev) => ({ ...prev, sortColumn, sortDirection: prev.sortDirection === 'asc' ? 'desc' : 'asc' }));
     };
 
     return (

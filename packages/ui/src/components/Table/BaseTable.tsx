@@ -11,7 +11,7 @@ import {
     TableRow,
     TextField,
 } from '@mui/material';
-import { JSXElementConstructor, ReactNode, useMemo } from 'react';
+import { ChangeEvent, JSXElementConstructor, MouseEvent, ReactNode, useMemo } from 'react';
 
 import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import useTable, { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
@@ -68,14 +68,14 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     ellipsisIcon?: ReactNode;
     rowsPerPageOptions?: number[];
     currentPage?: number;
-    sortColumn: CellId<T> | null;
-    sortDirection: SortDirection;
+    sortColumn?: CellId<T> | null;
+    sortDirection?: SortDirection;
     renderTableActions?: (selectedRows: SelectedRowIds) => ReactNode;
     renderTablePagination?: (args: PaginationRendererArgs<T>) => ReactNode;
     renderSearchInput?: (args: SearchInputRendererArgs) => ReactNode;
     renderCheckbox?: (args: CheckboxRendererArgs) => ReactNode;
     onRowSelectionChange?: (rowId: string, selected: boolean) => void;
-    onAllRowsSelectionChange?: (selected: boolean) => void;
+    onAllRowsSelectionChange?: (e: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
     onRowMenuOpen?: (row: Row<T>) => void;
     onRowMenuClose?: (row: Row<T>) => void;
     defaultRowsPerPage?: number;
@@ -86,9 +86,9 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     classes?: Partial<BaseTableClasses>;
     loading?: boolean;
     SpinnerComponent?: JSXElementConstructor<CircularProgressProps>;
-    handleRowsPerPageChange?: (rowsPerPage: number) => void;
-    handlePageChange?: (page: number) => void;
-    handleSortCellClick?: (cellId: CellId<T> | null, direction: SortDirection) => void;
+    handleRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+    handlePageChange?: (e: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
+    handleSortCellClick?: (cellId: CellId<T>) => void;
 }
 
 const defaultRowsPerPageOptions = [5, 10, 15, 20, 25];
@@ -115,8 +115,6 @@ const BaseTable = <T extends GenericRowStructure>({
         renderSearchEmptyState = () => <SearchEmptyState />,
         defaultRowsPerPage = 10,
         rowsPerPageOptions,
-        sortColumn,
-        currentPage,
         paginated,
         SortIcon,
         classes = {},
@@ -145,8 +143,6 @@ const BaseTable = <T extends GenericRowStructure>({
         ...props,
         onAllRowsSelectionChange,
         onRowSelectionChange,
-        sortColumn,
-        currentPage,
         defaultRowsPerPage,
     });
 
