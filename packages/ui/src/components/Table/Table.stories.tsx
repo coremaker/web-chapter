@@ -7,6 +7,7 @@ import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import Table from './BaseTable';
 import { RowStructure, headCells, rows } from './mock-data';
 import Styles from './styles.module.css';
+import { ChangeEvent, MouseEvent, useState } from 'react';
 
 export default {
     title: 'Example/Table',
@@ -26,8 +27,12 @@ export const Pagination = Template.bind({});
 Pagination.args = {
     rows,
     headCells,
-    defaultRowsPerPage: 5,
+    defaultRowsPerPage: 4,
     paginated: true,
+    rowsPerPageOptions: [4, 8, 16],
+    currentPage: 2,
+    sortDirection: 'asc',
+    sortColumn: 'address',
 };
 
 export const Searchable = Template.bind({});
@@ -123,4 +128,48 @@ RowActionsCustomIcon.args = {
             onClick: () => alert('Action 2 clicked'),
         },
     ],
+};
+
+type Config = {
+    defaultRowsPerPage: number;
+    paginated: boolean;
+    page: number;
+    sortDirection: 'asc' | 'desc' | false;
+    sortColumn: keyof RowStructure | null;
+};
+const ServerFilterSortPaginationTemplate: StoryFn<typeof Table<RowStructure>> = (args) => {
+    const [config, setConfig] = useState<Config>({
+        defaultRowsPerPage: 5,
+        paginated: true,
+        page: 1,
+        sortDirection: 'asc',
+        sortColumn: 'address',
+    });
+
+    const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setConfig((prev) => ({ ...prev, defaultRowsPerPage: event.target.valueAsNumber }));
+    };
+
+    const handlePageChange = (e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+        console.log('page', e, newPage);
+    };
+
+    const handleSortChange = (sortColumn: keyof RowStructure | null) => {
+        setConfig((prev) => ({ ...prev, sortColumn, sortDirection: prev.sortDirection === 'asc' ? 'desc' : 'asc' }));
+    };
+
+    return (
+        <Table<RowStructure>
+            {...args}
+            handlePageChange={handlePageChange}
+            handleRowsPerPageChange={handleRowsPerPageChange}
+            handleSortCellClick={handleSortChange}
+            {...config}
+        />
+    );
+};
+export const ServerFilterSortPagination = ServerFilterSortPaginationTemplate.bind({});
+ServerFilterSortPagination.args = {
+    rows,
+    headCells,
 };

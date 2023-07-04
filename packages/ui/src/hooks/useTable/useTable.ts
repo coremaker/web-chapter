@@ -72,22 +72,23 @@ export default function useTable<T extends GenericRowStructure>({
     makeSearchableRowContent,
     rows,
     paginated,
-    onAllRowsSelectionChange,
-    onRowSelectionChange,
+    currentPage = 0,
+    sortDirection = 'asc',
+    sortColumn,
     selectedRowIds,
+    ...props
 }: BaseTableProps<T>) {
     const [state, dispatch] = useReducer(reducer<T>, {
         selectedRowIds: {},
-        page: 0,
+        page: currentPage,
         rowsPerPage: defaultRowsPerPage,
-        sortByColumnId: null,
+        sortByColumnId: sortColumn,
         searchValue: '',
-        sortDirection: 'asc',
+        sortDirection,
     });
 
-    const isSelectionControlled = !!selectedRowIds;
-
-    const selectedRowIdsState = isSelectionControlled ? selectedRowIds : state.selectedRowIds;
+    const selectedRowIdsState =
+        !!selectedRowIds && !!props.onRowSelectionChange ? selectedRowIds : state.selectedRowIds;
 
     const selectedRowsCount = useMemo(
         () => Object.values(selectedRowIdsState).filter((selected) => selected).length,
@@ -139,48 +140,40 @@ export default function useTable<T extends GenericRowStructure>({
         return cell.value;
     };
 
-    const handleChangePage = (_e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    const handleChangePageInternal = (_e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         updateState({ page: newPage });
     };
 
     const handleChangeSearchValue = (searchValue: string) => updateState({ searchValue });
 
-    const handleRowSelection = (rowId: string, selected: boolean) => {
-        if (!isSelectionControlled) {
-            updateState({ selectedRowIds: { [rowId]: selected } });
-        }
-        onRowSelectionChange?.(rowId, selected);
+    const handleRowSelectionInternal = (rowId: string, selected: boolean) => {
+        updateState({ selectedRowIds: { [rowId]: selected } });
     };
 
-    const handleAllRowsSelection = () => {
+    const handleAllRowsSelectionInternal = () => {
         const shouldSelectAll = selectedRowsCount === 0;
 
-        if (!isSelectionControlled) {
-            const updatedSelectedRows = rows
-                .map((row) => row.cells.id.value)
-                .reduce(
-                    (acc: Record<string, boolean>, currentRowId: string) => ({
-                        ...acc,
-                        [currentRowId]: shouldSelectAll,
-                    }),
-                    {}
-                );
-            updateState({ selectedRowIds: updatedSelectedRows });
-        }
-
-        onAllRowsSelectionChange?.(shouldSelectAll);
+        const updatedSelectedRows = rows
+            .map((row) => row.cells.id.value)
+            .reduce(
+                (acc: Record<string, boolean>, currentRowId: string) => ({
+                    ...acc,
+                    [currentRowId]: shouldSelectAll,
+                }),
+                {}
+            );
+        updateState({ selectedRowIds: updatedSelectedRows });
     };
 
-    const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const handleRowsPerPageChangeInternal = (event: ChangeEvent<HTMLInputElement>) => {
         const updatedRowsPerPage = parseInt(event.target.value, 10);
         updateState({ rowsPerPage: updatedRowsPerPage, page: 0 });
     };
 
-    const handleSortCellClick = (cellId: CellId<T>) => {
+    const handleSortCellClickInternal = (cellId: CellId<T>) => {
         if (state.sortByColumnId === cellId) {
-            updateState({
-                sortDirection: state.sortDirection === 'asc' ? 'desc' : 'asc',
-            });
+            const direction = state.sortDirection === 'asc' ? 'desc' : 'asc';
+            updateState({ sortDirection: direction });
         } else {
             updateState({ sortByColumnId: cellId, sortDirection: 'asc' });
         }
@@ -237,12 +230,20 @@ export default function useTable<T extends GenericRowStructure>({
     return {
         currentPageRows,
         filteredRows,
-        handleSortCellClick,
-        handleRowsPerPageChange,
-        handleChangePage,
         handleChangeSearchValue,
-        handleRowSelection,
-        handleAllRowsSelection,
+        handleSortCellClick:
+            !!sortColumn && props.handleSortCellClick ? props.handleSortCellClick : handleSortCellClickInternal,
+        handleRowsPerPageChange:
+            !!defaultRowsPerPage && !!props.handleRowsPerPageChange
+                ? props.handleRowsPerPageChange
+                : handleRowsPerPageChangeInternal,
+        handleChangePage: !!currentPage && !!props.handlePageChange ? props.handlePageChange : handleChangePageInternal,
+        handleRowSelection:
+            !!selectedRowIds && !!props.onRowSelectionChange ? props.onRowSelectionChange : handleRowSelectionInternal,
+        handleAllRowsSelection:
+            !!selectedRowIds && !!props.onAllRowsSelectionChange
+                ? props.onAllRowsSelectionChange
+                : handleAllRowsSelectionInternal,
         renderCellContent,
         renderHeadCellContent,
         makeRowCellId,

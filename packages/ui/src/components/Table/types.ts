@@ -72,8 +72,8 @@ export interface PaginationRendererArgs<T extends GenericRowStructure> {
     page: number;
     defaultRowsPerPage: number;
     rows: Row<T>[];
-    handleChangePage: PageChangeHandler;
-    handleRowsPerPageChange: RowsPerPageChangeHandler;
+    handleChangePage?: PageChangeHandler;
+    handleRowsPerPageChange?: RowsPerPageChangeHandler;
 }
 
 export interface CheckboxRendererArgs {

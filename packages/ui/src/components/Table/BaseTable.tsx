@@ -2,6 +2,7 @@ import {
     Checkbox,
     CircularProgressProps,
     Table as MuiTable,
+    SortDirection,
     TableBody,
     TableContainer,
     TableFooter,
@@ -10,10 +11,11 @@ import {
     TableRow,
     TextField,
 } from '@mui/material';
-import { JSXElementConstructor, ReactNode, useMemo } from 'react';
+import { ChangeEvent, JSXElementConstructor, MouseEvent, ReactNode, useMemo } from 'react';
 
 import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import useTable, { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
+import Spinner from '../Spinner/Spinner';
 import EllipsisCellContent, { EllipsisCellContentClasses } from './components/EllipsisCellContent';
 import SearchEmptyState from './components/SearchEmptyState';
 import TableCell, { TableCellClasses } from './components/TableCell';
@@ -28,7 +30,6 @@ import {
     RowCell,
     SearchInputRendererArgs,
 } from './types';
-import Spinner from '../Spinner/Spinner';
 
 interface BaseTableFooterClasses {
     root: string;
@@ -65,12 +66,16 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     rows: Row<T>[];
     rowActions?: RowAction<T>[];
     ellipsisIcon?: ReactNode;
+    rowsPerPageOptions?: number[];
+    currentPage?: number;
+    sortColumn?: CellId<T> | null;
+    sortDirection?: SortDirection;
     renderTableActions?: (selectedRows: SelectedRowIds) => ReactNode;
     renderTablePagination?: (args: PaginationRendererArgs<T>) => ReactNode;
     renderSearchInput?: (args: SearchInputRendererArgs) => ReactNode;
     renderCheckbox?: (args: CheckboxRendererArgs) => ReactNode;
     onRowSelectionChange?: (rowId: string, selected: boolean) => void;
-    onAllRowsSelectionChange?: (selected: boolean) => void;
+    onAllRowsSelectionChange?: (e: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
     onRowMenuOpen?: (row: Row<T>) => void;
     onRowMenuClose?: (row: Row<T>) => void;
     defaultRowsPerPage?: number;
@@ -81,7 +86,12 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     classes?: Partial<BaseTableClasses>;
     loading?: boolean;
     SpinnerComponent?: JSXElementConstructor<CircularProgressProps>;
+    handleRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+    handlePageChange?: (e: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
+    handleSortCellClick?: (cellId: CellId<T>) => void;
 }
+
+const defaultRowsPerPageOptions = [5, 10, 15, 20, 25];
 
 const BaseTable = <T extends GenericRowStructure>({
     onRowSelectionChange,
@@ -104,6 +114,7 @@ const BaseTable = <T extends GenericRowStructure>({
         renderCheckbox,
         renderSearchEmptyState = () => <SearchEmptyState />,
         defaultRowsPerPage = 10,
+        rowsPerPageOptions,
         paginated,
         SortIcon,
         classes = {},
@@ -128,9 +139,14 @@ const BaseTable = <T extends GenericRowStructure>({
         state,
         selectedRowsCount,
         headRow,
-    } = useTable<T>({ ...props, onAllRowsSelectionChange, onRowSelectionChange });
+    } = useTable<T>({
+        ...props,
+        onAllRowsSelectionChange,
+        onRowSelectionChange,
+        defaultRowsPerPage,
+    });
 
-    const { searchValue, sortByColumnId, sortDirection, page } = state;
+    const { searchValue, sortByColumnId, sortDirection, page, rowsPerPage } = state;
     const hasTableData = Boolean(currentPageRows.length);
 
     const { cell: cellClasses } = classes;
@@ -195,9 +211,9 @@ const BaseTable = <T extends GenericRowStructure>({
                     <TablePagination
                         className={classes.footer?.cell}
                         data-testid="table-pagination"
-                        rowsPerPageOptions={[5, 10, 15, 20, 25]}
+                        rowsPerPageOptions={rowsPerPageOptions ?? defaultRowsPerPageOptions}
                         count={filteredRows.length}
-                        rowsPerPage={defaultRowsPerPage}
+                        rowsPerPage={rowsPerPage}
                         page={page}
                         SelectProps={{
                             inputProps: {
