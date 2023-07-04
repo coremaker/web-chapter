@@ -15,6 +15,7 @@ import { ChangeEvent, JSXElementConstructor, MouseEvent, ReactNode, useMemo } fr
 
 import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import useTable, { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
+import Spinner from '../Spinner/Spinner';
 import EllipsisCellContent, { EllipsisCellContentClasses } from './components/EllipsisCellContent';
 import SearchEmptyState from './components/SearchEmptyState';
 import TableCell, { TableCellClasses } from './components/TableCell';
@@ -29,7 +30,6 @@ import {
     RowCell,
     SearchInputRendererArgs,
 } from './types';
-import Spinner from '../Spinner/Spinner';
 
 interface BaseTableFooterClasses {
     root: string;
