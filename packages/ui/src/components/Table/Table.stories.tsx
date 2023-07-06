@@ -2,12 +2,12 @@
 import AppleIcon from '@mui/icons-material/Apple';
 import { Chip } from '@mui/material';
 import { Meta, StoryFn } from '@storybook/react';
+import { ChangeEvent, MouseEvent, useState } from 'react';
 
 import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import Table from './BaseTable';
 import { RowStructure, headCells, rows } from './mock-data';
 import Styles from './styles.module.css';
-import { ChangeEvent, MouseEvent, useState } from 'react';
 
 export default {
     title: 'Example/Table',
@@ -151,7 +151,7 @@ const ServerFilterSortPaginationTemplate: StoryFn<typeof Table<RowStructure>> = 
     };
 
     const handlePageChange = (e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-        console.log('page', e, newPage);
+        return rows.slice((newPage - 1) * config.defaultRowsPerPage, newPage * config.defaultRowsPerPage);
     };
 
     const handleSortChange = (sortColumn: keyof RowStructure | null) => {
@@ -162,6 +162,7 @@ const ServerFilterSortPaginationTemplate: StoryFn<typeof Table<RowStructure>> = 
         <Table<RowStructure>
             {...args}
             handlePageChange={handlePageChange}
+            rows={rows.slice((config.page - 1) * config.defaultRowsPerPage)}
             handleRowsPerPageChange={handleRowsPerPageChange}
             handleSortCellClick={handleSortChange}
             {...config}
@@ -171,5 +172,10 @@ const ServerFilterSortPaginationTemplate: StoryFn<typeof Table<RowStructure>> = 
 export const ServerFilterSortPagination = ServerFilterSortPaginationTemplate.bind({});
 ServerFilterSortPagination.args = {
     rows,
+    defaultRowsPerPage: 5,
+    totalPages: 8,
     headCells,
+    currentPage: 0,
+    sortDirection: 'asc',
+    sortColumn: 'address',
 };
