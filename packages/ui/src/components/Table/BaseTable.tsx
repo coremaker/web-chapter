@@ -61,6 +61,7 @@ export interface BaseTableProps<T extends GenericRowStructure> {
         value: string;
         onChange: (value: string) => void;
     };
+    totalPages: number;
     selectedRowIds?: SelectedRowIds;
     headCells: HeadRowCells<T>;
     rows: Row<T>[];
@@ -107,6 +108,7 @@ const BaseTable = <T extends GenericRowStructure>({
         showIdCell,
         rowActions = [],
         ellipsisIcon,
+        totalPages,
         renderTableActions,
         renderTablePagination,
         renderSearchInput,
@@ -212,7 +214,7 @@ const BaseTable = <T extends GenericRowStructure>({
                         className={classes.footer?.cell}
                         data-testid="table-pagination"
                         rowsPerPageOptions={rowsPerPageOptions ?? defaultRowsPerPageOptions}
-                        count={filteredRows.length}
+                        count={totalPages * rowsPerPage}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         SelectProps={{
