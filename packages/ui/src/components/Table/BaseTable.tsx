@@ -61,7 +61,7 @@ export interface BaseTableProps<T extends GenericRowStructure> {
         value: string;
         onChange: (value: string) => void;
     };
-    totalPages: number;
+    totalPages?: number;
     selectedRowIds?: SelectedRowIds;
     headCells: HeadRowCells<T>;
     rows: Row<T>[];
@@ -108,7 +108,7 @@ const BaseTable = <T extends GenericRowStructure>({
         showIdCell,
         rowActions = [],
         ellipsisIcon,
-        totalPages,
+        totalPages = 1,
         renderTableActions,
         renderTablePagination,
         renderSearchInput,
