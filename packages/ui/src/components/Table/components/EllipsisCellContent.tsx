@@ -45,7 +45,7 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
     const menuId = `table-row-menu-${row.cells.id.value}`;
 
     const isEllipsisIconDisabled = !rowActions?.find((rowAction) => !rowAction?.disabled?.(row));
-    
+
     return (
         <StyledDivContainer className={classes.root ?? ''}>
             <div>{label}</div>
@@ -64,7 +64,7 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
                 </IconButton>
                 <Menu classes={classes.menu} id={menuId} open={open} onClose={handleClose} anchorEl={anchorEl}>
                     {rowActions.map((rowAction) => {
-                        if (rowAction?.disabled) {
+                        if (rowAction?.disabled?.(row)) {
                             return null;
                         }
 
