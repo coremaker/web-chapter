@@ -16,6 +16,7 @@ interface EllipsisCellContentProps<T extends GenericRowStructure> {
     icon?: ReactNode;
     onMenuOpen?: (row: Row<T>) => void;
     onMenuClose?: (row: Row<T>) => void;
+    disabled?: (row?: Row<T>) => boolean;
 }
 const StyledDivContainer = styled('div')({
     display: 'flex',
@@ -31,6 +32,7 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
     classes = {},
     onMenuOpen,
     onMenuClose,
+    disabled,
 }: EllipsisCellContentProps<T>) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -48,6 +50,7 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
             <div>{label}</div>
             <div>
                 <IconButton
+                    disabled={disabled?.(row)}
                     data-testid={`ellipsis-button-${row.cells.id.value}`}
                     aria-label="open table row menu"
                     aria-controls={open ? menuId : undefined}
