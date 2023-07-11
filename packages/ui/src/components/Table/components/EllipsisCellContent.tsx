@@ -44,7 +44,7 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
     };
     const menuId = `table-row-menu-${row.cells.id.value}`;
 
-    const isEllipsisIconDisabled = !rowActions?.find((row) => !row.disabled);
+    const isEllipsisIconDisabled = !rowActions?.find((row) => !row?.disabled);
 
     return (
         <StyledDivContainer className={classes.root ?? ''}>
