@@ -64,6 +64,10 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
                 </IconButton>
                 <Menu classes={classes.menu} id={menuId} open={open} onClose={handleClose} anchorEl={anchorEl}>
                     {rowActions.map((rowAction) => {
+                        if (rowAction.disabled) {
+                            return null;
+                        }
+
                         const key = `${row.cells.id.value}-${rowAction.id}`;
                         if (rowAction.renderComponent) {
                             return rowAction.renderComponent({ key, row });
