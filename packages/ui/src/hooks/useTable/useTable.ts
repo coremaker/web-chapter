@@ -237,7 +237,10 @@ export default function useTable<T extends GenericRowStructure>({
             !!defaultRowsPerPage && !!props.handleRowsPerPageChange
                 ? props.handleRowsPerPageChange
                 : handleRowsPerPageChangeInternal,
-        handleChangePage: !!currentPage && !!props.handlePageChange ? props.handlePageChange : handleChangePageInternal,
+        handleChangePage:
+            currentPage && currentPage >= 0 && !!props.handlePageChange
+                ? props.handlePageChange
+                : handleChangePageInternal,
         handleRowSelection:
             !!selectedRowIds && !!props.onRowSelectionChange ? props.onRowSelectionChange : handleRowSelectionInternal,
         handleAllRowsSelection:
