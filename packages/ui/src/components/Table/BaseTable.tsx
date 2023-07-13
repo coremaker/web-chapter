@@ -149,7 +149,7 @@ const BaseTable = <T extends GenericRowStructure>({
     });
 
     const { searchValue, sortByColumnId, sortDirection, page, rowsPerPage } = state;
-    const hasTableData = Boolean(currentPageRows.length);
+    const hasTableData = Boolean(rows.length);
 
     const { cell: cellClasses } = classes;
 

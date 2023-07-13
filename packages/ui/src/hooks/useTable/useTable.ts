@@ -141,7 +141,7 @@ export default function useTable<T extends GenericRowStructure>({
     };
 
     const handleChangePageInternal = (_e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-        updateState({ page: newPage });
+        updateState({ page: newPage - 1 });
     };
 
     const handleChangeSearchValue = (searchValue: string) => updateState({ searchValue });
