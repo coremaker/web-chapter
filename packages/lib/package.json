@@ -1,41 +1,44 @@
 {
-	"name": "@web-chapter/lib",
-	"version": "0.0.2",
-	"description": "",
-	"files": [
-		"dist"
-	],
-	"exports": {
-		".": {
-			"import": "./dist/lib.es.js",
-			"require": "./dist/lib.umd.js"
-		}
-	},
-	"type": "module",
-	"main": "./dist/lib.umd.js",
-	"module": "./dist/lib.es.js",
-	"types": "./dist/index.d.ts",
-	"scripts": {
-		"test": "vitest run --coverage",
-		"build": "tsc && vite build",
-		"rm:build": "tsc --build --clean && rm -rf dist"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/coremaker/web-chapter.git"
-	},
-	"devDependencies": {
-		"typescript": "^4.9.5",
-		"vite": "^4.1.0",
-		"vite-plugin-dts": "^2.0.0-beta.1",
-		"vite-tsconfig-paths": "^4.0.5",
-		"vitest": "^0.25.8"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/coremaker/web-chapter/issues"
-	},
-	"homepage": "https://github.com/coremaker/web-chapter#readme"
+    "name": "@web-chapter/lib",
+    "version": "0.0.4",
+    "description": "",
+    "files": [
+        "dist"
+    ],
+    "exports": {
+        ".": {
+            "import": "./dist/lib.es.js",
+            "require": "./dist/lib.umd.js"
+        }
+    },
+    "type": "module",
+    "main": "./dist/lib.umd.js",
+    "module": "./dist/lib.es.js",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "test": "vitest run --coverage",
+        "build": "tsc && vite build",
+        "rm:build": "tsc --build --clean && rm -rf dist"
+    },
+    "eslintConfig": {
+        "extends": "../../.eslintrc"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/coremaker/web-chapter.git"
+    },
+    "devDependencies": {
+        "typescript": "^4.9.5",
+        "vite": "^4.1.0",
+        "vite-plugin-dts": "^2.0.0-beta.1",
+        "vite-tsconfig-paths": "^4.0.5",
+        "vitest": "^0.25.8"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/coremaker/web-chapter/issues"
+    },
+    "homepage": "https://github.com/coremaker/web-chapter#readme"
 }
