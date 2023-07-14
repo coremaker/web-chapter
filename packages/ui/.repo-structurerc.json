@@ -50,6 +50,11 @@
             "children": [
               {
                 "name": "/^/",
+                "case": "PascalCase",
+                "extension": ".tsx"
+              },
+              {
+                "name": "/^/",
                 "case": "CamelCase",
                 "extension": ".ts"
               },
