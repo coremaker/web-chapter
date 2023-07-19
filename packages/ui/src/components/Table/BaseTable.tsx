@@ -370,7 +370,7 @@ const BaseTable = <T extends GenericRowStructure>({
                                 : renderSearchEmptyState?.()}
                         </TableBody>
                     )}
-                    {hasTableData && !loading && renderPaginationComponent()}
+                    {currentPageRows.length && !loading && renderPaginationComponent()}
                 </MuiTable>
             </TableContainer>
         </div>
