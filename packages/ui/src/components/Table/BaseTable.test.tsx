@@ -2,7 +2,7 @@ import { fireEvent, render, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import Table from './BaseTable';
-import { headCells, rows } from './mock-data';
+import { headCells, rows } from './MockData';
 
 describe('<Table />', () => {
     it.each(Object.values(headCells))('renders the head cell: %s', (cell) => {

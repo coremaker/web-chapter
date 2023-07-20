@@ -6,7 +6,7 @@ import { ChangeEvent, MouseEvent, useState } from 'react';
 
 import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import Table from './BaseTable';
-import { RowStructure, headCells, rows } from './mock-data';
+import { RowStructure, headCells, rows } from './MockData';
 import Styles from './styles.module.css';
 
 export default {
