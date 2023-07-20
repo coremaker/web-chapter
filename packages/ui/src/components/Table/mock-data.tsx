@@ -57,7 +57,7 @@ export const rows: Row<RowStructure>[] = range(40).map((i) => ({
             value: `${i % 2 === 0 ? i : 12 - i}${emails[Math.ceil(Math.random() * 2)] + i}`,
         },
         fullName: {
-            value: names[Math.ceil(Math.random() * 2)] + i,
+            value: names[i % names.length] + i,
         },
         role: {
             value: 'Contributor',

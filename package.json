@@ -4,6 +4,7 @@
   "description": "A framework for building web apps",
   "scripts": {
     "lint": "eslint --ext .js,.jsx,.ts,.tsx packages",
+    "ts:check": "tsc",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx packages"
   },
   "repository": {

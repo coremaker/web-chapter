@@ -72,15 +72,13 @@ export default function useTable<T extends GenericRowStructure>({
     makeSearchableRowContent,
     rows,
     paginated,
-    currentPage = 0,
     sortDirection = 'asc',
     sortColumn,
-    selectedRowIds,
     ...props
 }: BaseTableProps<T>) {
     const [state, dispatch] = useReducer(reducer<T>, {
         selectedRowIds: {},
-        page: currentPage,
+        page: 0,
         rowsPerPage: defaultRowsPerPage,
         sortByColumnId: sortColumn,
         searchValue: '',
@@ -88,7 +86,7 @@ export default function useTable<T extends GenericRowStructure>({
     });
 
     const selectedRowIdsState =
-        !!selectedRowIds && !!props.onRowSelectionChange ? selectedRowIds : state.selectedRowIds;
+        !!props.selectedRowIds && !!props.onRowSelectionChange ? props.selectedRowIds : state.selectedRowIds;
 
     const selectedRowsCount = useMemo(
         () => Object.values(selectedRowIdsState).filter((selected) => selected).length,
@@ -141,7 +139,7 @@ export default function useTable<T extends GenericRowStructure>({
     };
 
     const handleChangePageInternal = (_e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-        updateState({ page: newPage - 1 });
+        updateState({ page: newPage });
     };
 
     const handleChangeSearchValue = (searchValue: string) => updateState({ searchValue });
@@ -231,27 +229,28 @@ export default function useTable<T extends GenericRowStructure>({
         currentPageRows,
         filteredRows,
         handleChangeSearchValue,
+
         handleSortCellClick:
-            !!sortColumn && props.handleSortCellClick ? props.handleSortCellClick : handleSortCellClickInternal,
-        handleRowsPerPageChange:
-            !!defaultRowsPerPage && !!props.handleRowsPerPageChange
-                ? props.handleRowsPerPageChange
-                : handleRowsPerPageChangeInternal,
-        handleChangePage:
-            currentPage && currentPage >= 0 && !!props.handlePageChange
-                ? props.handlePageChange
-                : handleChangePageInternal,
+            !!sortColumn && !!props.handleSortCellClick ? props.handleSortCellClick : handleSortCellClickInternal,
+
+        handleRowsPerPageChange: props.handleRowsPerPageChange ?? handleRowsPerPageChangeInternal,
+        handleChangePage: props.handlePageChange ?? handleChangePageInternal,
+        page: props.currentPage ?? state.page,
+
         handleRowSelection:
-            !!selectedRowIds && !!props.onRowSelectionChange ? props.onRowSelectionChange : handleRowSelectionInternal,
+            !!props.selectedRowIds && !!props.onRowSelectionChange
+                ? props.onRowSelectionChange
+                : handleRowSelectionInternal,
         handleAllRowsSelection:
-            !!selectedRowIds && !!props.onAllRowsSelectionChange
+            !!props.selectedRowIds && !!props.onAllRowsSelectionChange
                 ? props.onAllRowsSelectionChange
                 : handleAllRowsSelectionInternal,
+        selectedRowsCount,
+        selectedRowIds: selectedRowIdsState,
         renderCellContent,
         renderHeadCellContent,
         makeRowCellId,
         state,
-        selectedRowsCount,
         updateState,
         headRow,
     };

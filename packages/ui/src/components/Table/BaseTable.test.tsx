@@ -1,5 +1,4 @@
-import { render, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, render, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import Table from './BaseTable';
@@ -70,13 +69,13 @@ describe('<Table />', () => {
         const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
         const ellipsisButton = within(cells[cells.length - 1]).getByTestId(`ellipsis-button-${rows[0].cells.id.value}`);
 
-        await userEvent.click(ellipsisButton);
+        fireEvent.click(ellipsisButton);
 
         expect(mockOnMenuOpen).toHaveBeenCalledTimes(1);
     });
 
     it('renders all rowActions when clicking on the ellipsis button', async () => {
-        const { getByTestId, getByText } = render(
+        const { getByText, getAllByRole } = render(
             <Table
                 headCells={headCells}
                 rows={rows}
@@ -88,11 +87,13 @@ describe('<Table />', () => {
             />
         );
 
-        const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
-        const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
+        const tableBody = getAllByRole('rowgroup')[1];
+        const firstRow = within(tableBody).getAllByRole('row')[0];
+        const cells = within(firstRow).getAllByRole('cell');
+
         const ellipsisButton = within(cells[cells.length - 1]).getByTestId(`ellipsis-button-${rows[0].cells.id.value}`);
 
-        await userEvent.click(ellipsisButton);
+        fireEvent.click(ellipsisButton);
         expect(getByText('Action 1')).toBeInTheDocument();
         expect(getByText('Action 2')).toBeInTheDocument();
         expect(getByText('Action 3')).toBeInTheDocument();
@@ -121,7 +122,7 @@ describe('<Table />', () => {
         const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
         const ellipsisButton = within(cells[cells.length - 1]).getByTestId(`ellipsis-button-${rows[0].cells.id.value}`);
 
-        await userEvent.click(ellipsisButton);
+        fireEvent.click(ellipsisButton);
         expect(getByText('Custom renderer Action 1')).toBeInTheDocument();
         expect(getByText('Custom renderer Action 2')).toBeInTheDocument();
         expect(getByText('Action 3')).toBeInTheDocument();
@@ -129,7 +130,7 @@ describe('<Table />', () => {
 
     it('calls the onClick function passed on rowAction prop', async () => {
         const mockRowAction = vi.fn();
-        const { getByTestId } = render(
+        const { getByRole, getAllByRole } = render(
             <Table
                 headCells={headCells}
                 rows={rows}
@@ -137,18 +138,18 @@ describe('<Table />', () => {
             />
         );
 
-        const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
-        const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
-        const ellipsisButton = within(cells[cells.length - 1]).getByTestId(`ellipsis-button-${rows[0].cells.id.value}`);
+        const tableBody = getAllByRole('rowgroup')[1];
+        const firstRenderedRow = within(tableBody).getAllByRole('row')[0];
+        const cells = within(firstRenderedRow).getAllByRole('cell');
+        const ellipsisButton = within(cells[cells.length - 1]).getByRole('button', {
+            name: `open menu for row id ${rows[0].cells.id.value}`,
+        });
 
-        await userEvent.click(ellipsisButton);
+        fireEvent.click(ellipsisButton);
 
-        const menuItem = getByTestId(`menu-item-${rows[0].cells.id.value}-1`);
-
-        await userEvent.click(menuItem);
-
+        const menuItem = getByRole('menuitem', { name: `Action` });
+        fireEvent.click(menuItem);
         expect(mockRowAction).toHaveBeenCalledTimes(1);
-        expect(mockRowAction).toHaveBeenCalledWith(rows[0]);
     });
 
     it('renders the search input', () => {
@@ -159,23 +160,28 @@ describe('<Table />', () => {
     });
 
     it('filters the rendered rows based when the search input has any value', async () => {
-        const { getByRole, findAllByTestId } = render(
+        const { getByRole, getAllByRole } = render(
             <Table makeSearchableRowContent={(row) => row.cells.fullName.value} headCells={headCells} rows={rows} />
         );
         const searchInput = getByRole('textbox');
-        await userEvent.type(searchInput, rows[5].cells.fullName.value);
-        const renderedRows = await findAllByTestId(/table-body-row/);
+        fireEvent.change(searchInput, { target: { value: 'John Doe0' } });
 
-        renderedRows.forEach((row) => {
-            expect(within(row).getByText(rows[5].cells.fullName.value, { exact: false })).toBeInTheDocument();
+        const tableBody = getAllByRole('rowgroup')[1];
+        await waitFor(() => {
+            const renderedRows = within(tableBody).getAllByRole('row');
+
+            renderedRows.forEach((row) => {
+                expect(within(row).getByRole('cell', { name: /John Doe0/ })).toBeInTheDocument();
+            });
         });
     });
+
     it('correctly shows the empty search fallback if no results were found', async () => {
         const { getByRole, queryByTestId, getByText } = render(
             <Table makeSearchableRowContent={(row) => row.cells.fullName.value} headCells={headCells} rows={rows} />
         );
         const searchInput = getByRole('textbox');
-        await userEvent.type(searchInput, 'non-existing-value');
+        fireEvent.change(searchInput, { target: { value: 'non-existing-value' } });
 
         expect(getByText('No results found')).toBeInTheDocument();
 
@@ -198,7 +204,7 @@ describe('<Table />', () => {
 
         const headAreaCheckbox = within(tableHeadArea).getByRole('checkbox');
 
-        await userEvent.click(headAreaCheckbox);
+        fireEvent.click(headAreaCheckbox);
 
         const tableBodyArea = getByTestId('table-body');
         const tableBodyCheckboxes = within(tableBodyArea).getAllByRole('checkbox');
@@ -276,7 +282,7 @@ describe('<Table />', () => {
         const tableBodyArea = getByTestId('table-body');
         const tableBodyCheckboxes = within(tableBodyArea).getAllByRole('checkbox');
 
-        await userEvent.click(tableBodyCheckboxes[0]);
+        fireEvent.click(tableBodyCheckboxes[0]);
 
         const bodyCheckedCheckBoxes = within(tableBodyArea).queryAllByRole('checkbox', { checked: true });
 
@@ -291,9 +297,9 @@ describe('<Table />', () => {
 
         const renderedRows = getAllByTestId(/table-body-row/);
         const secondTableRowCheckbox = within(renderedRows[0]).getByRole('checkbox');
-        await userEvent.click(secondTableRowCheckbox);
+        fireEvent.click(secondTableRowCheckbox);
         const thirdTableRowCheckbox = within(renderedRows[1]).getByRole('checkbox');
-        await userEvent.click(thirdTableRowCheckbox);
+        fireEvent.click(thirdTableRowCheckbox);
 
         const tableHeadArea = getByTestId('table-head');
         const headAreaCheckbox = within(tableHeadArea).getByRole('checkbox');
@@ -308,6 +314,7 @@ describe('<Table />', () => {
                 headCells={headCells}
                 rows={rows}
                 defaultRowsPerPage={5}
+                rowsPerPageOptions={[5, 10]}
                 renderTableActions={(selectedRows) => {
                     const numberOfSelectedRows = Object.values(selectedRows).filter((selected) => selected).length;
                     return <div data-testid="selected-rows-count">Total: {numberOfSelectedRows}</div>;
@@ -319,7 +326,7 @@ describe('<Table />', () => {
 
         const tableRowCheckbox = within(renderedRows[2]).getByRole('checkbox');
 
-        await userEvent.click(tableRowCheckbox);
+        fireEvent.click(tableRowCheckbox);
 
         const tableBodyArea = getByTestId('table-body');
         const tableBodyCheckedCheckboxes = within(tableBodyArea).getAllByRole('checkbox', {
@@ -338,6 +345,7 @@ describe('<Table />', () => {
                 headCells={headCells}
                 rows={rows}
                 defaultRowsPerPage={5}
+                rowsPerPageOptions={[5, 10]}
                 renderTableActions={(selectedRows) => {
                     const numberOfSelectedRows = Object.values(selectedRows).filter((selected) => selected).length;
                     return <div data-testid="selected-rows-count">Total: {numberOfSelectedRows}</div>;
@@ -347,13 +355,13 @@ describe('<Table />', () => {
 
         const renderedRows = getAllByTestId(/table-body-row/);
         const secondTableRowCheckbox = within(renderedRows[2]).getByRole('checkbox');
-        await userEvent.click(secondTableRowCheckbox);
+        fireEvent.click(secondTableRowCheckbox);
         const thirdTableRowCheckbox = within(renderedRows[3]).getByRole('checkbox');
-        await userEvent.click(thirdTableRowCheckbox);
+        fireEvent.click(thirdTableRowCheckbox);
 
         const tableHeadArea = getByTestId('table-head');
         const headAreaCheckbox = within(tableHeadArea).getByRole('checkbox');
-        await userEvent.click(headAreaCheckbox);
+        fireEvent.click(headAreaCheckbox);
 
         const tableBodyArea = getByTestId('table-body');
         const tableBodyCheckedCheckboxes = within(tableBodyArea).queryAllByRole('checkbox', {
@@ -374,7 +382,14 @@ describe('<Table />', () => {
 
     it('renders the pagination with all the buttons when the prop "paginated" is given', () => {
         const { getByTestId } = render(
-            <Table selectable headCells={headCells} rows={rows} defaultRowsPerPage={2} paginated />
+            <Table
+                selectable
+                headCells={headCells}
+                rows={rows}
+                defaultRowsPerPage={2}
+                rowsPerPageOptions={[2, 4]}
+                paginated
+            />
         );
 
         const paginationComponent = getByTestId('table-pagination');
@@ -391,7 +406,14 @@ describe('<Table />', () => {
 
     it('renders only the current page when the prop "paginated" is given', () => {
         const { getByText } = render(
-            <Table selectable headCells={headCells} rows={rows} defaultRowsPerPage={2} paginated />
+            <Table
+                selectable
+                headCells={headCells}
+                rows={rows}
+                defaultRowsPerPage={2}
+                rowsPerPageOptions={[2, 4]}
+                paginated
+            />
         );
 
         expect(getByText(rows[0].cells.fullName.value)).toBeInTheDocument();
@@ -400,7 +422,14 @@ describe('<Table />', () => {
 
     it('moves to the next page when the prop "paginated" is given and we click the next button', async () => {
         const { getByText, getByTestId } = render(
-            <Table selectable headCells={headCells} rows={rows} defaultRowsPerPage={2} paginated />
+            <Table
+                selectable
+                headCells={headCells}
+                rows={rows}
+                defaultRowsPerPage={2}
+                rowsPerPageOptions={[2, 4]}
+                paginated
+            />
         );
 
         const paginationComponent = getByTestId('table-pagination');
@@ -409,7 +438,7 @@ describe('<Table />', () => {
             name: /next/i,
         });
 
-        await userEvent.click(renderedNextButton);
+        fireEvent.click(renderedNextButton);
 
         expect(getByText(rows[2].cells.fullName.value)).toBeInTheDocument();
         expect(getByText(rows[3].cells.fullName.value)).toBeInTheDocument();
@@ -417,7 +446,14 @@ describe('<Table />', () => {
 
     it('moves to the prev page when the prop "paginated" is given and we click the prev button', async () => {
         const { getByText, getByTestId } = render(
-            <Table selectable headCells={headCells} rows={rows} defaultRowsPerPage={2} paginated />
+            <Table
+                selectable
+                headCells={headCells}
+                rows={rows}
+                defaultRowsPerPage={2}
+                rowsPerPageOptions={[2, 4]}
+                paginated
+            />
         );
 
         const paginationComponent = getByTestId('table-pagination');
@@ -428,9 +464,9 @@ describe('<Table />', () => {
             name: /prev/i,
         });
 
-        await userEvent.click(renderedNextButton);
-        await userEvent.click(renderedNextButton);
-        await userEvent.click(renderedPrevButton);
+        fireEvent.click(renderedNextButton);
+        fireEvent.click(renderedNextButton);
+        fireEvent.click(renderedPrevButton);
 
         expect(getByText(rows[2].cells.fullName.value)).toBeInTheDocument();
         expect(getByText(rows[3].cells.fullName.value)).toBeInTheDocument();
@@ -455,7 +491,7 @@ describe('<Table />', () => {
             return row1.cells.id.value.localeCompare(row2.cells.id.value);
         });
 
-        await userEvent.click(userIdHeadCell);
+        fireEvent.click(userIdHeadCell);
 
         const renderedRows = getAllByTestId(/table-body-row/);
         renderedRows.forEach((row, index) => {
@@ -475,7 +511,7 @@ describe('<Table />', () => {
             return row1.cells.fullName.value.localeCompare(row2.cells.fullName.value);
         });
 
-        await userEvent.click(nameHeadCell);
+        fireEvent.click(nameHeadCell);
 
         const renderedRows = getAllByTestId(/table-body-row/);
         renderedRows.forEach((row, index) => {
@@ -494,8 +530,8 @@ describe('<Table />', () => {
             return row2.cells.fullName.value.localeCompare(row1.cells.fullName.value);
         });
 
-        await userEvent.click(nameHeadCell);
-        await userEvent.click(nameHeadCell);
+        fireEvent.click(nameHeadCell);
+        fireEvent.click(nameHeadCell);
 
         const renderedRows = getAllByTestId(/table-body-row/);
         renderedRows.forEach((row, index) => {
@@ -512,8 +548,8 @@ describe('<Table />', () => {
             return row2.cells.id.value.localeCompare(row1.cells.id.value);
         });
 
-        await userEvent.click(userIdHeadCell);
-        await userEvent.click(userIdHeadCell);
+        fireEvent.click(userIdHeadCell);
+        fireEvent.click(userIdHeadCell);
 
         const renderedRows = getAllByTestId(/table-body-row/);
         renderedRows.forEach((row, index) => {

@@ -108,7 +108,6 @@ const BaseTable = <T extends GenericRowStructure>({
         showIdCell,
         rowActions = [],
         ellipsisIcon,
-        totalPages = 1,
         renderTableActions,
         renderTablePagination,
         renderSearchInput,
@@ -141,6 +140,7 @@ const BaseTable = <T extends GenericRowStructure>({
         state,
         selectedRowsCount,
         headRow,
+        page,
     } = useTable<T>({
         ...props,
         onAllRowsSelectionChange,
@@ -148,8 +148,8 @@ const BaseTable = <T extends GenericRowStructure>({
         defaultRowsPerPage,
     });
 
-    const { searchValue, sortByColumnId, sortDirection, page, rowsPerPage } = state;
-    const hasTableData = Boolean(rows.length);
+    const { searchValue, sortByColumnId, sortDirection, rowsPerPage } = state;
+    const hasTableData = Boolean(filteredRows.length);
 
     const { cell: cellClasses } = classes;
 
@@ -214,7 +214,7 @@ const BaseTable = <T extends GenericRowStructure>({
                         className={classes.footer?.cell}
                         data-testid="table-pagination"
                         rowsPerPageOptions={rowsPerPageOptions ?? defaultRowsPerPageOptions}
-                        count={totalPages * rowsPerPage}
+                        count={filteredRows.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         SelectProps={{
@@ -316,9 +316,20 @@ const BaseTable = <T extends GenericRowStructure>({
                         </TableRow>
                     </TableHead>
                     {loading ? (
-                        <td colSpan={10000} className={classes?.loaderContainer}>
-                            <SpinnerComponent />
-                        </td>
+                        <TableBody data-testid="table-body">
+                            <TableRow>
+                                <TableCell
+                                    colSpan={cellIdsArray.length}
+                                    sx={{
+                                        border: 'none',
+                                        textAlign: 'center',
+                                    }}
+                                    className={classes?.loaderContainer ?? ''}
+                                >
+                                    <SpinnerComponent />
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
                     ) : (
                         <TableBody data-testid="table-body">
                             {hasTableData
@@ -370,7 +381,7 @@ const BaseTable = <T extends GenericRowStructure>({
                                 : renderSearchEmptyState?.()}
                         </TableBody>
                     )}
-                    {currentPageRows.length && !loading && renderPaginationComponent()}
+                    {currentPageRows.length > 0 && !loading ? renderPaginationComponent() : null}
                 </MuiTable>
             </TableContainer>
         </div>

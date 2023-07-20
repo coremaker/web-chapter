@@ -30,7 +30,6 @@ Pagination.args = {
     defaultRowsPerPage: 4,
     paginated: true,
     rowsPerPageOptions: [4, 8, 16],
-    currentPage: 2,
     sortDirection: 'asc',
     sortColumn: 'address',
 };
@@ -96,6 +95,43 @@ SelectableWithCustomHandlers.args = {
 export const RowActions = Template.bind({});
 RowActions.args = {
     rows,
+    headCells,
+    rowActions: [
+        {
+            id: '1',
+            label: 'Action 1',
+            onClick: () => alert('Action 1 clicked'),
+        },
+        {
+            id: '2',
+            label: 'Action 2',
+            onClick: () => alert('Action 2 clicked'),
+        },
+    ],
+};
+
+export const LoadingState = Template.bind({});
+LoadingState.args = {
+    rows,
+    headCells,
+    loading: true,
+    rowActions: [
+        {
+            id: '1',
+            label: 'Action 1',
+            onClick: () => alert('Action 1 clicked'),
+        },
+        {
+            id: '2',
+            label: 'Action 2',
+            onClick: () => alert('Action 2 clicked'),
+        },
+    ],
+};
+
+export const NoResultsState = Template.bind({});
+NoResultsState.args = {
+    rows: [],
     headCells,
     rowActions: [
         {
