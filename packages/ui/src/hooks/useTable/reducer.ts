@@ -1,7 +1,7 @@
 import { SortDirection } from '@mui/material';
 import { produce } from 'immer';
 import mergeWith from 'lodash.mergewith';
-import { CellId, GenericRowStructure } from 'src/components/BaseTable';
+import { CellId, GenericRowStructure } from 'src/components/Table/types';
 
 export type SelectedRowIds = Record<string, boolean>;
 

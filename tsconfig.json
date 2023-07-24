@@ -1,25 +1,5 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "lib": ["DOM", "ESNext"],
-    "allowJs": false,
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "jsx": "react-jsx",
-    "resolveJsonModule": true,
-    "composite": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "strictNullChecks": true
-  },
-  "paths": {
-    "@web-chapter/*": ["packages/*/src"]
-  },
-  "exclude": ["node_modules", "vite.config.ts"],
+  "extends": "./tsconfig.base.json",
+  "files": [],
   "references": [{ "path": "packages/lib" }, { "path": "packages/ui" }]
 }

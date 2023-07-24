@@ -4,13 +4,8 @@
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "dist",
-        "composite": true,
-        "declaration": true,
-        "baseUrl": "./src",
         "paths": {
             "src/*": ["./*"]
         }
-    },
-    "include": ["*"],
-    "references": [{ "path": "./tsconfig.node.json" }]
+    }
 }
