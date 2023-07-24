@@ -9,5 +9,6 @@
             "src/*": ["./src/*"]
         }
     },
+    "include": ["src/**/*.ts", "src/**/*.tsx"],
     "references": [{ "path": "../lib" }]
 }
