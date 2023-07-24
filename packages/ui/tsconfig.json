@@ -1,20 +1,22 @@
 {
-    "extends": "../../tsconfig.base.json",
+    "extends": "../../tsconfig.json",
 
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "dist",
         "target": "ESNext",
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "composite": true,
+        "moduleResolution": "node",
         "jsx": "react-jsx",
         "emitDeclarationOnly": true,
         "declaration": true,
-        "baseUrl": "./src",
+        "baseUrl": ".",
         "paths": {
-            "src/*": ["./*"]
+            "src/*": ["./src/*"]
         }
     },
-    "include": ["src"],
+    "include": ["*"],
     "exclude": ["vite.config.ts"],
     "references": [{ "path": "../lib" }, { "path": "./tsconfig.node.json" }]
 }

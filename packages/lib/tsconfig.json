@@ -1,14 +1,16 @@
 {
-	"extends": "../../tsconfig.base.json",
+    "extends": "../../tsconfig.json",
 
-	"compilerOptions": {
-		"rootDir": "src",
-		"outDir": "dist",
-		"baseUrl": "./src",
-		"paths": {
-			"src/*": ["./*"]
-		}
-	},
-	"include": ["./src"],
-	"references": [{ "path": "./tsconfig.node.json" }]
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist",
+        "composite": true,
+        "declaration": true,
+        "baseUrl": "./src",
+        "paths": {
+            "src/*": ["./*"]
+        }
+    },
+    "include": ["*"],
+    "references": [{ "path": "./tsconfig.node.json" }]
 }
