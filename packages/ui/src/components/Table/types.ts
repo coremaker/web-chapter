@@ -15,7 +15,7 @@ export interface HeadCellRendererArgs<T extends GenericRowStructure, U> extends 
     currentRow: HeadRow<T>;
 }
 
-export interface GenericRowStructure extends Object {
+export interface GenericRowStructure extends NonNullable<unknown> {
     id: string;
 }
 
