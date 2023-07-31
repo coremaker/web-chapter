@@ -1,10 +1,13 @@
 import { Chip } from '@mui/material';
-import { range } from '@web-chapter/lib';
 
 import { HeadRowCells, Row } from './types';
 
 const names = ['John Doe', 'Jane Doe', 'Jason Statham'];
 const emails = ['johndoe@mail.io', 'jasonstatham@mail.io', 'janedoe@mail.io'];
+
+export const range = (end: number) => {
+    return [...Array(end).keys()];
+};
 
 export interface RowStructure {
     id: string;
@@ -50,7 +53,7 @@ export const headCells: HeadRowCells<RowStructure> = {
     },
 };
 
-export const rows: Row<RowStructure>[] = range(40).map((i) => ({
+export const rows: Row<RowStructure>[] = range(1).map((i) => ({
     cells: {
         id: { value: i.toString() },
         username: {

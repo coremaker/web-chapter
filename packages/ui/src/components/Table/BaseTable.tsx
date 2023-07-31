@@ -159,7 +159,6 @@ const BaseTable = <T extends GenericRowStructure>({
 
     const renderRowCell = (row: Row<T>, cell: RowCell<T, T[CellId<T>]>, cellId: CellId<T>) => {
         const cellContent = renderCellContent(cell, row);
-
         const cellIndex = cellIdsArray.indexOf(cellId);
         const isLastCell = cellIndex === cellIdsArray.length - 1;
         const rowActionsPresent = rowActions.length > 0;

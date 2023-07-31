@@ -110,7 +110,7 @@ export default function useTable<T extends GenericRowStructure>({
 
     const makeRowCellId = (rowId: string, cellId: CellId<T>) => `${rowId}-${String(cellId)}`;
 
-    const renderCellContent = (cell: RowCell<T, unknown>, row: Row<T>) => {
+    const renderCellContent = (cell: RowCell<T, T[CellId<T>]>, row: Row<T>) => {
         if (cell.renderComponent) {
             return cell.renderComponent({
                 ...cell,

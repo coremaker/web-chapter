@@ -100,27 +100,25 @@ describe('<Table />', () => {
     });
 
     it('renders all rowActions when clicking on the ellipsis button and the rowAction has a custom renderer', async () => {
-        const { getByTestId, getByText } = render(
+        const { getByText, getByRole } = render(
             <Table
                 headCells={headCells}
                 rows={rows}
                 rowActions={[
                     {
                         id: '1',
-                        renderComponent: () => <div>Custom renderer Action 1</div>,
+                        renderComponent: ({ key }) => <div key={key}>Custom renderer Action 1</div>,
                     },
                     {
                         id: '12',
-                        renderComponent: () => <div>Custom renderer Action 2</div>,
+                        renderComponent: ({ key }) => <div key={key}>Custom renderer Action 2</div>,
                     },
                     { id: '123', label: 'Action 3', onClick() {} },
                 ]}
             />
         );
 
-        const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
-        const cells = within(renderedRow).getAllByTestId(/table-row-cell/);
-        const ellipsisButton = within(cells[cells.length - 1]).getByTestId(`ellipsis-button-${rows[0].cells.id.value}`);
+        const ellipsisButton = getByRole('button', { name: `open menu for row id ${rows[0].cells.id.value}` });
 
         fireEvent.click(ellipsisButton);
         expect(getByText('Custom renderer Action 1')).toBeInTheDocument();
