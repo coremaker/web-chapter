@@ -145,7 +145,7 @@ describe('<Table />', () => {
 
         fireEvent.click(ellipsisButton);
 
-        const menuItem = getByRole('menuitem', { name: `Action` });
+        const menuItem = getByRole('menuitem', { name: 'Action' });
         fireEvent.click(menuItem);
         expect(mockRowAction).toHaveBeenCalledTimes(1);
     });

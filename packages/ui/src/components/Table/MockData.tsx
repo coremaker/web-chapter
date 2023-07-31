@@ -53,7 +53,7 @@ export const headCells: HeadRowCells<RowStructure> = {
     },
 };
 
-export const rows: Row<RowStructure>[] = range(1).map((i) => ({
+export const rows: Row<RowStructure>[] = range(40).map((i) => ({
     cells: {
         id: { value: i.toString() },
         username: {
