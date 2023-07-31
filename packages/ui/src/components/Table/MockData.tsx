@@ -1,10 +1,13 @@
 import { Chip } from '@mui/material';
-import { range } from '@web-chapter/lib';
 
 import { HeadRowCells, Row } from './types';
 
 const names = ['John Doe', 'Jane Doe', 'Jason Statham'];
 const emails = ['johndoe@mail.io', 'jasonstatham@mail.io', 'janedoe@mail.io'];
+
+export const range = (end: number) => {
+    return [...Array(end).keys()];
+};
 
 export interface RowStructure {
     id: string;
@@ -57,7 +60,7 @@ export const rows: Row<RowStructure>[] = range(40).map((i) => ({
             value: `${i % 2 === 0 ? i : 12 - i}${emails[Math.ceil(Math.random() * 2)] + i}`,
         },
         fullName: {
-            value: names[Math.ceil(Math.random() * 2)] + i,
+            value: names[i % names.length] + i,
         },
         role: {
             value: 'Contributor',

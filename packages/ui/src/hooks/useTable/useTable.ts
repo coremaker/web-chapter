@@ -20,10 +20,10 @@ export const HEAD_ROW_IDENTIFIER = '__head';
 const compareAlphabetically = (firstCell: Cell<string>, secondCell: Cell<string>) =>
     firstCell.value.localeCompare(secondCell.value);
 
-const compare = (
-    comparator: CellComparator<any>,
-    firstCell: Cell<any>,
-    secondCell: Cell<any>,
+const compare = <T>(
+    comparator: CellComparator<T>,
+    firstCell: Cell<T>,
+    secondCell: Cell<T>,
     sortDirection: SortDirection
 ) => {
     if (sortDirection === 'asc') {
@@ -60,7 +60,7 @@ const makeSortRowByCellComparator =
         }
 
         if (typeof firstCell.value === 'string') {
-            return compare(compareAlphabetically, firstCell, secondCell, sortDirection);
+            return compare(compareAlphabetically, firstCell as Cell<string>, secondCell as Cell<string>, sortDirection);
         }
 
         throw Error('Cannot sort non-string cell values without a custom comparator');
@@ -72,15 +72,13 @@ export default function useTable<T extends GenericRowStructure>({
     makeSearchableRowContent,
     rows,
     paginated,
-    currentPage = 0,
     sortDirection = 'asc',
     sortColumn,
-    selectedRowIds,
     ...props
 }: BaseTableProps<T>) {
     const [state, dispatch] = useReducer(reducer<T>, {
         selectedRowIds: {},
-        page: currentPage,
+        page: 0,
         rowsPerPage: defaultRowsPerPage,
         sortByColumnId: sortColumn,
         searchValue: '',
@@ -88,7 +86,7 @@ export default function useTable<T extends GenericRowStructure>({
     });
 
     const selectedRowIdsState =
-        !!selectedRowIds && !!props.onRowSelectionChange ? selectedRowIds : state.selectedRowIds;
+        !!props.selectedRowIds && !!props.onRowSelectionChange ? props.selectedRowIds : state.selectedRowIds;
 
     const selectedRowsCount = useMemo(
         () => Object.values(selectedRowIdsState).filter((selected) => selected).length,
@@ -112,7 +110,7 @@ export default function useTable<T extends GenericRowStructure>({
 
     const makeRowCellId = (rowId: string, cellId: CellId<T>) => `${rowId}-${String(cellId)}`;
 
-    const renderCellContent = (cell: RowCell<T, any>, row: Row<T>) => {
+    const renderCellContent = (cell: RowCell<T, T[CellId<T>]>, row: Row<T>) => {
         if (cell.renderComponent) {
             return cell.renderComponent({
                 ...cell,
@@ -141,7 +139,7 @@ export default function useTable<T extends GenericRowStructure>({
     };
 
     const handleChangePageInternal = (_e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-        updateState({ page: newPage - 1 });
+        updateState({ page: newPage });
     };
 
     const handleChangeSearchValue = (searchValue: string) => updateState({ searchValue });
@@ -231,27 +229,28 @@ export default function useTable<T extends GenericRowStructure>({
         currentPageRows,
         filteredRows,
         handleChangeSearchValue,
+
         handleSortCellClick:
-            !!sortColumn && props.handleSortCellClick ? props.handleSortCellClick : handleSortCellClickInternal,
-        handleRowsPerPageChange:
-            !!defaultRowsPerPage && !!props.handleRowsPerPageChange
-                ? props.handleRowsPerPageChange
-                : handleRowsPerPageChangeInternal,
-        handleChangePage:
-            currentPage && currentPage >= 0 && !!props.handlePageChange
-                ? props.handlePageChange
-                : handleChangePageInternal,
+            !!sortColumn && !!props.handleSortCellClick ? props.handleSortCellClick : handleSortCellClickInternal,
+
+        handleRowsPerPageChange: props.handleRowsPerPageChange ?? handleRowsPerPageChangeInternal,
+        handleChangePage: props.handlePageChange ?? handleChangePageInternal,
+        page: props.currentPage ?? state.page,
+
         handleRowSelection:
-            !!selectedRowIds && !!props.onRowSelectionChange ? props.onRowSelectionChange : handleRowSelectionInternal,
+            !!props.selectedRowIds && !!props.onRowSelectionChange
+                ? props.onRowSelectionChange
+                : handleRowSelectionInternal,
         handleAllRowsSelection:
-            !!selectedRowIds && !!props.onAllRowsSelectionChange
+            !!props.selectedRowIds && !!props.onAllRowsSelectionChange
                 ? props.onAllRowsSelectionChange
                 : handleAllRowsSelectionInternal,
+        selectedRowsCount,
+        selectedRowIds: selectedRowIdsState,
         renderCellContent,
         renderHeadCellContent,
         makeRowCellId,
         state,
-        selectedRowsCount,
         updateState,
         headRow,
     };

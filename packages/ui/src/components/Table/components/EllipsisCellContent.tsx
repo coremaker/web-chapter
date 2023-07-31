@@ -53,7 +53,7 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
                 <IconButton
                     disabled={isEllipsisIconDisabled}
                     data-testid={`ellipsis-button-${row.cells.id.value}`}
-                    aria-label="open table row menu"
+                    aria-label={`open menu for row id ${row.cells.id.value}`}
                     aria-controls={open ? menuId : undefined}
                     aria-haspopup="true"
                     className="BaseTable__EllipsisCellContent__Button"

@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 *.tsbuildinfo
+
+coverage
+node_modules

@@ -14,12 +14,7 @@
     "composite": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "strictNullChecks": true,
-    "baseUrl": "."
+    "strictNullChecks": true
   },
-  "paths": {
-    "@web-chapter/*": ["packages/*/src"]
-  },
-  "exclude": ["node_modules", "vite.config.ts"],
-  "references": [{ "path": "packages/lib" }, { "path": "packages/ui" }]
+  "exclude": ["node_modules", "**/vite.config.ts", "vite-env.d.ts"]
 }
