@@ -20,10 +20,10 @@ export const HEAD_ROW_IDENTIFIER = '__head';
 const compareAlphabetically = (firstCell: Cell<string>, secondCell: Cell<string>) =>
     firstCell.value.localeCompare(secondCell.value);
 
-const compare = (
-    comparator: CellComparator<any>,
-    firstCell: Cell<any>,
-    secondCell: Cell<any>,
+const compare = <T>(
+    comparator: CellComparator<T>,
+    firstCell: Cell<T>,
+    secondCell: Cell<T>,
     sortDirection: SortDirection
 ) => {
     if (sortDirection === 'asc') {
@@ -60,7 +60,7 @@ const makeSortRowByCellComparator =
         }
 
         if (typeof firstCell.value === 'string') {
-            return compare(compareAlphabetically, firstCell, secondCell, sortDirection);
+            return compare(compareAlphabetically, firstCell as Cell<string>, secondCell as Cell<string>, sortDirection);
         }
 
         throw Error('Cannot sort non-string cell values without a custom comparator');
@@ -110,7 +110,7 @@ export default function useTable<T extends GenericRowStructure>({
 
     const makeRowCellId = (rowId: string, cellId: CellId<T>) => `${rowId}-${String(cellId)}`;
 
-    const renderCellContent = (cell: RowCell<T, any>, row: Row<T>) => {
+    const renderCellContent = (cell: RowCell<T, unknown>, row: Row<T>) => {
         if (cell.renderComponent) {
             return cell.renderComponent({
                 ...cell,
