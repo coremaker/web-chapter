@@ -82,9 +82,7 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
                                 key={key}
                                 data-testid={`menu-item-${row.cells.id.value}-${rowAction.id}`}
                                 className={rowAction.labelClassName}
-                                onClick={(e) => {
-                                    rowAction.onClick?.(row, e, { closeMenu });
-                                }}
+                                onClick={(e) => rowAction.onClick?.(row, e, { closeMenu })}
                             >
                                 {rowAction.label}
                             </MenuItem>
