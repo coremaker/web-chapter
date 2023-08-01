@@ -38,9 +38,14 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
         onMenuOpen?.(row);
         setAnchorEl(event.currentTarget);
     };
+
+    const closeMenu = () => {
+        setAnchorEl(null);
+    };
+
     const handleClose = () => {
         onMenuClose?.(row);
-        setAnchorEl(null);
+        closeMenu();
     };
     const menuId = `table-row-menu-${row.cells.id.value}`;
 
@@ -77,7 +82,7 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
                                 key={key}
                                 data-testid={`menu-item-${row.cells.id.value}-${rowAction.id}`}
                                 className={rowAction.labelClassName}
-                                onClick={(e) => rowAction.onClick?.(row, e)}
+                                onClick={(e) => rowAction.onClick?.(row, e, { closeMenu })}
                             >
                                 {rowAction.label}
                             </MenuItem>
