@@ -45,6 +45,7 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
 
     const handleClose = () => {
         onMenuClose?.(row);
+        closeMenu();
     };
     const menuId = `table-row-menu-${row.cells.id.value}`;
 
