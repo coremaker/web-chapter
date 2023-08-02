@@ -55,6 +55,7 @@ export interface Row<T extends GenericRowStructure> {
 export interface RowActionRendererArgs<T extends GenericRowStructure> {
     row: Row<T>;
     key: string;
+    options: { closeMenu: () => void };
 }
 export interface RowAction<T extends GenericRowStructure> {
     id: string;
