@@ -75,7 +75,7 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
 
                         const key = `${row.cells.id.value}-${rowAction.id}`;
                         if (rowAction.renderComponent) {
-                            return rowAction.renderComponent({ key, row });
+                            return rowAction.renderComponent({ key, row, options: { closeMenu } });
                         }
                         return (
                             <MenuItem
