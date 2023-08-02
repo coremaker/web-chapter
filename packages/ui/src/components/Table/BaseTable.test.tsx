@@ -150,6 +150,69 @@ describe('<Table />', () => {
         expect(mockRowAction).toHaveBeenCalledTimes(1);
     });
 
+    it('calls closeMenu function passed on the renderComponent', async () => {
+        const { getByRole, getAllByRole } = render(
+            <Table
+                headCells={headCells}
+                rows={rows}
+                rowActions={[
+                    {
+                        id: '1',
+                        renderComponent: ({ key, row, options: { closeMenu } }) => (
+                            <button type="button" key={key} id={row.cells.id.value} onClick={() => closeMenu()}>
+                                Action
+                            </button>
+                        ),
+                    },
+                ]}
+            />
+        );
+
+        const tableBody = getAllByRole('rowgroup')[1];
+        const firstRenderedRow = within(tableBody).getAllByRole('row')[0];
+        const cells = within(firstRenderedRow).getAllByRole('cell');
+        const ellipsisButton = within(cells[cells.length - 1]).getByRole('button', {
+            name: `open menu for row id ${rows[0].cells.id.value}`,
+        });
+        fireEvent.click(ellipsisButton);
+
+        const menuItem = getByRole('button', { name: 'Action' });
+        fireEvent.click(menuItem);
+
+        expect(ellipsisButton).not.toHaveAttribute('aria-expanded', 'true');
+    });
+
+    it('calls closeMenu function passed on the onClick', async () => {
+        const { getByRole, getAllByRole } = render(
+            <Table
+                headCells={headCells}
+                rows={rows}
+                rowActions={[
+                    {
+                        id: '1',
+                        label: 'Action',
+                        onClick: (_row, _e, { closeMenu }) => {
+                            closeMenu();
+                        },
+                    },
+                ]}
+            />
+        );
+
+        const tableBody = getAllByRole('rowgroup')[1];
+        const firstRenderedRow = within(tableBody).getAllByRole('row')[0];
+        const cells = within(firstRenderedRow).getAllByRole('cell');
+        const ellipsisButton = within(cells[cells.length - 1]).getByRole('button', {
+            name: `open menu for row id ${rows[0].cells.id.value}`,
+        });
+        fireEvent.click(ellipsisButton);
+
+        const menuItem = getByRole('menuitem', { name: 'Action' });
+        fireEvent.click(menuItem);
+
+        expect(ellipsisButton).not.toHaveAttribute('aria-expanded', 'true');
+    });
+
     it('renders the search input', () => {
         const { getByRole } = render(
             <Table makeSearchableRowContent={(row) => row.cells.fullName.value} headCells={headCells} rows={rows} />
