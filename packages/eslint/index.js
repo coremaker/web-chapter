@@ -21,7 +21,7 @@ module.exports = {
 
     plugins: ['react', 'prettier', '@typescript-eslint', 'repo-structure'],
     settings: {
-        'repo-structure/config-path': '.repo-structurerc.json',
+        'repo-structure/config-path': '.repo-structurerc.js',
     },
     rules: {
         'repo-structure/file-structure': 0,
