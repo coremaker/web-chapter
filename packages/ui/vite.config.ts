@@ -20,13 +20,23 @@ export default defineConfig(() => ({
             fileName: (format, entryName) => `${entryName}.${format}.js`,
         },
         rollupOptions: {
-            external: ['react', 'react-dom', '@mui/material', '@emotion/react', '@emotion/styled'],
+            external: ['react', 'react-dom', '@mui/material', '@emotion/react', '@emotion/styled', 'react/jsx-runtime'],
             output: {
                 globals: {
                     react: 'React',
                     'react-dom': 'ReactDOM',
                 },
             },
+        },
+        commonjsOptions: {
+            esmExternals: [
+                'react',
+                'react-dom',
+                '@mui/material',
+                '@emotion/react',
+                '@emotion/styled',
+                'react/jsx-runtime',
+            ],
         },
     },
     test: {
