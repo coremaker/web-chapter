@@ -56,7 +56,6 @@
         "@web-chapter/lib": "^0.0.4",
         "babel-loader": "^8.3.0",
         "eslint-plugin-react": "^7.32.2",
-        "eslint-plugin-repo-structure": "^0.1.0",
         "eslint-plugin-storybook": "^0.6.12",
         "jsdom": "^21.1.1",
         "prop-types": "^15.8.1",

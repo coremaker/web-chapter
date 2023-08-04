@@ -19,8 +19,12 @@ module.exports = {
     overrides: [],
     parser: '@typescript-eslint/parser',
 
-    plugins: ['react', 'prettier', '@typescript-eslint'],
+    plugins: ['react', 'prettier', '@typescript-eslint', 'repo-structure'],
+    settings: {
+        'repo-structure/config-path': '.repo-structurerc.json',
+    },
     rules: {
+        'repo-structure/file-structure': 0,
         'react/jsx-props-no-spreading': 0,
         'react/function-component-definition': [
             2,
