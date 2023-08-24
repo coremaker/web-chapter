@@ -1,36 +1,43 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
-import { CSSProperties } from 'react';
-
 export {};
 
-interface TypographyThemeVariants {
-    displayLarge?: CSSProperties;
-    displayMedium?: CSSProperties;
-    displaySmall?: CSSProperties;
+interface CustomOptions {
+    xs?: string;
+    s?: string;
+    m?: string;
+    l?: string;
+    xl?: string;
+}
 
-    titleLarge?: CSSProperties;
-    titleMedium?: CSSProperties;
-    titleSmall?: CSSProperties;
+interface CustomShadows {
+    ink: CustomOptions;
+    primary: CustomOptions;
+}
 
-    bodyLargeRegular?: CSSProperties;
-    bodyLargeItalic?: CSSProperties;
-    bodyLargeBold?: CSSProperties;
-    bodyLargeLink?: CSSProperties;
+interface BlurEffects {
+    backdropFilter: CustomOptions;
+}
 
-    bodySmallRegular?: CSSProperties;
-    bodySmallItalic?: CSSProperties;
-    bodySmallBold?: CSSProperties;
-    bodySmallLink?: CSSProperties;
+interface ExtendedTheme {
+    customShadows?: CustomShadows;
+    blurEffects?: BlurEffects;
+}
 
-    buttonLarge?: CSSProperties;
-    buttonLargeLink?: CSSProperties;
+export interface TypographyThemeVariants {
+    body1Regular?: React.CSSProperties;
+    body1Italic?: React.CSSProperties;
+    body1Bold?: React.CSSProperties;
+    body1Link?: React.CSSProperties;
 
-    buttonSmall?: CSSProperties;
-    buttonSmallLink?: CSSProperties;
+    body2Regular?: React.CSSProperties;
+    body2Italic?: React.CSSProperties;
+    body2Bold?: React.CSSProperties;
+    body2Link?: React.CSSProperties;
 
-    captionLarge?: CSSProperties;
-    captionSmall?: CSSProperties;
-    captionSmallBold?: CSSProperties;
+    buttonLink?: React.CSSProperties;
+
+    button2?: React.CSSProperties;
+    button2Link?: React.CSSProperties;
 }
 
 interface ColorThemeVariants {
@@ -68,13 +75,21 @@ declare module '@mui/material/styles/createPalette' {
 }
 
 declare module '@mui/material/styles' {
+    interface Theme extends ExtendedTheme {}
+
     interface PaletteColor extends ColorThemeVariants {}
 
     interface SimplePaletteColorOptions extends ColorThemeVariants {}
 
+    interface ThemeOptions extends ExtendedTheme {}
+
     interface TypographyVariants extends TypographyThemeVariants {}
 
     interface TypographyVariantsOptions extends TypographyThemeVariants {}
+
+    interface BreakpointOverrides {
+        xxs: true;
+    }
 }
 
 declare module '@mui/material/Button' {
@@ -84,37 +99,91 @@ declare module '@mui/material/Button' {
         surface: true;
         charcoal: true;
         chalk: true;
+        inherit: false;
+    }
+
+    interface ButtonClasses {
+        soft: true;
+        containedReversed: true;
+    }
+
+    interface ButtonPropsVariantOverrides {
+        soft: true;
+        containedReversed: true;
     }
 }
 
+declare module '@mui/material/Chip' {
+    interface ChipClasses {
+        soft: true;
+    }
+
+    interface ChipPropsVariantOverrides {
+        soft: true;
+    }
+
+    interface ChipPropsColorOverrides {
+        ink: true;
+        danger: true;
+        surface: true;
+        charcoal: true;
+        chalk: true;
+    }
+}
+
+// Update the Typography's variant prop options
 declare module '@mui/material/Typography' {
     interface TypographyPropsVariantOverrides {
-        displayLarge: true;
-        displayMedium: true;
-        displaySmall: true;
+        body1Regular: true;
+        body1Italic: true;
+        body1Bold: true;
+        body1Link: true;
 
-        titleLarge: true;
-        titleMedium: true;
-        titleSmall: true;
+        body2Regular: true;
+        body2Italic: true;
+        body2Bold: true;
+        body2Link: true;
 
-        bodyLargeRegular: true;
-        bodyLargeItalic: true;
-        bodyLargeBold: true;
-        bodyLargeLink: true;
+        button: true;
+        buttonLink: true;
 
-        bodySmallRegular: true;
-        bodySmallItalic: true;
-        bodySmallBold: true;
-        bodySmallLink: true;
+        button2: true;
+        button2Link: true;
+    }
+}
 
-        buttonLarge: true;
-        buttonLargeLink: true;
+declare module '@mui/material/ToggleButton' {
+    interface ToggleButtonPropsColorOverrides {
+        ink: true;
+        danger: true;
+        surface: true;
+        charcoal: true;
+        chalk: true;
+        inherit: false;
+        standard: false;
+    }
+}
 
-        buttonSmall: true;
-        buttonSmallLink: true;
+declare module '@mui/material/ToggleButtonGroup' {
+    interface ToggleButtonGroupPropsColorOverrides {
+        ink: true;
+        danger: true;
+        surface: true;
+        charcoal: true;
+        chalk: true;
+        inherit: false;
+        standard: false;
+    }
+}
 
-        captionLarge: true;
-        captionSmall: true;
-        captionSmallBold: true;
+declare module '@mui/material/Switch' {
+    interface SwitchPropsColorOverrides {
+        ink: true;
+        danger: true;
+        surface: true;
+        charcoal: true;
+        chalk: true;
+        inherit: false;
+        standard: false;
     }
 }

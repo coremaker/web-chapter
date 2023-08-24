@@ -5,9 +5,7 @@ import {
     SortDirection,
     TableBody,
     TableContainer,
-    TableFooter,
     TableHead,
-    TablePagination,
     TableRow,
     TextField,
 } from '@mui/material';
@@ -16,6 +14,7 @@ import { ChangeEvent, JSXElementConstructor, MouseEvent, ReactNode, useMemo } fr
 import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import useTable, { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
 import Spinner from '../Spinner/Spinner';
+import { TablePagination } from './TablePagination';
 import EllipsisCellContent, { EllipsisCellContentClasses } from './components/EllipsisCellContent';
 import SearchEmptyState from './components/SearchEmptyState';
 import TableCell, { TableCellClasses } from './components/TableCell';
@@ -92,8 +91,6 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     handleSortCellClick?: (cellId: CellId<T>) => void;
 }
 
-const defaultRowsPerPageOptions = [5, 10, 15, 20, 25];
-
 const BaseTable = <T extends GenericRowStructure>({
     onRowSelectionChange,
     onAllRowsSelectionChange,
@@ -115,7 +112,6 @@ const BaseTable = <T extends GenericRowStructure>({
         renderCheckbox,
         renderSearchEmptyState = () => <SearchEmptyState />,
         defaultRowsPerPage = 10,
-        rowsPerPageOptions,
         paginated,
         SortIcon,
         classes = {},
@@ -206,26 +202,15 @@ const BaseTable = <T extends GenericRowStructure>({
                 handleRowsPerPageChange,
             });
         }
+
         return (
-            <TableFooter className={classes.footer?.root}>
-                <TableRow>
-                    <TablePagination
-                        className={classes.footer?.cell}
-                        data-testid="table-pagination"
-                        rowsPerPageOptions={rowsPerPageOptions ?? defaultRowsPerPageOptions}
-                        count={filteredRows.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        SelectProps={{
-                            inputProps: {
-                                'aria-label': 'rows per page',
-                            },
-                        }}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleRowsPerPageChange}
-                    />
-                </TableRow>
-            </TableFooter>
+            <TablePagination
+                rowsPerPage={rowsPerPage ?? defaultRowsPerPage}
+                currentPage={page}
+                itemsCount={filteredRows.length}
+                onChangePage={handleChangePage}
+                data-testid="table-pagination"
+            />
         );
     };
 
