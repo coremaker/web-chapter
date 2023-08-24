@@ -1,4 +1,1 @@
-export const shouldForwardProp = (
-  propName: PropertyKey,
-  propsToSkip: PropertyKey[]
-) => !propsToSkip.includes(propName);
+export const shouldForwardProp = (propName: PropertyKey, propsToSkip: PropertyKey[]) => !propsToSkip.includes(propName);
