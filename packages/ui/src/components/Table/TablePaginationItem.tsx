@@ -43,6 +43,7 @@ export const TablePaginationItem: FC<TablePaginationItemProps> = ({ item }) => {
             disabled={disabled}
             sx={{ mr: '0.5rem', minWidth: 0 }}
             size="small"
+            data-testid={`table-pagination-item-${type}`}
         >
             {getItem(type)}
         </Button>

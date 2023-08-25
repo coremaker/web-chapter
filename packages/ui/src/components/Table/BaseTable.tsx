@@ -209,7 +209,6 @@ const BaseTable = <T extends GenericRowStructure>({
                 currentPage={page}
                 itemsCount={filteredRows.length}
                 onChangePage={handleChangePage}
-                data-testid="table-pagination"
             />
         );
     };

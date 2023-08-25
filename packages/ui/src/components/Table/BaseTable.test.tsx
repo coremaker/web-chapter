@@ -1,22 +1,27 @@
+import { ThemeProvider } from '@mui/material';
 import { fireEvent, render, waitFor, within } from '@testing-library/react';
+import { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
+import theme from '../theme/theme';
 import Table from './BaseTable';
 import { headCells, rows } from './MockData';
 
 describe('<Table />', () => {
+    const wrapperRender = (comp: ReactNode) => render(<ThemeProvider theme={theme}>{comp}</ThemeProvider>);
+
     it.each(Object.values(headCells))('renders the head cell: %s', (cell) => {
-        const { getByText } = render(<Table showIdCell headCells={headCells} rows={[]} />);
+        const { getByText } = wrapperRender(<Table showIdCell headCells={headCells} rows={[]} />);
         expect(getByText(cell.value)).toBeInTheDocument();
     });
 
     it('renders the row', () => {
-        const { getByText } = render(<Table headCells={headCells} rows={rows.slice(0, 1)} />);
+        const { getByText } = wrapperRender(<Table headCells={headCells} rows={rows.slice(0, 1)} />);
         expect(getByText(rows[0].cells.username.value)).toBeInTheDocument();
     });
 
     it('renders each cell of the row', () => {
-        const { getByTestId } = render(<Table showIdCell headCells={headCells} rows={rows.slice(0, 1)} />);
+        const { getByTestId } = wrapperRender(<Table showIdCell headCells={headCells} rows={rows.slice(0, 1)} />);
         const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
 
         const { address, ...cells } = rows[0].cells;
@@ -29,12 +34,12 @@ describe('<Table />', () => {
     });
 
     it("doesn't render the ID row when showIdCell is not given", () => {
-        const { queryByText } = render(<Table headCells={headCells} rows={rows.slice(0, 1)} />);
+        const { queryByText } = wrapperRender(<Table headCells={headCells} rows={rows.slice(0, 1)} />);
         expect(queryByText(rows[0].cells.id.value)).toBeFalsy();
     });
 
     it('renders custom label text for the id column if passed as prop', () => {
-        const { getByTestId } = render(
+        const { getByTestId } = wrapperRender(
             <Table showIdCell headCells={{ ...headCells, id: { value: 'Test custom id label' } }} rows={rows} />
         );
         const renderedHead = getByTestId('table-head');
@@ -42,7 +47,7 @@ describe('<Table />', () => {
     });
 
     it('renders an ellipsis icon in the last cell when rowActions are defined in props ', () => {
-        const { getByTestId } = render(
+        const { getByTestId } = wrapperRender(
             <Table headCells={headCells} rows={rows} rowActions={[{ id: '1', label: 'Action 1', onClick() {} }]} />
         );
 
@@ -56,7 +61,7 @@ describe('<Table />', () => {
     it('calls the onMenuOpen prop when rowActions are defined in props and the menu is opening', async () => {
         const mockOnMenuOpen = vi.fn();
 
-        const { getByTestId } = render(
+        const { getByTestId } = wrapperRender(
             <Table
                 headCells={headCells}
                 rows={rows}
@@ -75,7 +80,7 @@ describe('<Table />', () => {
     });
 
     it('renders all rowActions when clicking on the ellipsis button', async () => {
-        const { getByText, getAllByRole } = render(
+        const { getByText, getAllByRole } = wrapperRender(
             <Table
                 headCells={headCells}
                 rows={rows}
@@ -100,7 +105,7 @@ describe('<Table />', () => {
     });
 
     it('renders all rowActions when clicking on the ellipsis button and the rowAction has a custom renderer', async () => {
-        const { getByText, getByRole } = render(
+        const { getByText, getByRole } = wrapperRender(
             <Table
                 headCells={headCells}
                 rows={rows}
@@ -128,7 +133,7 @@ describe('<Table />', () => {
 
     it('calls the onClick function passed on rowAction prop', async () => {
         const mockRowAction = vi.fn();
-        const { getByRole, getAllByRole } = render(
+        const { getByRole, getAllByRole } = wrapperRender(
             <Table
                 headCells={headCells}
                 rows={rows}
@@ -151,7 +156,7 @@ describe('<Table />', () => {
     });
 
     it('calls closeMenu function passed on the renderComponent', async () => {
-        const { getByRole, getAllByRole } = render(
+        const { getByRole, getAllByRole } = wrapperRender(
             <Table
                 headCells={headCells}
                 rows={rows}
@@ -183,7 +188,7 @@ describe('<Table />', () => {
     });
 
     it('calls closeMenu function passed on the onClick', async () => {
-        const { getByRole, getAllByRole } = render(
+        const { getByRole, getAllByRole } = wrapperRender(
             <Table
                 headCells={headCells}
                 rows={rows}
@@ -214,14 +219,14 @@ describe('<Table />', () => {
     });
 
     it('renders the search input', () => {
-        const { getByRole } = render(
+        const { getByRole } = wrapperRender(
             <Table makeSearchableRowContent={(row) => row.cells.fullName.value} headCells={headCells} rows={rows} />
         );
         expect(getByRole('textbox')).toBeInTheDocument();
     });
 
     it('filters the rendered rows based when the search input has any value', async () => {
-        const { getByRole, getAllByRole } = render(
+        const { getByRole, getAllByRole } = wrapperRender(
             <Table makeSearchableRowContent={(row) => row.cells.fullName.value} headCells={headCells} rows={rows} />
         );
         const searchInput = getByRole('textbox');
@@ -238,7 +243,7 @@ describe('<Table />', () => {
     });
 
     it('correctly shows the empty search fallback if no results were found', async () => {
-        const { getByRole, queryByTestId, getByText } = render(
+        const { getByRole, queryByTestId, getByText } = wrapperRender(
             <Table makeSearchableRowContent={(row) => row.cells.fullName.value} headCells={headCells} rows={rows} />
         );
         const searchInput = getByRole('textbox');
@@ -250,7 +255,7 @@ describe('<Table />', () => {
     });
 
     it('renders checkboxes for every row when the table is selectable', () => {
-        const { getAllByRole } = render(<Table selectable headCells={headCells} rows={rows} />);
+        const { getAllByRole } = wrapperRender(<Table selectable headCells={headCells} rows={rows} />);
 
         const checkboxes = getAllByRole('checkbox');
         const checkboxesCountWithHeader = rows.length + 1;
@@ -259,7 +264,7 @@ describe('<Table />', () => {
     });
 
     it('selects all rows when clicking the checkbox in the header area', async () => {
-        const { getByTestId } = render(<Table selectable headCells={headCells} rows={rows} />);
+        const { getByTestId } = wrapperRender(<Table selectable headCells={headCells} rows={rows} />);
 
         const tableHeadArea = getByTestId('table-head');
 
@@ -274,7 +279,7 @@ describe('<Table />', () => {
     });
 
     it('correctly renders the selected rows when selection is controlled', () => {
-        const { getByTestId } = render(
+        const { getByTestId } = wrapperRender(
             <Table
                 selectable
                 selectedRowIds={{
@@ -295,7 +300,7 @@ describe('<Table />', () => {
     });
 
     it('correctly updates the selected rows when selection is controlled and the state changes', () => {
-        const { getByTestId, rerender } = render(
+        const { getByTestId, rerender } = wrapperRender(
             <Table
                 selectable
                 selectedRowIds={{
@@ -308,16 +313,18 @@ describe('<Table />', () => {
         );
 
         rerender(
-            <Table
-                selectable
-                selectedRowIds={{
-                    [rows[5].cells.id.value]: true,
-                    [rows[2].cells.id.value]: false,
-                    [rows[0].cells.id.value]: false,
-                }}
-                headCells={headCells}
-                rows={rows}
-            />
+            <ThemeProvider theme={theme}>
+                <Table
+                    selectable
+                    selectedRowIds={{
+                        [rows[5].cells.id.value]: true,
+                        [rows[2].cells.id.value]: false,
+                        [rows[0].cells.id.value]: false,
+                    }}
+                    headCells={headCells}
+                    rows={rows}
+                />
+            </ThemeProvider>
         );
         const tableBodyArea = getByTestId('table-body');
         const tableBodyCheckedCheckboxes = within(tableBodyArea).getAllByRole('checkbox', {
@@ -330,7 +337,7 @@ describe('<Table />', () => {
     it("doesn't update the selected rows, but calls the onChange callback when selection is controlled and the checkbox is clicked", async () => {
         const mockOnCheckboxChange = vi.fn();
 
-        const { getByTestId } = render(
+        const { getByTestId } = wrapperRender(
             <Table
                 selectable
                 selectedRowIds={{}}
@@ -352,7 +359,7 @@ describe('<Table />', () => {
     });
 
     it('automatically selects the head checkbox if all the body checkboxes are selected', async () => {
-        const { getByTestId, getAllByTestId } = render(
+        const { getByTestId, getAllByTestId } = wrapperRender(
             <Table selectable headCells={headCells} rows={rows.slice(0, 2)} />
         );
 
@@ -369,7 +376,7 @@ describe('<Table />', () => {
     });
 
     it('selects the row when clicking a the checkbox next to it', async () => {
-        const { getByTestId, getAllByTestId } = render(
+        const { getByTestId, getAllByTestId } = wrapperRender(
             <Table
                 selectable
                 headCells={headCells}
@@ -400,7 +407,7 @@ describe('<Table />', () => {
     });
 
     it('unselects all rows when clicking a the checkbox in the head area and some checkboxes are already selected', async () => {
-        const { getByTestId, getAllByTestId } = render(
+        const { getByTestId, getAllByTestId } = wrapperRender(
             <Table
                 selectable
                 headCells={headCells}
@@ -435,14 +442,14 @@ describe('<Table />', () => {
     });
 
     it('renders a checkbox in the header area when the table is selectable', () => {
-        const { getByTestId } = render(<Table selectable headCells={headCells} rows={rows} />);
+        const { getByTestId } = wrapperRender(<Table selectable headCells={headCells} rows={rows} />);
         const renderedHead = getByTestId('table-head');
 
         expect(within(renderedHead).getByRole('checkbox')).toBeInTheDocument();
     });
 
     it('renders the pagination with all the buttons when the prop "paginated" is given', () => {
-        const { getByTestId } = render(
+        const { getByTestId } = wrapperRender(
             <Table
                 selectable
                 headCells={headCells}
@@ -454,19 +461,15 @@ describe('<Table />', () => {
         );
 
         const paginationComponent = getByTestId('table-pagination');
-        const renderedNextButton = within(paginationComponent).getByRole('button', {
-            name: /next/i,
-        });
-        const renderedPrevButton = within(paginationComponent).getByRole('button', {
-            name: /prev/i,
-        });
+        const renderedNextButton = within(paginationComponent).getByTestId('table-pagination-item-next');
+        const renderedPrevButton = within(paginationComponent).getByTestId('table-pagination-item-previous');
 
         expect(renderedNextButton).toBeInTheDocument();
         expect(renderedPrevButton).toBeInTheDocument();
     });
 
     it('renders only the current page when the prop "paginated" is given', () => {
-        const { getByText } = render(
+        const { getByText } = wrapperRender(
             <Table
                 selectable
                 headCells={headCells}
@@ -482,7 +485,7 @@ describe('<Table />', () => {
     });
 
     it('moves to the next page when the prop "paginated" is given and we click the next button', async () => {
-        const { getByText, getByTestId } = render(
+        const { getByText, getByTestId } = wrapperRender(
             <Table
                 selectable
                 headCells={headCells}
@@ -495,9 +498,7 @@ describe('<Table />', () => {
 
         const paginationComponent = getByTestId('table-pagination');
 
-        const renderedNextButton = within(paginationComponent).getByRole('button', {
-            name: /next/i,
-        });
+        const renderedNextButton = within(paginationComponent).getByTestId('table-pagination-item-next');
 
         fireEvent.click(renderedNextButton);
 
@@ -506,7 +507,7 @@ describe('<Table />', () => {
     });
 
     it('moves to the prev page when the prop "paginated" is given and we click the prev button', async () => {
-        const { getByText, getByTestId } = render(
+        const { getByText, getByTestId } = wrapperRender(
             <Table
                 selectable
                 headCells={headCells}
@@ -518,12 +519,8 @@ describe('<Table />', () => {
         );
 
         const paginationComponent = getByTestId('table-pagination');
-        const renderedNextButton = within(paginationComponent).getByRole('button', {
-            name: /next/i,
-        });
-        const renderedPrevButton = within(paginationComponent).getByRole('button', {
-            name: /prev/i,
-        });
+        const renderedNextButton = within(paginationComponent).getByTestId('table-pagination-item-next');
+        const renderedPrevButton = within(paginationComponent).getByTestId('table-pagination-item-previous');
 
         fireEvent.click(renderedNextButton);
         fireEvent.click(renderedNextButton);
@@ -534,7 +531,7 @@ describe('<Table />', () => {
     });
 
     it('initially renders all the rows int the order they were given as props', () => {
-        const { getAllByTestId } = render(<Table selectable showIdCell headCells={headCells} rows={rows} />);
+        const { getAllByTestId } = wrapperRender(<Table selectable showIdCell headCells={headCells} rows={rows} />);
 
         const renderedRows = getAllByTestId(/table-body-row/);
 
@@ -544,7 +541,9 @@ describe('<Table />', () => {
     });
 
     it('sorts alphabetically by the ID column when the column head is clicked', async () => {
-        const { getByText, getAllByTestId } = render(<Table selectable showIdCell headCells={headCells} rows={rows} />);
+        const { getByText, getAllByTestId } = wrapperRender(
+            <Table selectable showIdCell headCells={headCells} rows={rows} />
+        );
 
         const userIdHeadCell = getByText(/User ID/);
 
@@ -561,7 +560,7 @@ describe('<Table />', () => {
     });
 
     it('sorts alphabetically by a column when the column head is clicked', async () => {
-        const { getAllByTestId, getByTestId } = render(
+        const { getAllByTestId, getByTestId } = wrapperRender(
             <Table selectable showIdCell headCells={headCells} rows={rows} />
         );
 
@@ -581,7 +580,7 @@ describe('<Table />', () => {
     });
 
     it('sorts alphabetically in descending order by a column when the column head is clicked', async () => {
-        const { getAllByTestId, getByTestId } = render(
+        const { getAllByTestId, getByTestId } = wrapperRender(
             <Table selectable showIdCell headCells={headCells} rows={rows} />
         );
         const renderedHead = getByTestId('table-head');
@@ -601,7 +600,9 @@ describe('<Table />', () => {
     });
 
     it('sorts alphabetically in descending order by ID column when the column head is clicked two times', async () => {
-        const { getByText, getAllByTestId } = render(<Table selectable showIdCell headCells={headCells} rows={rows} />);
+        const { getByText, getAllByTestId } = wrapperRender(
+            <Table selectable showIdCell headCells={headCells} rows={rows} />
+        );
 
         const userIdHeadCell = getByText(/User ID/);
 
@@ -619,7 +620,7 @@ describe('<Table />', () => {
     });
 
     it('renders the generic value using a custom renderer', async () => {
-        const { getByText } = render(<Table selectable showIdCell headCells={headCells} rows={rows} />);
+        const { getByText } = wrapperRender(<Table selectable showIdCell headCells={headCells} rows={rows} />);
 
         expect(getByText(/Street 12/)).toBeInTheDocument();
     });

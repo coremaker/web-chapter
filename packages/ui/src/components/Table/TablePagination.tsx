@@ -25,7 +25,7 @@ export const TablePagination: FC<TablePaginationProps> = ({ itemsCount, currentP
     });
 
     return (
-        <TableFooter>
+        <TableFooter data-testid="table-pagination">
             <TableRow>
                 <TableCell colSpan={10000}>
                     <Box
