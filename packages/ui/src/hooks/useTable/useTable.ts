@@ -221,8 +221,8 @@ export default function useTable<T extends GenericRowStructure>({
     const filteredRows = useMemo(() => applyFiltering(), [applyFiltering]);
 
     const currentPageRows = useMemo(() => {
-        const slicedRows = applyPageSplitting(filteredRows);
-        return applySorting(slicedRows);
+        const sortedRows = applySorting(filteredRows);
+        return applyPageSplitting(sortedRows);
     }, [filteredRows, applySorting, applyPageSplitting]);
 
     return {
