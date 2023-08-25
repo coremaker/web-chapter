@@ -15,13 +15,13 @@ export const switchStyle:
         };
     },
     switchBase: {
-        color: palette['ink'][400],
+        color: palette.ink[400],
         '&.Mui-disabled': {
-            color: palette['ink'][400],
+            color: palette.ink[400],
         },
     },
     track: {
-        color: palette['ink'][200],
+        color: palette.ink[200],
         opacity: '0.38!important',
     },
 };

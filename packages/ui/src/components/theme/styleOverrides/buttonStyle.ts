@@ -41,7 +41,7 @@ export const buttonStyle:
 
         return {
             ':hover': {
-                backgroundColor: palette[color]['tint50'],
+                backgroundColor: palette[color].tint50,
                 borderColor: palette[color][700],
                 color: palette[color][700],
             },
@@ -58,16 +58,16 @@ export const buttonStyle:
 
         return {
             color: palette[color][500],
-            backgroundColor: palette[color]['tint50'],
+            backgroundColor: palette[color].tint50,
 
             ':hover': {
-                backgroundColor: palette[color]['tint100'],
+                backgroundColor: palette[color].tint100,
                 color: palette[color][700],
             },
 
             '&.Mui-disabled': {
                 color: palette[color][300],
-                backgroundColor: palette[color]['tint50'],
+                backgroundColor: palette[color].tint50,
             },
         };
     },
@@ -96,7 +96,7 @@ export const buttonStyle:
 
         return {
             ':hover': {
-                backgroundColor: palette[color]['tint50'],
+                backgroundColor: palette[color].tint50,
                 color: palette[color][700],
             },
 

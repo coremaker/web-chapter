@@ -97,7 +97,7 @@ export const toggleButtonStyle:
             ...typography.button,
 
             ':hover': {
-                backgroundColor: palette[color]['tint50'],
+                backgroundColor: palette[color].tint50,
                 color: palette[color][700],
             },
 
@@ -108,17 +108,17 @@ export const toggleButtonStyle:
 
             '&.Mui-selected': {
                 color: palette[color][500],
-                backgroundColor: palette[color]['tint100'],
+                backgroundColor: palette[color].tint100,
                 heigth: '1.25rem',
 
                 ':hover': {
-                    backgroundColor: palette[color]['tint200'],
+                    backgroundColor: palette[color].tint200,
                     color: palette[color][700],
                 },
 
                 '&.Mui-disabled': {
                     color: palette[color][300],
-                    backgroundColor: palette[color]['tint50'],
+                    backgroundColor: palette[color].tint50,
                 },
             },
         };

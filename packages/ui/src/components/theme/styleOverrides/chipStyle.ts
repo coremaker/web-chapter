@@ -37,7 +37,7 @@ export const chipStyle:
 
         return {
             color: palette[color][500],
-            backgroundColor: palette[color]['tint50'],
+            backgroundColor: palette[color].tint50,
 
             '& .MuiSvgIcon-root': {
                 color: palette[color][500],
@@ -45,7 +45,7 @@ export const chipStyle:
 
             '&:hover': {
                 color: palette[color][700],
-                backgroundColor: palette[color]['tint100'],
+                backgroundColor: palette[color].tint100,
 
                 '& .MuiSvgIcon-root': {
                     color: palette[color][700],
@@ -53,7 +53,7 @@ export const chipStyle:
             },
 
             '&.Mui-disabled': {
-                backgroundColor: palette[color]['tint50'],
+                backgroundColor: palette[color].tint50,
                 color: palette[color][300],
 
                 '& .MuiSvgIcon-root': {
@@ -102,10 +102,10 @@ export const chipStyle:
 
         return {
             color: palette[color][500],
-            backgroundColor: palette[color]['tint50'],
+            backgroundColor: palette[color].tint50,
 
             '&:hover': {
-                backgroundColor: palette[color]['tint100'],
+                backgroundColor: palette[color].tint100,
             },
 
             '&.Mui-disabled': {
