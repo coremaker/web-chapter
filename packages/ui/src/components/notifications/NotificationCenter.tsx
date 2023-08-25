@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ComponentType, useEffect, useState } from 'react';
 import { Notification } from './types';
 
 const NOTIFICATION_EVENT = 'emit-core-notification';
@@ -14,10 +14,14 @@ export const notify = (props: Omit<Notification, 'id' | 'createdAt'>) => {
     document.dispatchEvent(event);
 };
 
+type SnackbarComponentProps = Notification & {
+    onClose: (id: string) => void;
+};
+
 type NotificationCenterProps = {
     maxNotifications?: number;
     hideAfter?: number;
-    SnackbarComponent: React.ComponentType<{ open?: boolean; id: string; onClose: (id: string) => void }>;
+    SnackbarComponent: ComponentType<SnackbarComponentProps>;
     cacheTimeout?: number;
     className?: string;
 };
@@ -41,7 +45,6 @@ const NotificationCenter = ({
         const newNotification = e.detail;
         setNotifications((prev) => [...prev, newNotification]);
 
-        // Optionally hide after a timeout
         if (hideAfter) {
             setTimeout(() => {
                 handleCloseNotification(newNotification.id);
