@@ -5,7 +5,7 @@ import {
     KeyboardDoubleArrowRight,
     MoreHorizRounded,
 } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
 import { UsePaginationItem } from '@mui/material/usePagination/usePagination';
 import { FC } from 'react';
 
@@ -17,35 +17,53 @@ export const TablePaginationItem: FC<TablePaginationItemProps> = ({ item }) => {
     const { page, type, onClick, disabled, selected } = item;
 
     if (type === 'start-ellipsis' || type === 'end-ellipsis') {
-        return <MoreHorizRounded sx={{ mr: '0.5rem' }} fontSize="small" />;
+        return (
+            <IconButton disabled sx={{ mr: '0.5rem', minWidth: 0 }} size="small">
+                <MoreHorizRounded fontSize="small" />
+            </IconButton>
+        );
     }
 
-    const getItem = (givenType: string) => {
+    const iconColor = disabled ? 'disabled' : 'primary';
+
+    const getIcon = (givenType: string) => {
         switch (givenType) {
-            case 'page':
-                return page;
             case 'next':
-                return <KeyboardArrowRight color={disabled ? 'disabled' : 'primary'} />;
+                return <KeyboardArrowRight color={iconColor} />;
             case 'last':
-                return <KeyboardDoubleArrowRight color={disabled ? 'disabled' : 'primary'} />;
+                return <KeyboardDoubleArrowRight color={iconColor} />;
             case 'first':
-                return <KeyboardDoubleArrowLeft color={disabled ? 'disabled' : 'primary'} />;
+                return <KeyboardDoubleArrowLeft color={iconColor} />;
             default:
-                return <KeyboardArrowLeft color={disabled ? 'disabled' : 'primary'} />;
+                return <KeyboardArrowLeft color={iconColor} />;
         }
     };
 
+    if (type === 'page') {
+        return (
+            <Button
+                variant={selected ? 'soft' : 'text'}
+                color={selected ? 'primary' : 'ink'}
+                onClick={onClick}
+                disabled={disabled}
+                sx={{ mr: '0.5rem', minWidth: 0 }}
+                size="small"
+            >
+                {page}
+            </Button>
+        );
+    }
+
     return (
-        <Button
-            variant={selected ? 'soft' : 'text'}
-            color={selected ? 'primary' : 'ink'}
+        <IconButton
             onClick={onClick}
             disabled={disabled}
             sx={{ mr: '0.5rem', minWidth: 0 }}
             size="small"
             data-testid={`table-pagination-item-${type}`}
+            aria-label={type}
         >
-            {getItem(type)}
-        </Button>
+            {getIcon(type)}
+        </IconButton>
     );
 };

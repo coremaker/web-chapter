@@ -3,7 +3,7 @@ import { fireEvent, render, waitFor, within } from '@testing-library/react';
 import { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-import theme from '../theme/theme';
+import { theme } from '../theme/theme';
 import Table from './BaseTable';
 import { headCells, rows } from './MockData';
 

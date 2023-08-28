@@ -7,6 +7,22 @@ interface CustomAvatarProps extends AvatarProps {
     size?: 'xl' | 'l' | 'm' | 's';
 }
 
+const remDimensionsBySize = {
+    s: {
+        height: '2rem',
+        width: '2rem',
+    },
+    m: {
+        height: '2.5rem',
+        width: '2.5rem',
+    },
+    l: {
+        height: '3rem',
+        width: '3rem',
+    },
+    xl: { height: '3.5rem', width: '3.5rem' },
+};
+
 export const avatarStyle:
     | Partial<OverridesStyleRules<keyof AvatarClasses, 'MuiAvatar', Omit<Theme, 'components'>>>
     | undefined = {
@@ -22,26 +38,7 @@ export const avatarStyle:
 
         return {
             border: `1px solid ${palette.primary.tint100}`,
-
-            ...(size === 's' && {
-                height: '2rem',
-                width: '2rem',
-            }),
-
-            ...(size === 'm' && {
-                height: '2.5rem',
-                width: '2.5rem',
-            }),
-
-            ...(size === 'l' && {
-                height: '3rem',
-                width: '3rem',
-            }),
-
-            ...(size === 'xl' && {
-                height: '3.5rem',
-                width: '3.5rem',
-            }),
+            ...remDimensionsBySize[size],
         };
     },
 

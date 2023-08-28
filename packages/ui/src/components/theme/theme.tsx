@@ -26,7 +26,7 @@ import {
 } from './styleOverrides';
 import { blurEffects, breakpoints, customShadows, palette, typography } from './themeOptions';
 
-export default createTheme({
+export const theme = createTheme({
     palette,
     typography,
     customShadows,

@@ -3,7 +3,7 @@ import { OverridesStyleRules } from '@mui/material/styles/overrides';
 
 import { blurEffects, palette } from '../themeOptions';
 
-export const DRAWER_WIDTH = 16.25;
+export const DRAWER_WIDTH = '16.25rem';
 
 export const drawerStyle:
     | Partial<OverridesStyleRules<keyof DrawerClasses, 'MuiDrawer', Omit<Theme, 'components'>>>
@@ -21,7 +21,7 @@ export const drawerStyle:
     },
 
     paper: {
-        width: `${DRAWER_WIDTH}rem`,
+        width: DRAWER_WIDTH,
         flexShrink: 0,
         boxSizing: 'border-box',
     },
