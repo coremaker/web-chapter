@@ -87,7 +87,7 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     classes?: Partial<BaseTableClasses>;
     loading?: boolean;
     SpinnerComponent?: JSXElementConstructor<CircularProgressProps>;
-    handleRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+    handleRowsPerPageChange?: (value: number) => void;
     handlePageChange?: (e: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
     handleSortCellClick?: (cellId: CellId<T>) => void;
 }
@@ -223,7 +223,7 @@ const BaseTable = <T extends GenericRowStructure>({
                             },
                         }}
                         onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleRowsPerPageChange}
+                        onRowsPerPageChange={(e) => handleRowsPerPageChange(parseInt(e.target.value, 10))}
                     />
                 </TableRow>
             </TableFooter>

@@ -1,5 +1,5 @@
 import { SortDirection } from '@mui/material';
-import { ChangeEvent, MouseEvent, useCallback, useMemo, useReducer } from 'react';
+import { MouseEvent, useCallback, useMemo, useReducer } from 'react';
 
 import type { BaseTableProps } from '../../components/Table/BaseTable';
 import {
@@ -163,9 +163,8 @@ export default function useTable<T extends GenericRowStructure>({
         updateState({ selectedRowIds: updatedSelectedRows });
     };
 
-    const handleRowsPerPageChangeInternal = (event: ChangeEvent<HTMLInputElement>) => {
-        const updatedRowsPerPage = parseInt(event.target.value, 10);
-        updateState({ rowsPerPage: updatedRowsPerPage, page: 0 });
+    const handleRowsPerPageChangeInternal = (value: number) => {
+        updateState({ rowsPerPage: value, page: 0 });
     };
 
     const handleSortCellClickInternal = (cellId: CellId<T>) => {
