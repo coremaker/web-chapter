@@ -182,8 +182,8 @@ const ServerFilterSortPaginationTemplate: StoryFn<typeof Table<RowStructure>> = 
         sortColumn: 'address',
     });
 
-    const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setConfig((prev) => ({ ...prev, defaultRowsPerPage: event.target.valueAsNumber }));
+    const handleRowsPerPageChange = (value: number) => {
+        setConfig((prev) => ({ ...prev, defaultRowsPerPage: value }));
     };
 
     const handlePageChange = (e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
