@@ -24,7 +24,7 @@
         "test": "vitest run --coverage",
         "test:watch": "vitest watch --ui",
         "test:profile": "DEBUG=vite-node:* node --cpu-prof --cpu-prof-dir=./profiling ./node_modules/vitest/vitest.mjs --reporter verbose --no-threads",
-        "lint": "eslint --ext .js,.jsx,.ts,.tsx src"
+        "lint": "npx eslint src --ext .js,.jsx,.ts,.tsx src"
     },
     "dependencies": {
         "classnames": "^2.3.2",

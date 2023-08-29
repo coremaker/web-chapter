@@ -1,7 +1,10 @@
-import { describe, expect, it, vi } from 'vitest';
-import NotificationCenter, { notify } from './NotificationCenter';
 import { act, fireEvent, render, waitFor } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+
+import NotificationCenter, { notify } from './NotificationCenter';
 import { Notification } from './types';
+
+type SnackbarProps = Notification & { onClose: (id: string) => void };
 
 function randomString() {
     return Math.random().toString(36).substring(2, 15);
@@ -32,9 +35,9 @@ describe('NotificationCenter', () => {
         });
         fireEvent(document, event);
     };
-    const SnackComponent = (props: any) => (
-        <button type="button" onClick={props.onClose} key={props.id}>
-            {props.message}
+    const SnackComponent = ({ onClose, id, message }: SnackbarProps) => (
+        <button type="button" onClick={() => onClose(id)} key={id}>
+            {message}
         </button>
     );
     const renderComponent = (props: { hideAfter?: number; maxNotifications?: number; cacheTimeout?: number } = {}) => {
@@ -110,14 +113,14 @@ describe('NotificationCenter', () => {
     });
 
     it("should close the notification when it's onClose prop is called", () => {
-        const { queryByText } = renderComponent();
+        const { queryByText, getByText } = renderComponent();
 
         emitEvent('test-1');
 
         expect(queryByText('test-1')).toBeInTheDocument();
 
         act(() => {
-            fireEvent.click(queryByText('test-1')!);
+            fireEvent.click(getByText('test-1'));
         });
 
         waitFor(() => {
@@ -139,10 +142,10 @@ describe('notify', () => {
     it('should dispatch a CustomEvent with a random UUID', () => {
         const eventListener = vi.fn();
         document.addEventListener(NOTIFICATION_EVENT, eventListener);
-        const mockRandomUUID = vi.fn(() => 'test-uuid');
+        const mockLocalRandomUUID = vi.fn(() => 'test-uuid');
         global.crypto = {
             ...global.crypto,
-            randomUUID: mockRandomUUID as () => `${string}-${string}-${string}-${string}-${string}`,
+            randomUUID: mockLocalRandomUUID as () => `${string}-${string}-${string}-${string}-${string}`,
         };
 
         act(() => {

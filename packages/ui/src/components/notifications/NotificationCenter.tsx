@@ -1,4 +1,5 @@
 import { ComponentType, useEffect, useState } from 'react';
+
 import { Notification } from './types';
 
 const NOTIFICATION_EVENT = 'emit-core-notification';
@@ -41,24 +42,23 @@ const NotificationCenter = ({
         );
     };
 
-    const listener = (e: CustomEvent) => {
-        const newNotification = e.detail;
-        setNotifications((prev) => [...prev, newNotification]);
-
-        if (hideAfter) {
-            setTimeout(() => {
-                handleCloseNotification(newNotification.id);
-            }, hideAfter);
-        }
-    };
-
     useEffect(() => {
+        const listener = (e: CustomEvent) => {
+            const newNotification = e.detail;
+            setNotifications((prev) => [...prev, newNotification]);
+
+            if (hideAfter) {
+                setTimeout(() => {
+                    handleCloseNotification(newNotification.id);
+                }, hideAfter);
+            }
+        };
         document.addEventListener(NOTIFICATION_EVENT, listener);
 
         return () => {
             document.removeEventListener(NOTIFICATION_EVENT, listener);
         };
-    }, []);
+    }, [hideAfter]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -72,7 +72,7 @@ const NotificationCenter = ({
         return () => {
             clearInterval(interval);
         };
-    }, [cacheTimeout]);
+    }, [cacheTimeout, notifications]);
 
     if (notifications.length < 1) return null;
 

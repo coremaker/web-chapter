@@ -1,7 +1,9 @@
-import { Meta, StoryFn } from '@storybook/react';
-import NotificationCenter, { notify } from './NotificationCenter';
 import { Button } from '@mui/material';
+import { Meta, StoryFn } from '@storybook/react';
+
+import NotificationCenter, { notify } from './NotificationCenter';
 import styles from './styles.module.css';
+import { Notification } from './types';
 
 export default {
     title: 'Example/NotificationCenter',
@@ -9,6 +11,9 @@ export default {
 } as Meta<typeof NotificationCenter>;
 
 type NotificationCenterProps = React.ComponentProps<typeof NotificationCenter>;
+type SnackbarProps = Notification & {
+    onClose: (id: string) => void;
+};
 
 const Template: StoryFn<NotificationCenterProps> = (args) => {
     return (
@@ -22,10 +27,10 @@ const Template: StoryFn<NotificationCenterProps> = (args) => {
 export const Default = Template.bind({});
 Default.args = {
     className: styles.wrapper,
-    SnackbarComponent: (props: any) => (
-        <button className={styles.button} type="button" onClick={props.onClose} key={props.id}>
+    SnackbarComponent: ({ onClose, id, message }: SnackbarProps) => (
+        <button className={styles.button} type="button" onClick={() => onClose(id)} key={id}>
             <div>
-                {props.message} {props.id}
+                {message} {id}
             </div>
         </button>
     ),
