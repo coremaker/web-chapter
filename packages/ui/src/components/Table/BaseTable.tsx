@@ -201,6 +201,7 @@ const BaseTable = <T extends GenericRowStructure>({
             return renderTablePagination({
                 page,
                 defaultRowsPerPage,
+                rowsPerPage,
                 rows: filteredRows,
                 handleChangePage,
                 handleRowsPerPageChange,

@@ -77,6 +77,7 @@ export type PageChangeHandler = (_e: MouseEvent<HTMLButtonElement> | null, newPa
 export interface PaginationRendererArgs<T extends GenericRowStructure> {
     page: number;
     defaultRowsPerPage: number;
+    rowsPerPage: number;
     rows: Row<T>[];
     handleChangePage?: PageChangeHandler;
     handleRowsPerPageChange?: RowsPerPageChangeHandler;
