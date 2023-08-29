@@ -2,7 +2,7 @@
 import AppleIcon from '@mui/icons-material/Apple';
 import { Chip } from '@mui/material';
 import { Meta, StoryFn } from '@storybook/react';
-import { ChangeEvent, MouseEvent, useState } from 'react';
+import { MouseEvent, useState } from 'react';
 
 import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import Table from './BaseTable';
