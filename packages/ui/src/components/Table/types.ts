@@ -70,7 +70,7 @@ export interface RowAction<T extends GenericRowStructure> {
     disabled?: (row: Row<T>) => boolean;
 }
 
-export type RowsPerPageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => void;
+export type RowsPerPageChangeHandler = (value: number) => void;
 
 export type PageChangeHandler = (_e: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
 
