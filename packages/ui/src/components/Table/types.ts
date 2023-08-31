@@ -49,6 +49,7 @@ export interface HeadCell<T extends GenericRowStructure, U> extends Cell<string>
 }
 
 export interface Row<T extends GenericRowStructure> {
+    disableActions?: boolean;
     cells: { [K in CellId<T>]: RowCell<T, T[K]> };
 }
 

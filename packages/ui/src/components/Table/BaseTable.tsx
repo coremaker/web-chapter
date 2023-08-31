@@ -161,7 +161,7 @@ const BaseTable = <T extends GenericRowStructure>({
         const cellContent = renderCellContent(cell, row);
         const cellIndex = cellIdsArray.indexOf(cellId);
         const isLastCell = cellIndex === cellIdsArray.length - 1;
-        const rowActionsPresent = rowActions.length > 0;
+        const shouldRenderRowActions = rowActions.length > 0 && !row.disableActions;
         const key = makeRowCellId(row.cells.id.value, cellId);
         return (
             <TableCell
@@ -175,7 +175,7 @@ const BaseTable = <T extends GenericRowStructure>({
                 }}
                 SortIcon={SortIcon}
             >
-                {isLastCell && rowActionsPresent ? (
+                {isLastCell && shouldRenderRowActions ? (
                     <EllipsisCellContent
                         row={row}
                         label={cellContent}
