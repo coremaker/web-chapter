@@ -3,6 +3,7 @@ import {
     CircularProgressProps,
     Table as MuiTable,
     SortDirection,
+    SxProps,
     TableBody,
     TableContainer,
     TableFooter,
@@ -90,6 +91,7 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     handleRowsPerPageChange?: (value: number) => void;
     handlePageChange?: (e: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
     handleSortCellClick?: (cellId: CellId<T>) => void;
+    tableContainerSxProps?: SxProps;
 }
 
 const defaultRowsPerPageOptions = [5, 10, 15, 20, 25];
@@ -123,6 +125,7 @@ const BaseTable = <T extends GenericRowStructure>({
         onRowMenuClose,
         loading,
         SpinnerComponent = Spinner,
+        tableContainerSxProps,
     } = props;
 
     const {
@@ -260,7 +263,7 @@ const BaseTable = <T extends GenericRowStructure>({
                 <div className={classes.actionsContainer}>{renderTableActions?.(selectedRowIdsState)}</div>
             </div>
 
-            <TableContainer className={classes.tableContainer}>
+            <TableContainer className={classes.tableContainer} sx={tableContainerSxProps}>
                 <MuiTable>
                     <TableHead data-testid="table-head">
                         <TableRow>
