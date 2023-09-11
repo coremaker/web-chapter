@@ -648,4 +648,16 @@ describe('<Table />', () => {
 
         expect(getByText(/Street 12/)).toBeInTheDocument();
     });
+
+    it('calls the onRowClick prop when it is defined in props', async () => {
+        const mockOnRowClick = vi.fn();
+
+        const { getByTestId } = render(<Table headCells={headCells} rows={rows} onRowClick={mockOnRowClick} />);
+
+        const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
+
+        fireEvent.click(renderedRow);
+
+        expect(mockOnRowClick).toHaveBeenCalledTimes(1);
+    });
 });
