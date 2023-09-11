@@ -96,6 +96,7 @@ export const RowActions = Template.bind({});
 RowActions.args = {
     rows,
     headCells,
+    onRowClick: () => alert('row click'),
     rowActions: [
         {
             id: '1',
