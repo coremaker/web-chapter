@@ -92,6 +92,7 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     handlePageChange?: (e: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
     handleSortCellClick?: (cellId: CellId<T>) => void;
     tableContainerSxProps?: SxProps;
+    onRowClick?: (row: Row<T>, e: MouseEvent<HTMLTableRowElement, globalThis.MouseEvent>) => void;
 }
 
 const defaultRowsPerPageOptions = [5, 10, 15, 20, 25];
@@ -126,6 +127,7 @@ const BaseTable = <T extends GenericRowStructure>({
         loading,
         SpinnerComponent = Spinner,
         tableContainerSxProps,
+        onRowClick,
     } = props;
 
     const {
@@ -342,6 +344,7 @@ const BaseTable = <T extends GenericRowStructure>({
                                           data-testid={`table-body-row-${row.cells.id.value}`}
                                           hover
                                           tabIndex={-1}
+                                          onClick={(e) => onRowClick?.(row, e)}
                                           className={
                                               selectedRowIdsState[row.cells.id.value] ? 'BaseTable__Row--selected' : ''
                                           }
