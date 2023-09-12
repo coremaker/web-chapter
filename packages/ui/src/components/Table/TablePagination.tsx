@@ -5,7 +5,7 @@ import { FC } from 'react';
 import { TablePaginationItem } from './TablePaginationItem';
 import { PageChangeHandler } from './types';
 
-interface TablePaginationProps {
+export interface TablePaginationProps {
     itemsCount: number;
     currentPage: number;
     rowsPerPage: number;

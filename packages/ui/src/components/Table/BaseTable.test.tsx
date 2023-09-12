@@ -58,6 +58,31 @@ describe('<Table />', () => {
         expect(ellipsisButton).toBeInTheDocument();
     });
 
+    it("doesn't render the table actions for rows that disabled them", () => {
+        const { queryByRole } = render(
+            <Table<{ id: string; test: string }>
+                headCells={{ id: { value: 'ID' }, test: { value: 'Test' } }}
+                rows={[
+                    { disableActions: true, cells: { id: { value: '0' }, test: { value: 'test no actions' } } },
+                    { disableActions: false, cells: { id: { value: '1' }, test: { value: 'test actions' } } },
+                ]}
+                rowActions={[{ id: '1', label: 'Action 1', onClick() {} }]}
+            />
+        );
+
+        expect(
+            queryByRole('button', {
+                name: `open menu for row id ${rows[0].cells.id.value}`,
+            })
+        ).not.toBeInTheDocument();
+
+        expect(
+            queryByRole('button', {
+                name: `open menu for row id ${rows[1].cells.id.value}`,
+            })
+        ).toBeInTheDocument();
+    });
+
     it('calls the onMenuOpen prop when rowActions are defined in props and the menu is opening', async () => {
         const mockOnMenuOpen = vi.fn();
 
@@ -623,5 +648,17 @@ describe('<Table />', () => {
         const { getByText } = wrapperRender(<Table selectable showIdCell headCells={headCells} rows={rows} />);
 
         expect(getByText(/Street 12/)).toBeInTheDocument();
+    });
+
+    it('calls the onRowClick prop when it is defined in props', async () => {
+        const mockOnRowClick = vi.fn();
+
+        const { getByTestId } = render(<Table headCells={headCells} rows={rows} onRowClick={mockOnRowClick} />);
+
+        const renderedRow = getByTestId(`table-body-row-${rows[0].cells.id.value}`);
+
+        fireEvent.click(renderedRow);
+
+        expect(mockOnRowClick).toHaveBeenCalledTimes(1);
     });
 });

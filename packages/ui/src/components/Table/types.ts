@@ -49,6 +49,7 @@ export interface HeadCell<T extends GenericRowStructure, U> extends Cell<string>
 }
 
 export interface Row<T extends GenericRowStructure> {
+    disableActions?: boolean;
     cells: { [K in CellId<T>]: RowCell<T, T[K]> };
 }
 
@@ -70,13 +71,14 @@ export interface RowAction<T extends GenericRowStructure> {
     disabled?: (row: Row<T>) => boolean;
 }
 
-export type RowsPerPageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => void;
+export type RowsPerPageChangeHandler = (value: number) => void;
 
 export type PageChangeHandler = (_e: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
 
 export interface PaginationRendererArgs<T extends GenericRowStructure> {
     page: number;
     defaultRowsPerPage: number;
+    rowsPerPage: number;
     rows: Row<T>[];
     handleChangePage?: PageChangeHandler;
     handleRowsPerPageChange?: RowsPerPageChangeHandler;

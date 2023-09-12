@@ -7,4 +7,4 @@ export interface VariantObject {
     }>;
 }
 
-export type Color = 'danger' | 'primary' | 'secondary' | 'info' | 'success' | 'warning' | 'ink';
+export type Color = 'danger' | 'primary' | 'secondary' | 'info' | 'success' | 'warning' | 'ink' | 'chalk';

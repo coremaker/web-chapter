@@ -18,7 +18,12 @@ export const TablePaginationItem: FC<TablePaginationItemProps> = ({ item }) => {
 
     if (type === 'start-ellipsis' || type === 'end-ellipsis') {
         return (
-            <IconButton disabled sx={{ mr: '0.5rem', minWidth: 0 }} size="small">
+            <IconButton
+                disabled
+                sx={{ mr: '0.5rem', minWidth: 0 }}
+                size="small"
+                data-testid="table-pagination-item-ellipsis"
+            >
                 <MoreHorizRounded fontSize="small" />
             </IconButton>
         );
@@ -62,6 +67,7 @@ export const TablePaginationItem: FC<TablePaginationItemProps> = ({ item }) => {
             size="small"
             data-testid={`table-pagination-item-${type}`}
             aria-label={type}
+            aria-current={!disabled}
         >
             {getIcon(type)}
         </IconButton>

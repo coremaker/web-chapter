@@ -3,6 +3,7 @@ import {
     CircularProgressProps,
     Table as MuiTable,
     SortDirection,
+    SxProps,
     TableBody,
     TableContainer,
     TableHead,
@@ -86,9 +87,11 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     classes?: Partial<BaseTableClasses>;
     loading?: boolean;
     SpinnerComponent?: JSXElementConstructor<CircularProgressProps>;
-    handleRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+    handleRowsPerPageChange?: (value: number) => void;
     handlePageChange?: (e: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
     handleSortCellClick?: (cellId: CellId<T>) => void;
+    tableContainerSxProps?: SxProps;
+    onRowClick?: (row: Row<T>, e: MouseEvent<HTMLTableRowElement, globalThis.MouseEvent>) => void;
 }
 
 const BaseTable = <T extends GenericRowStructure>({
@@ -119,6 +122,8 @@ const BaseTable = <T extends GenericRowStructure>({
         onRowMenuClose,
         loading,
         SpinnerComponent = Spinner,
+        tableContainerSxProps,
+        onRowClick,
     } = props;
 
     const {
@@ -157,7 +162,7 @@ const BaseTable = <T extends GenericRowStructure>({
         const cellContent = renderCellContent(cell, row);
         const cellIndex = cellIdsArray.indexOf(cellId);
         const isLastCell = cellIndex === cellIdsArray.length - 1;
-        const rowActionsPresent = rowActions.length > 0;
+        const shouldRenderRowActions = rowActions.length > 0 && !row.disableActions;
         const key = makeRowCellId(row.cells.id.value, cellId);
         return (
             <TableCell
@@ -171,7 +176,7 @@ const BaseTable = <T extends GenericRowStructure>({
                 }}
                 SortIcon={SortIcon}
             >
-                {isLastCell && rowActionsPresent ? (
+                {isLastCell && shouldRenderRowActions ? (
                     <EllipsisCellContent
                         row={row}
                         label={cellContent}
@@ -197,6 +202,7 @@ const BaseTable = <T extends GenericRowStructure>({
             return renderTablePagination({
                 page,
                 defaultRowsPerPage,
+                rowsPerPage,
                 rows: filteredRows,
                 handleChangePage,
                 handleRowsPerPageChange,
@@ -243,7 +249,7 @@ const BaseTable = <T extends GenericRowStructure>({
                 <div className={classes.actionsContainer}>{renderTableActions?.(selectedRowIdsState)}</div>
             </div>
 
-            <TableContainer className={classes.tableContainer}>
+            <TableContainer className={classes.tableContainer} sx={tableContainerSxProps}>
                 <MuiTable>
                     <TableHead data-testid="table-head">
                         <TableRow>
@@ -322,6 +328,7 @@ const BaseTable = <T extends GenericRowStructure>({
                                           data-testid={`table-body-row-${row.cells.id.value}`}
                                           hover
                                           tabIndex={-1}
+                                          onClick={(e) => onRowClick?.(row, e)}
                                           className={
                                               selectedRowIdsState[row.cells.id.value] ? 'BaseTable__Row--selected' : ''
                                           }
