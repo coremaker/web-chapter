@@ -50,14 +50,11 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
     };
     const menuId = `table-row-menu-${row.cells.id.value}`;
 
-    const isEllipsisIconDisabled = !rowActions?.find((rowAction) => !rowAction?.disabled?.(row));
-
     return (
         <StyledDivContainer className={classes.root ?? ''}>
             <div>{label}</div>
             <div>
                 <IconButton
-                    disabled={isEllipsisIconDisabled}
                     data-testid={`ellipsis-button-${row.cells.id.value}`}
                     aria-label={`open menu for row id ${row.cells.id.value}`}
                     aria-controls={open ? menuId : undefined}
@@ -72,13 +69,10 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
                     {rowActions.map((rowAction) => {
                         const key = `${row.cells.id.value}-${rowAction.id}`;
 
-                        if (rowAction?.disabled?.(row)) {
-                            return null;
-                        }
-
                         if (rowAction.renderComponent) {
                             return rowAction.renderComponent({ key, row, options: { closeMenu } });
                         }
+
                         return (
                             <MenuItem
                                 key={key}
