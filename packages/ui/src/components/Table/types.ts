@@ -68,7 +68,6 @@ export interface RowAction<T extends GenericRowStructure> {
         e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>,
         options: { closeMenu: () => void }
     ) => void;
-    disabled?: (row: Row<T>) => boolean;
 }
 
 export type RowsPerPageChangeHandler = (value: number) => void;
