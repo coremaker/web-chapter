@@ -1,5 +1,4 @@
 import {
-    Checkbox,
     CircularProgressProps,
     Table as MuiTable,
     SortDirection,
@@ -31,6 +30,7 @@ import {
     RowCell,
     SearchInputRendererArgs,
 } from './types';
+import RowSelector, { HeadRowSelector } from './components/RowSelector';
 
 interface BaseTableFooterClasses {
     root: string;
@@ -54,6 +54,7 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     makeSearchableRowContent?: (row: Row<T>) => string;
     searchInputPlaceholder?: string;
     selectable?: boolean;
+    selectionType?: 'single' | 'multiple';
     renderSearchEmptyState?: () => ReactNode;
     /**
      * This prop changes the selected rows state from uncontrolled to controlled
@@ -106,6 +107,7 @@ const BaseTable = <T extends GenericRowStructure>({
         headCells,
         rows,
         selectable,
+        selectionType = 'multiple',
         makeSearchableRowContent,
         searchInputPlaceholder = 'Search',
         showIdCell,
@@ -148,6 +150,7 @@ const BaseTable = <T extends GenericRowStructure>({
         page,
     } = useTable<T>({
         ...props,
+        selectionType,
         onAllRowsSelectionChange,
         onRowSelectionChange,
         defaultRowsPerPage,
@@ -271,20 +274,12 @@ const BaseTable = <T extends GenericRowStructure>({
                         <TableRow>
                             {selectable && (
                                 <TableCell classes={cellClasses} isHeadCell padding="checkbox">
-                                    {renderCheckbox ? (
-                                        renderCheckbox({
-                                            onChange: handleAllRowsSelection,
-                                            checked: selectedRowsCount === rows.length,
-                                            indeterminate: selectedRowsCount > 0 && selectedRowsCount < rows.length,
-                                        })
-                                    ) : (
-                                        <Checkbox
-                                            onChange={handleAllRowsSelection}
-                                            checked={selectedRowsCount === rows.length}
-                                            indeterminate={selectedRowsCount > 0 && selectedRowsCount < rows.length}
-                                            inputProps={{
-                                                'aria-label': 'select all rows',
-                                            }}
+                                    {selectionType === 'multiple' && (
+                                        <HeadRowSelector
+                                            selectedRowsCount={selectedRowsCount}
+                                            rows={rows}
+                                            handleAllRowsSelection={handleAllRowsSelection}
+                                            renderCheckbox={renderCheckbox}
                                         />
                                     )}
                                 </TableCell>
@@ -356,24 +351,13 @@ const BaseTable = <T extends GenericRowStructure>({
                                                   data-testid="table-row-cell"
                                                   padding="checkbox"
                                               >
-                                                  {renderCheckbox ? (
-                                                      renderCheckbox({
-                                                          rowId: row.cells.id.value,
-                                                          checked: !!selectedRowIdsState[row.cells.id.value],
-                                                          onChange: (e) =>
-                                                              handleRowSelection(row.cells.id.value, e.target.checked),
-                                                      })
-                                                  ) : (
-                                                      <Checkbox
-                                                          onChange={(e) =>
-                                                              handleRowSelection(row.cells.id.value, e.target.checked)
-                                                          }
-                                                          checked={!!selectedRowIdsState[row.cells.id.value]}
-                                                          inputProps={{
-                                                              'aria-label': `select row ${row.cells.id.value}`,
-                                                          }}
-                                                      />
-                                                  )}
+                                                  <RowSelector
+                                                      selectionType={selectionType}
+                                                      handleRowSelection={handleRowSelection}
+                                                      renderCheckbox={renderCheckbox}
+                                                      row={row}
+                                                      selectedRowIdsState={selectedRowIdsState}
+                                                  />
                                               </TableCell>
                                           )}
 

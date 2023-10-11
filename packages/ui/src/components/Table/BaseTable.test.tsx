@@ -283,6 +283,14 @@ describe('<Table />', () => {
         expect(checkboxes.length).toBe(checkboxesCountWithHeader);
     });
 
+    it('renders radios for every row when the table is selectable', () => {
+        const { getAllByRole } = render(<Table selectable selectionType="single" headCells={headCells} rows={rows} />);
+
+        const radios = getAllByRole('radio');
+
+        expect(radios.length).toBe(rows.length);
+    });
+
     it('selects all rows when clicking the checkbox in the header area', async () => {
         const { getByTestId } = render(<Table selectable headCells={headCells} rows={rows} />);
 
