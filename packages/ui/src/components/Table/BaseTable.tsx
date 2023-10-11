@@ -17,6 +17,7 @@ import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import useTable, { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
 import Spinner from '../Spinner/Spinner';
 import EllipsisCellContent, { EllipsisCellContentClasses } from './components/EllipsisCellContent';
+import RowSelector, { HeadRowSelector } from './components/RowSelector';
 import SearchEmptyState from './components/SearchEmptyState';
 import TableCell, { TableCellClasses } from './components/TableCell';
 import {
@@ -30,7 +31,6 @@ import {
     RowCell,
     SearchInputRendererArgs,
 } from './types';
-import RowSelector, { HeadRowSelector } from './components/RowSelector';
 
 interface BaseTableFooterClasses {
     root: string;

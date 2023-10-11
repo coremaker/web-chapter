@@ -1,6 +1,7 @@
-import { ChangeEvent, ReactNode, useMemo } from 'react';
-import { CheckboxRendererArgs, GenericRowStructure, Row } from '../types';
 import { Checkbox, Radio } from '@mui/material';
+import { ChangeEvent, ReactNode, useMemo } from 'react';
+
+import { CheckboxRendererArgs, GenericRowStructure, Row } from '../types';
 
 interface HeadRowSelectorProps<T extends GenericRowStructure> {
     selectedRowsCount: number;
@@ -33,7 +34,7 @@ export const HeadRowSelector = <T extends GenericRowStructure>({
     const CustomComponent = useMemo(() => {
         if (!renderCheckbox) return null;
         return renderCheckbox({ ...checkboxProps });
-    }, [renderCheckbox]);
+    }, [renderCheckbox, checkboxProps]);
 
     if (!CustomComponent) return <Checkbox {...checkboxProps} inputProps={{ 'aria-label': 'select all rows' }} />;
     return CustomComponent;
@@ -52,7 +53,7 @@ const SingleSelectionTypeSelector = <T extends GenericRowStructure>({
             checked: !!selectedRowIdsState[row.cells.id.value],
             onChange: (e) => handleRowSelection(row.cells.id.value, e.target.checked),
         });
-    }, []);
+    }, [renderCheckbox, row, selectedRowIdsState, handleRowSelection]);
 
     if (!CustomComponent) {
         return (
@@ -80,7 +81,7 @@ export const MultipleSelectionTypeSelector = <T extends GenericRowStructure>({
             checked: !!selectedRowIdsState[row.cells.id.value],
             onChange: (e) => handleRowSelection(row.cells.id.value, e.target.checked),
         });
-    }, []);
+    }, [renderCheckbox, row, selectedRowIdsState, handleRowSelection]);
 
     if (!CustomComponent) {
         return (
