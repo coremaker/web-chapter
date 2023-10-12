@@ -168,7 +168,6 @@ const BaseTable = <T extends GenericRowStructure>({
         const isLastCell = cellIndex === cellIdsArray.length - 1;
         const shouldRenderRowActions = rowActions.length > 0 && !row.disableActions;
         const key = makeRowCellId(row.cells.id.value, cellId);
-        const { isSticky, stickyPosition } = cell;
 
         return (
             <TableCell
@@ -183,16 +182,6 @@ const BaseTable = <T extends GenericRowStructure>({
                     ...cellClasses,
                     bodyCell: `${cellClasses?.bodyCell ?? ''} BaseTable__Cell__${String(cellId)}`,
                 }}
-                sx={
-                    isSticky && stickyPosition
-                        ? {
-                              position: 'sticky',
-                              zIndex: 1,
-                              ...(stickyPosition === 'left' && { left: 0 }),
-                              ...(stickyPosition === 'right' && { right: 0 }),
-                          }
-                        : {}
-                }
                 SortIcon={SortIcon}
             >
                 {isLastCell && shouldRenderRowActions ? (

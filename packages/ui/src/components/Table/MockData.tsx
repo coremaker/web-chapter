@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import { DeleteRounded, EditRounded } from '@mui/icons-material';
 import { Box, Button, Chip } from '@mui/material';
 

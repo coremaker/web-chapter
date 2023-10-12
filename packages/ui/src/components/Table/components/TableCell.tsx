@@ -54,24 +54,23 @@ const TableCell = forwardRef(
 
         if (isHeadCell && sortable) {
             return (
-                <MuiTableCell ref={ref} className={rootClasses} {...props}>
+                <MuiTableCell ref={ref} className={rootClasses + (isSticky ? ' BaseTable-sticky' : '')} {...props}>
                     <TableSortLabel
                         IconComponent={SortIcon}
                         direction={sortDirection || 'asc'}
                         active={active}
                         aria-label={cellId ? `sort by ${cellId}` : 'sort by cell'}
                         classes={classes.sortLabel}
-                        sx={
-                            isSticky && stickyPosition
-                                ? {
-                                      position: 'sticky',
-                                      zIndex: 1,
-                                      ...(stickyPosition === 'left' && { left: 0 }),
-                                      ...(stickyPosition === 'right' && { right: 0 }),
-                                      ...sxProps,
-                                  }
-                                : {}
-                        }
+                        sx={{
+                            ...sxProps,
+                            ...(isSticky &&
+                                stickyPosition && {
+                                    position: 'sticky',
+                                    zIndex: 1,
+                                    ...(stickyPosition === 'left' ? { left: 0 } : {}),
+                                    ...(stickyPosition === 'right' ? { right: 0 } : {}),
+                                }),
+                        }}
                     >
                         {children}
                     </TableSortLabel>
@@ -81,19 +80,18 @@ const TableCell = forwardRef(
         return (
             <MuiTableCell
                 ref={ref}
-                className={rootClasses + (isSticky ? ' sticky' : '')}
+                className={rootClasses + (isSticky ? ' BaseTable-sticky' : '')}
                 {...props}
-                sx={
-                    isSticky && stickyPosition
-                        ? {
-                              position: 'sticky',
-                              zIndex: 1,
-                              ...(stickyPosition === 'left' && { left: 0 }),
-                              ...(stickyPosition === 'right' && { right: 0 }),
-                              ...sxProps,
-                          }
-                        : {}
-                }
+                sx={{
+                    ...sxProps,
+                    ...(isSticky &&
+                        stickyPosition && {
+                            position: 'sticky',
+                            zIndex: 1,
+                            ...(stickyPosition === 'left' ? { left: 0 } : {}),
+                            ...(stickyPosition === 'right' ? { right: 0 } : {}),
+                        }),
+                }}
             >
                 {children}
             </MuiTableCell>
