@@ -31,13 +31,10 @@ export const HeadRowSelector = <T extends GenericRowStructure>({
         }),
         [selectedRowsCount, rows.length, handleAllRowsSelection]
     );
-    const CustomComponent = useMemo(() => {
-        if (!renderCheckbox) return null;
+    if (renderCheckbox) {
         return renderCheckbox({ ...checkboxProps });
-    }, [renderCheckbox, checkboxProps]);
-
-    if (!CustomComponent) return <Checkbox {...checkboxProps} inputProps={{ 'aria-label': 'select all rows' }} />;
-    return CustomComponent;
+    }
+    return <Checkbox {...checkboxProps} inputProps={{ 'aria-label': 'select all rows' }} />;
 };
 
 const SingleSelectionTypeSelector = <T extends GenericRowStructure>({
@@ -46,27 +43,21 @@ const SingleSelectionTypeSelector = <T extends GenericRowStructure>({
     row,
     selectedRowIdsState,
 }: Omit<RowSelectorProps<T>, 'selectionType'>) => {
-    const CustomComponent = useMemo(() => {
-        if (!renderCheckbox) return null;
+    if (renderCheckbox) {
         return renderCheckbox({
             rowId: row.cells.id.value,
             checked: !!selectedRowIdsState[row.cells.id.value],
             onChange: (e) => handleRowSelection(row.cells.id.value, e.target.checked),
         });
-    }, [renderCheckbox, row, selectedRowIdsState, handleRowSelection]);
-
-    if (!CustomComponent) {
-        return (
-            <Radio
-                size="small"
-                checked={!!selectedRowIdsState[row.cells.id.value]}
-                onChange={(e) => handleRowSelection(row.cells.id.value, e.target.checked)}
-                inputProps={{ 'aria-label': 'select row' }}
-            />
-        );
     }
-
-    return CustomComponent;
+    return (
+        <Radio
+            size="small"
+            checked={!!selectedRowIdsState[row.cells.id.value]}
+            onChange={(e) => handleRowSelection(row.cells.id.value, e.target.checked)}
+            inputProps={{ 'aria-label': 'select row' }}
+        />
+    );
 };
 export const MultipleSelectionTypeSelector = <T extends GenericRowStructure>({
     handleRowSelection,
@@ -74,27 +65,22 @@ export const MultipleSelectionTypeSelector = <T extends GenericRowStructure>({
     row,
     selectedRowIdsState,
 }: Omit<RowSelectorProps<T>, 'selectionType'>) => {
-    const CustomComponent = useMemo(() => {
-        if (!renderCheckbox) return null;
+    if (renderCheckbox) {
         return renderCheckbox({
             rowId: row.cells.id.value,
             checked: !!selectedRowIdsState[row.cells.id.value],
             onChange: (e) => handleRowSelection(row.cells.id.value, e.target.checked),
         });
-    }, [renderCheckbox, row, selectedRowIdsState, handleRowSelection]);
-
-    if (!CustomComponent) {
-        return (
-            <Checkbox
-                size="small"
-                checked={!!selectedRowIdsState[row.cells.id.value]}
-                onChange={(e) => handleRowSelection(row.cells.id.value, e.target.checked)}
-                inputProps={{ 'aria-label': `select row ${row.cells.id.value}` }}
-            />
-        );
     }
 
-    return CustomComponent;
+    return (
+        <Checkbox
+            size="small"
+            checked={!!selectedRowIdsState[row.cells.id.value]}
+            onChange={(e) => handleRowSelection(row.cells.id.value, e.target.checked)}
+            inputProps={{ 'aria-label': `select row ${row.cells.id.value}` }}
+        />
+    );
 };
 const RowSelector = <T extends GenericRowStructure>({
     selectionType,

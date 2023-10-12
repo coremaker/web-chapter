@@ -147,7 +147,7 @@ export default function useTable<T extends GenericRowStructure>({
 
     const handleRowSelectionInternal = (rowId: string, selected: boolean) => {
         if (selectionType === 'single') {
-            const updatedSelectedRows = rows
+            const currentRowSelectedRows = rows
                 .map((row) => row.cells.id.value)
                 .reduce(
                     (acc: Record<string, boolean>, currentRowId: string) => ({
@@ -156,7 +156,7 @@ export default function useTable<T extends GenericRowStructure>({
                     }),
                     {}
                 );
-            updateState({ selectedRowIds: updatedSelectedRows });
+            updateState({ selectedRowIds: currentRowSelectedRows });
             return;
         }
         updateState({ selectedRowIds: { [rowId]: selected } });
