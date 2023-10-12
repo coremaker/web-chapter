@@ -146,7 +146,6 @@ export default function useTable<T extends GenericRowStructure>({
     const handleChangeSearchValue = (searchValue: string) => updateState({ searchValue });
 
     const handleRowSelectionInternal = (rowId: string, selected: boolean) => {
-        // if selectionType is single, we need to deselect all other rows and select only the current one
         if (selectionType === 'single') {
             const updatedSelectedRows = rows
                 .map((row) => row.cells.id.value)
