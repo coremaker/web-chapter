@@ -662,93 +662,52 @@ describe('<Table />', () => {
     });
 
     it('renders sticky styles when cell.isSticky is true and stickyPosition is defined', () => {
-        const { getByTestId } = render(<Table headCells={headCellsWithSticky} rows={rowsWithSticky.slice(0, 1)} />);
-        const stickyCellId = Object.keys(headCellsWithSticky).find(
-            (cellId) =>
-                headCellsWithSticky[cellId as keyof typeof headCellsWithSticky].isSticky &&
-                headCellsWithSticky[cellId as keyof typeof headCellsWithSticky].stickyPosition
-        );
+        const stickyCellKey: keyof typeof headCellsWithSticky = 'username';
 
-        if (stickyCellId) {
-            const renderedCell = getByTestId(`table-row-cell-${stickyCellId}`);
-            const { stickyPosition } = headCellsWithSticky[stickyCellId as keyof typeof headCellsWithSticky];
-            if (stickyPosition)
-                expect(renderedCell).toHaveStyle({
-                    position: 'sticky',
-                    [stickyPosition]: 0,
-                });
-            else throw new Error('No stickyPosition found in headCellsWithSticky');
-        } else {
-            throw new Error('No sticky cells found in headCellsWithSticky');
-        }
+        const { getByTestId } = render(<Table headCells={headCellsWithSticky} rows={rowsWithSticky.slice(0, 1)} />);
+        const renderedHead = getByTestId('table-head');
+
+        const stickyCellData = headCellsWithSticky[stickyCellKey];
+        const nameHeadCell = within(renderedHead).getByText(stickyCellData.value);
+
+        expect(nameHeadCell).toHaveStyle({
+            position: 'sticky',
+            [stickyCellData.stickyPosition as 'left' | 'right']: 0,
+        });
     });
 
     it('applies sticky styles to the head cell when isSticky is true and stickyPosition is defined', () => {
+        const stickyCellKey: keyof typeof headCellsWithSticky = 'username';
         const { getByTestId } = render(<Table headCells={headCellsWithSticky} rows={rowsWithSticky.slice(0, 1)} />);
-
-        const stickyHeadCellId = Object.keys(headCellsWithSticky).find(
-            (cellId) =>
-                headCellsWithSticky[cellId as keyof typeof headCellsWithSticky].isSticky &&
-                headCellsWithSticky[cellId as keyof typeof headCellsWithSticky].stickyPosition
-        );
-
         const renderedHead = getByTestId('table-head');
 
-        if (stickyHeadCellId) {
-            const { stickyPosition, value } = headCellsWithSticky[stickyHeadCellId as keyof typeof headCellsWithSticky];
+        const stickyCellData = headCellsWithSticky[stickyCellKey];
+        const nameHeadCell = within(renderedHead).getByText(stickyCellData.value);
 
-            const nameHeadCell = within(renderedHead).getByText(value);
-
-            if (stickyPosition) {
-                expect(nameHeadCell).toHaveStyle({
-                    position: 'sticky',
-                    [stickyPosition as 'left' | 'right']: 0,
-                });
-            } else {
-                throw new Error('No stickyPosition found in headCellsWithSticky for head cell');
-            }
-        } else {
-            throw new Error('No sticky head cells found in headCellsWithSticky');
-        }
+        expect(nameHeadCell).toHaveStyle({
+            position: 'sticky',
+            [stickyCellData.stickyPosition as 'left' | 'right']: 0,
+        });
     });
 
     it('applies sxProps styles to the cell', () => {
+        const cellKeyWithSxProps: keyof typeof headCellsWithSticky = 'username';
         const { getByTestId } = render(<Table headCells={headCellsWithSticky} rows={rowsWithSticky.slice(0, 1)} />);
-        const cellWithSxPropsId = Object.keys(headCellsWithSticky).find(
-            (cellId) => headCellsWithSticky[cellId as keyof typeof headCellsWithSticky].sxProps
-        );
 
-        if (cellWithSxPropsId) {
-            const renderedCell = getByTestId(`table-row-cell-${cellWithSxPropsId}`);
-            const { sxProps } = headCellsWithSticky[cellWithSxPropsId as keyof typeof headCellsWithSticky];
-            if (sxProps) expect(renderedCell).toHaveStyle({ ...sxProps });
-            else throw new Error('No sxProps found in headCellsWithSticky');
-        } else {
-            throw new Error('No cells with sxProps found in headCellsWithSticky');
-        }
+        const renderedCell = getByTestId(`table-row-cell-${cellKeyWithSxProps}`);
+        const cellData = headCellsWithSticky[cellKeyWithSxProps];
+
+        expect(renderedCell).toHaveStyle({ ...cellData.sxProps });
     });
 
     it('applies sxProps styles to the head cell', () => {
+        const headCellKeyWithSxProps: keyof typeof headCellsWithSticky = 'username';
         const { getByTestId } = render(<Table headCells={headCellsWithSticky} rows={rowsWithSticky.slice(0, 1)} />);
-
-        const headCellWithSxPropsId = Object.keys(headCellsWithSticky).find(
-            (cellId) => headCellsWithSticky[cellId as keyof typeof headCellsWithSticky].sxProps
-        );
-
         const renderedHead = getByTestId('table-head');
 
-        if (headCellWithSxPropsId) {
-            const { sxProps, value } = headCellsWithSticky[headCellWithSxPropsId as keyof typeof headCellsWithSticky];
+        const headCellData = headCellsWithSticky[headCellKeyWithSxProps];
+        const nameHeadCell = within(renderedHead).getByText(headCellData.value);
 
-            const nameHeadCell = within(renderedHead).getByText(value);
-
-            if (sxProps) {
-                expect(nameHeadCell).toHaveStyle({ ...sxProps });
-            } else {
-                throw new Error('No sxProps found in headCellsWithSticky for head cell');
-            }
-        } else {
-            throw new Error('No head cells with sxProps found in headCellsWithSticky');
-        }
+        expect(nameHeadCell).toHaveStyle({ ...headCellData.sxProps });
     });
 });
