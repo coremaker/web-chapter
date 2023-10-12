@@ -54,23 +54,27 @@ const TableCell = forwardRef(
 
         if (isHeadCell && sortable) {
             return (
-                <MuiTableCell ref={ref} className={rootClasses + (isSticky ? ' BaseTable-sticky' : '')} {...props}>
+                <MuiTableCell
+                    ref={ref}
+                    className={rootClasses + (isSticky ? ' BaseTable-sticky' : '')}
+                    {...props}
+                    sx={{
+                        ...sxProps,
+                        ...(isSticky &&
+                            stickyPosition && {
+                                position: 'sticky',
+                                zIndex: 1,
+                                ...(stickyPosition === 'left' ? { left: 0 } : {}),
+                                ...(stickyPosition === 'right' ? { right: 0 } : {}),
+                            }),
+                    }}
+                >
                     <TableSortLabel
                         IconComponent={SortIcon}
                         direction={sortDirection || 'asc'}
                         active={active}
                         aria-label={cellId ? `sort by ${cellId}` : 'sort by cell'}
                         classes={classes.sortLabel}
-                        sx={{
-                            ...sxProps,
-                            ...(isSticky &&
-                                stickyPosition && {
-                                    position: 'sticky',
-                                    zIndex: 1,
-                                    ...(stickyPosition === 'left' ? { left: 0 } : {}),
-                                    ...(stickyPosition === 'right' ? { right: 0 } : {}),
-                                }),
-                        }}
                     >
                         {children}
                     </TableSortLabel>
