@@ -202,7 +202,7 @@ export default function useTable<T extends GenericRowStructure>({
 
     const applySorting = useCallback(
         (rowsToSort: Row<T>[]) => {
-            if (!state.sortByColumnId) {
+            if (!state.sortByColumnId || props.handleSortCellClick) {
                 return rowsToSort;
             }
 
@@ -216,7 +216,7 @@ export default function useTable<T extends GenericRowStructure>({
                 makeSortRowByCellComparator(state.sortDirection, state.sortByColumnId, customComparator)
             );
         },
-        [state.sortByColumnId, state.sortDirection, headCells]
+        [state.sortByColumnId, state.sortDirection, headCells, props.handleSortCellClick]
     );
     const applyPageSplitting = useCallback(
         (rowsToSplit: Row<T>[]) => {
@@ -244,8 +244,7 @@ export default function useTable<T extends GenericRowStructure>({
         filteredRows,
         handleChangeSearchValue,
 
-        handleSortCellClick:
-            !!sortColumn && !!props.handleSortCellClick ? props.handleSortCellClick : handleSortCellClickInternal,
+        handleSortCellClick: props.handleSortCellClick ? props.handleSortCellClick : handleSortCellClickInternal,
 
         handleRowsPerPageChange: props.handleRowsPerPageChange ?? handleRowsPerPageChangeInternal,
         handleChangePage: props.handlePageChange ?? handleChangePageInternal,
