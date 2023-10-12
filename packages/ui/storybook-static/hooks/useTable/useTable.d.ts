@@ -1,0 +1,24 @@
+import { MouseEvent } from 'react';
+import type { BaseTableProps } from '../../components/Table/BaseTable';
+import { CellId, GenericRowStructure, HeadCell, HeadRow, Row, RowCell, ValueOf } from '../../components/Table/types';
+import { TableState } from './reducer';
+export declare const HEAD_ROW_IDENTIFIER = "__head";
+export default function useTable<T extends GenericRowStructure>({ defaultRowsPerPage, headCells, makeSearchableRowContent, rows, paginated, sortDirection, sortColumn, ...props }: BaseTableProps<T>): {
+    currentPageRows: Row<T>[];
+    filteredRows: Row<T>[];
+    handleChangeSearchValue: (searchValue: string) => void;
+    handleSortCellClick: (cellId: Extract<keyof T, string>) => void;
+    handleRowsPerPageChange: (value: number) => void;
+    handleChangePage: (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent> | null, newPage: number) => void;
+    page: number;
+    handleRowSelection: (rowId: string, selected: boolean) => void;
+    handleAllRowsSelection: (e: import("react").ChangeEvent<HTMLInputElement>, checked: boolean) => void;
+    selectedRowsCount: number;
+    selectedRowIds: import("./reducer").SelectedRowIds;
+    renderCellContent: (cell: RowCell<T, T[CellId<T>]>, row: Row<T>) => import("react").ReactNode;
+    renderHeadCellContent: (cell: HeadCell<T, ValueOf<T>>, row: HeadRow<T>) => import("react").ReactNode;
+    makeRowCellId: (rowId: string, cellId: CellId<T>) => string;
+    state: TableState<T>;
+    updateState: (updates: Partial<TableState<T>>) => void;
+    headRow: HeadRow<T>;
+};

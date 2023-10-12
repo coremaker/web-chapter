@@ -1,0 +1,14 @@
+import { RowStructure, RowStructureWithStickyActions } from './MockData';
+declare const _default: import("@storybook/types").ComponentAnnotations<import("@storybook/react/dist/types-0a347bb9").R, import("./BaseTable").BaseTableProps<import("./types").GenericRowStructure>>;
+export default _default;
+export declare const Base: import("@storybook/types").AnnotatedStoryFn<import("@storybook/react/dist/types-0a347bb9").R, import("./BaseTable").BaseTableProps<RowStructure>>;
+export declare const Pagination: import("@storybook/types").AnnotatedStoryFn<import("@storybook/react/dist/types-0a347bb9").R, import("./BaseTable").BaseTableProps<RowStructure>>;
+export declare const Searchable: import("@storybook/types").AnnotatedStoryFn<import("@storybook/react/dist/types-0a347bb9").R, import("./BaseTable").BaseTableProps<RowStructure>>;
+export declare const Selectable: import("@storybook/types").AnnotatedStoryFn<import("@storybook/react/dist/types-0a347bb9").R, import("./BaseTable").BaseTableProps<RowStructure>>;
+export declare const SelectableWithCustomHandlers: import("@storybook/types").AnnotatedStoryFn<import("@storybook/react/dist/types-0a347bb9").R, import("./BaseTable").BaseTableProps<RowStructure>>;
+export declare const RowActions: import("@storybook/types").AnnotatedStoryFn<import("@storybook/react/dist/types-0a347bb9").R, import("./BaseTable").BaseTableProps<RowStructure>>;
+export declare const LoadingState: import("@storybook/types").AnnotatedStoryFn<import("@storybook/react/dist/types-0a347bb9").R, import("./BaseTable").BaseTableProps<RowStructure>>;
+export declare const NoResultsState: import("@storybook/types").AnnotatedStoryFn<import("@storybook/react/dist/types-0a347bb9").R, import("./BaseTable").BaseTableProps<RowStructure>>;
+export declare const RowActionsCustomIcon: import("@storybook/types").AnnotatedStoryFn<import("@storybook/react/dist/types-0a347bb9").R, import("./BaseTable").BaseTableProps<RowStructure>>;
+export declare const StickyColumns: import("@storybook/types").AnnotatedStoryFn<import("@storybook/react/dist/types-0a347bb9").R, import("./BaseTable").BaseTableProps<RowStructureWithStickyActions>>;
+export declare const ServerFilterSortPagination: import("@storybook/types").AnnotatedStoryFn<import("@storybook/react/dist/types-0a347bb9").R, import("./BaseTable").BaseTableProps<RowStructure>>;

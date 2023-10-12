@@ -1,3 +1,4 @@
+import { SxProps } from '@mui/material';
 import { ChangeEvent, MouseEvent, ReactNode } from 'react';
 import { TableState } from 'src/hooks/useTable/reducer';
 
@@ -30,6 +31,9 @@ export interface Cell<U> {
 }
 export interface RowCell<T extends GenericRowStructure, U> extends Cell<U> {
     renderComponent?: (args: RowCellRendererArgs<T, U>) => ReactNode;
+    isSticky?: boolean;
+    stickyPosition?: StickyRowPosition;
+    sxProps?: SxProps;
 }
 
 export type CellComparator<U> = (firstCell: Cell<U>, secondCell: Cell<U>) => number;
@@ -46,6 +50,9 @@ export interface HeadCell<T extends GenericRowStructure, U> extends Cell<string>
     sortable?: boolean;
     comparator?: CellComparator<U>;
     renderComponent?: (args: HeadCellRendererArgs<T, string>) => ReactNode;
+    isSticky?: boolean;
+    stickyPosition?: StickyRowPosition;
+    sxProps?: SxProps;
 }
 
 export interface Row<T extends GenericRowStructure> {
@@ -69,6 +76,8 @@ export interface RowAction<T extends GenericRowStructure> {
         options: { closeMenu: () => void }
     ) => void;
 }
+
+export type StickyRowPosition = 'left' | 'right';
 
 export type RowsPerPageChangeHandler = (value: number) => void;
 
