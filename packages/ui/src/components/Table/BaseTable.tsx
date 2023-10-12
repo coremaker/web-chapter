@@ -168,10 +168,14 @@ const BaseTable = <T extends GenericRowStructure>({
         const isLastCell = cellIndex === cellIdsArray.length - 1;
         const shouldRenderRowActions = rowActions.length > 0 && !row.disableActions;
         const key = makeRowCellId(row.cells.id.value, cellId);
+
         return (
             <TableCell
                 key={key}
                 data-testid={`table-row-cell-${cellId}`}
+                isSticky={cell.isSticky}
+                stickyPosition={cell.stickyPosition}
+                sxProps={cell.sxProps}
                 align={cell.align}
                 padding={cell.disablePadding ? 'none' : 'normal'}
                 classes={{
@@ -298,6 +302,9 @@ const BaseTable = <T extends GenericRowStructure>({
                                             key={HEAD_ROW_IDENTIFIER + cellId}
                                             cellId={cellId}
                                             isHeadCell
+                                            isSticky={headCell.isSticky}
+                                            stickyPosition={headCell.stickyPosition}
+                                            sxProps={headCell.sxProps}
                                             align={headCell.align}
                                             active={sortByColumnId === cellId}
                                             sortDirection={cellId === sortByColumnId ? sortDirection : 'desc'}
