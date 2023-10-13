@@ -74,6 +74,7 @@ export default function useTable<T extends GenericRowStructure>({
     paginated,
     sortDirection = 'asc',
     sortColumn,
+    selectionType,
     ...props
 }: BaseTableProps<T>) {
     const [state, dispatch] = useReducer(reducer<T>, {
@@ -145,6 +146,19 @@ export default function useTable<T extends GenericRowStructure>({
     const handleChangeSearchValue = (searchValue: string) => updateState({ searchValue });
 
     const handleRowSelectionInternal = (rowId: string, selected: boolean) => {
+        if (selectionType === 'single') {
+            const currentRowSelectedRows = rows
+                .map((row) => row.cells.id.value)
+                .reduce(
+                    (acc: Record<string, boolean>, currentRowId: string) => ({
+                        ...acc,
+                        [currentRowId]: currentRowId === rowId,
+                    }),
+                    {}
+                );
+            updateState({ selectedRowIds: currentRowSelectedRows });
+            return;
+        }
         updateState({ selectedRowIds: { [rowId]: selected } });
     };
 
@@ -187,7 +201,7 @@ export default function useTable<T extends GenericRowStructure>({
 
     const applySorting = useCallback(
         (rowsToSort: Row<T>[]) => {
-            if (!state.sortByColumnId) {
+            if (!state.sortByColumnId || props.handleSortCellClick) {
                 return rowsToSort;
             }
 
@@ -201,7 +215,7 @@ export default function useTable<T extends GenericRowStructure>({
                 makeSortRowByCellComparator(state.sortDirection, state.sortByColumnId, customComparator)
             );
         },
-        [state.sortByColumnId, state.sortDirection, headCells]
+        [state.sortByColumnId, state.sortDirection, headCells, props.handleSortCellClick]
     );
     const applyPageSplitting = useCallback(
         (rowsToSplit: Row<T>[]) => {
@@ -229,8 +243,7 @@ export default function useTable<T extends GenericRowStructure>({
         filteredRows,
         handleChangeSearchValue,
 
-        handleSortCellClick:
-            !!sortColumn && !!props.handleSortCellClick ? props.handleSortCellClick : handleSortCellClickInternal,
+        handleSortCellClick: props.handleSortCellClick ? props.handleSortCellClick : handleSortCellClickInternal,
 
         handleRowsPerPageChange: props.handleRowsPerPageChange ?? handleRowsPerPageChangeInternal,
         handleChangePage: props.handlePageChange ?? handleChangePageInternal,

@@ -77,6 +77,28 @@ Selectable.args = {
         return `${row.cells.fullName.value} ${row.cells.username.value}`;
     },
 };
+export const SingleSelectable = Template.bind({});
+SingleSelectable.args = {
+    rows,
+    headCells,
+    defaultRowsPerPage: 5,
+    paginated: true,
+    selectable: true,
+    selectionType: 'single',
+    classes: {
+        headArea: Styles.table__headArea,
+        searchInputContainer: Styles.table__searchInputContainer,
+    },
+
+    renderTableActions: (selectedRowIds: SelectedRowIds) => {
+        const selectedCount = Object.values(selectedRowIds).filter((selected) => selected).length;
+
+        return <Chip color="primary" label={`Total items: ${selectedCount}`} />;
+    },
+    makeSearchableRowContent: (row) => {
+        return `${row.cells.fullName.value} ${row.cells.username.value}`;
+    },
+};
 
 export const SelectableWithCustomHandlers = Template.bind({});
 SelectableWithCustomHandlers.args = {
