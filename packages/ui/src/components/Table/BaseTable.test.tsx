@@ -2,7 +2,7 @@ import { fireEvent, render, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import Table from './BaseTable';
-import { headCells, rows } from './MockData';
+import { headCells, headCellsWithSticky, rows, rowsWithSticky } from './MockData';
 
 describe('<Table />', () => {
     it.each(Object.values(headCells))('renders the head cell: %s', (cell) => {
@@ -667,5 +667,55 @@ describe('<Table />', () => {
         fireEvent.click(renderedRow);
 
         expect(mockOnRowClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('renders sticky styles when cell.isSticky is true and stickyPosition is defined', () => {
+        const stickyCellKey: keyof typeof headCellsWithSticky = 'username';
+
+        const { getByTestId } = render(<Table headCells={headCellsWithSticky} rows={rowsWithSticky.slice(0, 1)} />);
+        const renderedHead = getByTestId('table-head');
+
+        const stickyCellData = headCellsWithSticky[stickyCellKey];
+        const nameHeadCell = within(renderedHead).getByText(stickyCellData.value);
+
+        expect(nameHeadCell).toHaveStyle({
+            position: 'sticky',
+            [stickyCellData.stickyPosition as 'left' | 'right']: 0,
+        });
+    });
+
+    it('applies sticky styles to the head cell when isSticky is true and stickyPosition is defined', () => {
+        const stickyCellKey: keyof typeof headCellsWithSticky = 'username';
+        const { getByTestId } = render(<Table headCells={headCellsWithSticky} rows={rowsWithSticky.slice(0, 1)} />);
+        const renderedHead = getByTestId('table-head');
+
+        const stickyCellData = headCellsWithSticky[stickyCellKey];
+        const nameHeadCell = within(renderedHead).getByText(stickyCellData.value);
+
+        expect(nameHeadCell).toHaveStyle({
+            position: 'sticky',
+            [stickyCellData.stickyPosition as 'left' | 'right']: 0,
+        });
+    });
+
+    it('applies sxProps styles to the cell', () => {
+        const cellKeyWithSxProps: keyof typeof headCellsWithSticky = 'username';
+        const { getByTestId } = render(<Table headCells={headCellsWithSticky} rows={rowsWithSticky.slice(0, 1)} />);
+
+        const renderedCell = getByTestId(`table-row-cell-${cellKeyWithSxProps}`);
+        const cellData = headCellsWithSticky[cellKeyWithSxProps];
+
+        expect(renderedCell).toHaveStyle({ ...cellData.sxProps });
+    });
+
+    it('applies sxProps styles to the head cell', () => {
+        const headCellKeyWithSxProps: keyof typeof headCellsWithSticky = 'username';
+        const { getByTestId } = render(<Table headCells={headCellsWithSticky} rows={rowsWithSticky.slice(0, 1)} />);
+        const renderedHead = getByTestId('table-head');
+
+        const headCellData = headCellsWithSticky[headCellKeyWithSxProps];
+        const nameHeadCell = within(renderedHead).getByText(headCellData.value);
+
+        expect(nameHeadCell).toHaveStyle({ ...headCellData.sxProps });
     });
 });

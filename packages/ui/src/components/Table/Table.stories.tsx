@@ -6,7 +6,14 @@ import { MouseEvent, useState } from 'react';
 
 import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import Table from './BaseTable';
-import { RowStructure, headCells, rows } from './MockData';
+import {
+    RowStructure,
+    RowStructureWithStickyActions,
+    headCells,
+    headCellsWithSticky,
+    rows,
+    rowsWithSticky,
+} from './MockData';
 import Styles from './styles.module.css';
 
 export default {
@@ -15,6 +22,10 @@ export default {
 } as Meta<typeof Table>;
 
 const Template: StoryFn<typeof Table<RowStructure>> = (args) => <Table<RowStructure> {...args} />;
+
+const TemplateWithSticky: StoryFn<typeof Table<RowStructureWithStickyActions>> = (args) => (
+    <Table<RowStructureWithStickyActions> {...args} />
+);
 
 export const Base = Template.bind({});
 Base.args = {
@@ -187,6 +198,15 @@ RowActionsCustomIcon.args = {
             onClick: () => alert('Action 2 clicked'),
         },
     ],
+};
+
+export const StickyColumns = TemplateWithSticky.bind({});
+StickyColumns.args = {
+    rows: rowsWithSticky,
+    headCells: headCellsWithSticky,
+    tableContainerSxProps: {
+        borderRadius: '0.5rem',
+    },
 };
 
 type Config = {
