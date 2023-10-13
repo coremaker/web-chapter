@@ -76,7 +76,7 @@ export interface BaseTableProps<T extends GenericRowStructure> {
     renderTableActions?: (selectedRows: SelectedRowIds) => ReactNode;
     renderTablePagination?: (args: PaginationRendererArgs<T>) => ReactNode;
     renderSearchInput?: (args: SearchInputRendererArgs) => ReactNode;
-    renderCheckbox?: (args: CheckboxRendererArgs) => ReactNode;
+    renderCheckbox?: (args: CheckboxRendererArgs) => JSX.Element;
     onRowSelectionChange?: (rowId: string, selected: boolean) => void;
     onAllRowsSelectionChange?: (e: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
     onRowMenuOpen?: (row: Row<T>) => void;
