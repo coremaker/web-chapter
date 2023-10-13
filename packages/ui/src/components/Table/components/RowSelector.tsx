@@ -1,5 +1,5 @@
 import { Checkbox, Radio } from '@mui/material';
-import { ChangeEvent, ReactNode, useMemo } from 'react';
+import { ChangeEvent, useMemo } from 'react';
 
 import { CheckboxRendererArgs, GenericRowStructure, Row } from '../types';
 
@@ -7,14 +7,14 @@ interface HeadRowSelectorProps<T extends GenericRowStructure> {
     selectedRowsCount: number;
     rows: Row<T>[];
     handleAllRowsSelection: (e: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
-    renderCheckbox?: (args: CheckboxRendererArgs) => ReactNode;
+    renderCheckbox?: (args: CheckboxRendererArgs) => JSX.Element;
 }
 interface RowSelectorProps<T extends GenericRowStructure> {
     selectionType: 'single' | 'multiple';
     row: Row<T>;
     selectedRowIdsState: Record<string, boolean>;
     handleRowSelection: (rowId: string, selected: boolean) => void;
-    renderCheckbox?: (args: CheckboxRendererArgs) => ReactNode;
+    renderCheckbox?: (args: CheckboxRendererArgs) => JSX.Element;
 }
 
 export const HeadRowSelector = <T extends GenericRowStructure>({
