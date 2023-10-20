@@ -1,8 +1,5 @@
 import {
-    CircularProgressProps,
     Table as MuiTable,
-    SortDirection,
-    SxProps,
     TableBody,
     TableContainer,
     TableFooter,
@@ -11,98 +8,20 @@ import {
     TableRow,
     TextField,
 } from '@mui/material';
-import { ChangeEvent, JSXElementConstructor, MouseEvent, ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
 
-import { SelectedRowIds } from '../../hooks/useTable/reducer';
-import useTable, { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
+import { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
 import Spinner from '../Spinner/Spinner';
-import EllipsisCellContent, { EllipsisCellContentClasses } from './components/EllipsisCellContent';
+import EllipsisCellContent from './components/EllipsisCellContent';
 import RowSelector, { HeadRowSelector } from './components/RowSelector';
 import SearchEmptyState from './components/SearchEmptyState';
-import TableCell, { TableCellClasses } from './components/TableCell';
-import {
-    CellId,
-    CheckboxRendererArgs,
-    GenericRowStructure,
-    HeadRowCells,
-    PaginationRendererArgs,
-    Row,
-    RowAction,
-    RowCell,
-    SearchInputRendererArgs,
-} from './types';
-
-interface BaseTableFooterClasses {
-    root: string;
-    cell: string;
-}
-
-export interface BaseTableClasses {
-    root: string;
-    headArea: string;
-    searchInputContainer: string;
-    actionsContainer: string;
-    tableContainer: string;
-    cell: Partial<TableCellClasses>;
-    ellipsis: Partial<EllipsisCellContentClasses>;
-    footer: Partial<BaseTableFooterClasses>;
-    loaderContainer: string;
-}
-
-export interface BaseTableProps<T extends GenericRowStructure> {
-    showIdCell?: boolean;
-    makeSearchableRowContent?: (row: Row<T>) => string;
-    searchInputPlaceholder?: string;
-    selectable?: boolean;
-    selectionType?: 'single' | 'multiple';
-    renderSearchEmptyState?: () => ReactNode;
-    /**
-     * This prop changes the selected rows state from uncontrolled to controlled
-     */
-    searchProps?: {
-        value: string;
-        onChange: (value: string) => void;
-    };
-    totalPages?: number;
-    selectedRowIds?: SelectedRowIds;
-    headCells: HeadRowCells<T>;
-    rows: Row<T>[];
-    rowActions?: RowAction<T>[];
-    ellipsisIcon?: ReactNode;
-    rowsPerPageOptions?: number[];
-    currentPage?: number;
-    sortColumn?: CellId<T> | null;
-    sortDirection?: SortDirection;
-    renderTableActions?: (selectedRows: SelectedRowIds) => ReactNode;
-    renderTablePagination?: (args: PaginationRendererArgs<T>) => ReactNode;
-    renderSearchInput?: (args: SearchInputRendererArgs) => ReactNode;
-    renderCheckbox?: (args: CheckboxRendererArgs) => JSX.Element;
-    onRowSelectionChange?: (rowId: string, selected: boolean) => void;
-    onAllRowsSelectionChange?: (e: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
-    onRowMenuOpen?: (row: Row<T>) => void;
-    onRowMenuClose?: (row: Row<T>) => void;
-    defaultRowsPerPage?: number;
-    paginated?: boolean;
-    SortIcon?: JSXElementConstructor<{
-        className: string;
-    }>;
-    classes?: Partial<BaseTableClasses>;
-    loading?: boolean;
-    SpinnerComponent?: JSXElementConstructor<CircularProgressProps>;
-    handleRowsPerPageChange?: (value: number) => void;
-    handlePageChange?: (e: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
-    handleSortCellClick?: (cellId: CellId<T>) => void;
-    tableContainerSxProps?: SxProps;
-    onRowClick?: (row: Row<T>, e: MouseEvent<HTMLTableRowElement, globalThis.MouseEvent>) => void;
-}
+import TableCell from './components/TableCell';
+import { BaseTableProps, CellId, GenericRowStructure, Row, RowCell } from './types';
+import useTableLogic from './useTableLogic';
 
 const defaultRowsPerPageOptions = [5, 10, 15, 20, 25];
 
-const BaseTable = <T extends GenericRowStructure>({
-    onRowSelectionChange,
-    onAllRowsSelectionChange,
-    ...props
-}: BaseTableProps<T>) => {
+const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
     const {
         headCells,
         rows,
@@ -121,6 +40,7 @@ const BaseTable = <T extends GenericRowStructure>({
         renderSearchEmptyState = () => <SearchEmptyState />,
         defaultRowsPerPage = 10,
         rowsPerPageOptions,
+        selectedRowIds: selectedRowIdsProp,
         paginated,
         SortIcon,
         classes = {},
@@ -130,25 +50,35 @@ const BaseTable = <T extends GenericRowStructure>({
         SpinnerComponent = Spinner,
         tableContainerSxProps,
         onRowClick,
+        onRowSelectionChange,
+        onAllRowsSelectionChange,
     } = props;
 
     const {
-        renderCellContent,
-        renderHeadCellContent,
-        makeRowCellId,
-        currentPageRows,
-        filteredRows,
-        handleChangePage,
-        handleRowsPerPageChange,
-        handleSortCellClick,
-        handleChangeSearchValue,
-        handleRowSelection,
-        handleAllRowsSelection,
-        state,
-        selectedRowsCount,
-        headRow,
-        page,
-    } = useTable<T>({
+        state: {
+            currentPageRows,
+            filteredRows,
+            headRow,
+            page,
+            selectedRowsCount,
+            rowsPerPage,
+            searchValue,
+            sortByColumnId,
+            selectedRowIds,
+            sortDirection,
+        },
+        handlers: {
+            handleAllRowsSelection,
+            handleChangePage,
+            handleChangeSearchValue,
+            handleRowSelection,
+            handleRowsPerPageChange,
+            handleSortCellClick,
+            makeRowCellId,
+            renderCellContent,
+            renderHeadCellContent,
+        },
+    } = useTableLogic<T>({
         ...props,
         selectionType,
         onAllRowsSelectionChange,
@@ -156,12 +86,11 @@ const BaseTable = <T extends GenericRowStructure>({
         defaultRowsPerPage,
     });
 
-    const { searchValue, sortByColumnId, sortDirection, rowsPerPage } = state;
     const hasTableData = Boolean(filteredRows.length);
 
     const { cell: cellClasses } = classes;
 
-    const selectedRowIdsState = props.selectedRowIds ? props.selectedRowIds : state.selectedRowIds;
+    const selectedRowIdsState = selectedRowIdsProp ?? selectedRowIds;
 
     const cellIdsArray = useMemo(() => Object.keys(headCells) as unknown as CellId<T>[], [headCells]);
 

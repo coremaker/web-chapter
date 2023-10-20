@@ -1,8 +1,8 @@
 import { SortDirection } from '@mui/material';
 import { MouseEvent, useCallback, useMemo, useReducer } from 'react';
 
-import type { BaseTableProps } from '../../components/Table/BaseTable';
 import {
+    BaseTableProps,
     Cell,
     CellComparator,
     CellId,
@@ -67,7 +67,6 @@ const makeSortRowByCellComparator =
     };
 
 export default function useTable<T extends GenericRowStructure>({
-    defaultRowsPerPage = 10,
     headCells,
     makeSearchableRowContent,
     rows,
@@ -75,19 +74,17 @@ export default function useTable<T extends GenericRowStructure>({
     sortDirection = 'asc',
     sortColumn,
     selectionType,
-    ...props
 }: BaseTableProps<T>) {
     const [state, dispatch] = useReducer(reducer<T>, {
         selectedRowIds: {},
         page: 0,
-        rowsPerPage: defaultRowsPerPage,
+        rowsPerPage: 10,
         sortByColumnId: sortColumn,
         searchValue: '',
         sortDirection,
     });
 
-    const selectedRowIdsState =
-        !!props.selectedRowIds && !!props.onRowSelectionChange ? props.selectedRowIds : state.selectedRowIds;
+    const selectedRowIdsState = state.selectedRowIds;
 
     const selectedRowsCount = useMemo(
         () => Object.values(selectedRowIdsState).filter((selected) => selected).length,
@@ -201,7 +198,7 @@ export default function useTable<T extends GenericRowStructure>({
 
     const applySorting = useCallback(
         (rowsToSort: Row<T>[]) => {
-            if (!state.sortByColumnId || props.handleSortCellClick) {
+            if (!state.sortByColumnId) {
                 return rowsToSort;
             }
 
@@ -215,7 +212,7 @@ export default function useTable<T extends GenericRowStructure>({
                 makeSortRowByCellComparator(state.sortDirection, state.sortByColumnId, customComparator)
             );
         },
-        [state.sortByColumnId, state.sortDirection, headCells, props.handleSortCellClick]
+        [state.sortByColumnId, state.sortDirection, headCells]
     );
     const applyPageSplitting = useCallback(
         (rowsToSplit: Row<T>[]) => {
@@ -243,20 +240,14 @@ export default function useTable<T extends GenericRowStructure>({
         filteredRows,
         handleChangeSearchValue,
 
-        handleSortCellClick: props.handleSortCellClick ? props.handleSortCellClick : handleSortCellClickInternal,
+        handleSortCellClick: handleSortCellClickInternal,
 
-        handleRowsPerPageChange: props.handleRowsPerPageChange ?? handleRowsPerPageChangeInternal,
-        handleChangePage: props.handlePageChange ?? handleChangePageInternal,
-        page: props.currentPage ?? state.page,
+        handleRowsPerPageChange: handleRowsPerPageChangeInternal,
+        handleChangePage: handleChangePageInternal,
+        page: state.page,
 
-        handleRowSelection:
-            !!props.selectedRowIds && !!props.onRowSelectionChange
-                ? props.onRowSelectionChange
-                : handleRowSelectionInternal,
-        handleAllRowsSelection:
-            !!props.selectedRowIds && !!props.onAllRowsSelectionChange
-                ? props.onAllRowsSelectionChange
-                : handleAllRowsSelectionInternal,
+        handleRowSelection: handleRowSelectionInternal,
+        handleAllRowsSelection: handleAllRowsSelectionInternal,
         selectedRowsCount,
         selectedRowIds: selectedRowIdsState,
         renderCellContent,

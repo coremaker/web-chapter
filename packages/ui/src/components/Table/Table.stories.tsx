@@ -58,6 +58,9 @@ Searchable.args = {
 
 export const Selectable = Template.bind({});
 Selectable.args = {
+    // Storybook overrides functions passed as props with its own functions
+    onAllRowsSelectionChange: undefined,
+    onRowSelectionChange: undefined,
     rows,
     headCells,
     defaultRowsPerPage: 5,
@@ -67,7 +70,6 @@ Selectable.args = {
         headArea: Styles.table__headArea,
         searchInputContainer: Styles.table__searchInputContainer,
     },
-
     renderTableActions: (selectedRowIds: SelectedRowIds) => {
         const selectedCount = Object.values(selectedRowIds).filter((selected) => selected).length;
 
@@ -79,6 +81,8 @@ Selectable.args = {
 };
 export const SingleSelectable = Template.bind({});
 SingleSelectable.args = {
+    onAllRowsSelectionChange: undefined,
+    onRowSelectionChange: undefined,
     rows,
     headCells,
     defaultRowsPerPage: 5,
