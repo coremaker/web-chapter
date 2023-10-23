@@ -192,7 +192,7 @@ export default function useTable<T extends GenericRowStructure>({
             return rows;
         }
         return rows.filter((row) =>
-            makeSearchableRowContent(row).toLowerCase().includes(state.searchValue.toLowerCase())
+            makeSearchableRowContent(row).toLowerCase().includes(state.searchValue.toLowerCase().trim())
         );
     }, [makeSearchableRowContent, rows, state.searchValue]);
 
