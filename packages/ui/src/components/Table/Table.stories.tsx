@@ -214,51 +214,52 @@ StickyColumns.args = {
 };
 
 type Config = {
-    defaultRowsPerPage: number;
-    paginated: boolean;
+    defaultRowsPerPage?: number;
+    rowsPerPage: number;
+    totalPages?: number;
     page: number;
     sortDirection: 'asc' | 'desc' | false;
     sortColumn: keyof RowStructure | null;
 };
 const ServerFilterSortPaginationTemplate: StoryFn<typeof Table<RowStructure>> = (args) => {
     const [config, setConfig] = useState<Config>({
-        defaultRowsPerPage: 5,
-        paginated: true,
-        page: 1,
+        page: 0,
+        totalPages: 10,
+        rowsPerPage: 4,
         sortDirection: 'asc',
         sortColumn: 'address',
     });
 
     const handleRowsPerPageChange = (value: number) => {
-        setConfig((prev) => ({ ...prev, defaultRowsPerPage: value }));
+        setConfig((prev) => ({ ...prev, rowsPerPage: value, totalPages: Math.ceil(rows.length / value) }));
     };
 
-    const handlePageChange = (e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-        return rows.slice((newPage - 1) * config.defaultRowsPerPage, newPage * config.defaultRowsPerPage);
+    const handlePageChange = (_e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+        setConfig((prev) => ({ ...prev, page: newPage }));
     };
 
     const handleSortChange = (sortColumn: keyof RowStructure | null) => {
         setConfig((prev) => ({ ...prev, sortColumn, sortDirection: prev.sortDirection === 'asc' ? 'desc' : 'asc' }));
     };
-
     return (
         <Table<RowStructure>
+            paginated
             {...args}
+            rows={rows.slice(config.page * config.rowsPerPage, (config.page + 1) * config.rowsPerPage)}
             handlePageChange={handlePageChange}
-            rows={rows.slice((config.page - 1) * config.defaultRowsPerPage)}
             handleRowsPerPageChange={handleRowsPerPageChange}
             handleSortCellClick={handleSortChange}
-            {...config}
+            currentPage={config.page}
+            rowsPerPage={config.rowsPerPage}
+            sortColumn={config.sortColumn}
+            totalPages={config.totalPages}
+            sortDirection={config.sortDirection}
         />
     );
 };
 export const ServerFilterSortPagination = ServerFilterSortPaginationTemplate.bind({});
 ServerFilterSortPagination.args = {
     rows,
-    defaultRowsPerPage: 5,
-    totalPages: 8,
     headCells,
-    currentPage: 0,
-    sortDirection: 'asc',
-    sortColumn: 'address',
+    rowsPerPageOptions: [4, 8, 16],
 };

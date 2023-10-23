@@ -148,6 +148,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
                 handleRowsPerPageChange,
             });
         }
+        const { totalPages } = props;
         return (
             <TableFooter className={classes.footer?.root}>
                 <TableRow>
@@ -155,7 +156,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
                         className={classes.footer?.cell}
                         data-testid="table-pagination"
                         rowsPerPageOptions={rowsPerPageOptions ?? defaultRowsPerPageOptions}
-                        count={filteredRows.length}
+                        count={totalPages ? totalPages * rowsPerPage : filteredRows.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         SelectProps={{
