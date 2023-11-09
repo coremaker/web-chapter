@@ -52,7 +52,7 @@ const SingleSelectionTypeSelector = <T extends GenericRowStructure>({
     }
     return (
         <Radio
-            size="small"
+            size="medium"
             checked={!!selectedRowIdsState[row.cells.id.value]}
             onChange={(e) => handleRowSelection(row.cells.id.value, e.target.checked)}
             inputProps={{ 'aria-label': 'select row' }}
@@ -75,7 +75,7 @@ export const MultipleSelectionTypeSelector = <T extends GenericRowStructure>({
 
     return (
         <Checkbox
-            size="small"
+            size="medium"
             checked={!!selectedRowIdsState[row.cells.id.value]}
             onChange={(e) => handleRowSelection(row.cells.id.value, e.target.checked)}
             inputProps={{ 'aria-label': `select row ${row.cells.id.value}` }}

@@ -12,6 +12,7 @@ export interface TableState<T extends GenericRowStructure> {
     searchValue: string;
     sortByColumnId?: CellId<T> | null;
     sortDirection: SortDirection;
+    defaultRowsPerPage?: number;
 }
 
 export type Action<T extends GenericRowStructure> = {
