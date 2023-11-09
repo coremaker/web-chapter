@@ -74,21 +74,20 @@ export default function useTable<T extends GenericRowStructure>({
     sortDirection = 'asc',
     sortColumn,
     selectionType,
+    defaultRowsPerPage = 10,
 }: BaseTableProps<T>) {
     const [state, dispatch] = useReducer(reducer<T>, {
         selectedRowIds: {},
         page: 0,
-        rowsPerPage: 10,
+        rowsPerPage: defaultRowsPerPage,
         sortByColumnId: sortColumn,
         searchValue: '',
         sortDirection,
     });
 
-    const selectedRowIdsState = state.selectedRowIds;
-
     const selectedRowsCount = useMemo(
-        () => Object.values(selectedRowIdsState).filter((selected) => selected).length,
-        [selectedRowIdsState]
+        () => Object.values(state.selectedRowIds).filter((selected) => selected).length,
+        [state.selectedRowIds]
     );
 
     const headRow: HeadRow<T> = useMemo(
@@ -249,7 +248,7 @@ export default function useTable<T extends GenericRowStructure>({
         handleRowSelection: handleRowSelectionInternal,
         handleAllRowsSelection: handleAllRowsSelectionInternal,
         selectedRowsCount,
-        selectedRowIds: selectedRowIdsState,
+        selectedRowIds: state.selectedRowIds,
         renderCellContent,
         renderHeadCellContent,
         makeRowCellId,

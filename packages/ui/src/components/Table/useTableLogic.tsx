@@ -48,7 +48,7 @@ const makeRowCellId = <T extends GenericRowStructure>(rowId: string, cellId: Cel
 const getSelectedRowsCount = (selectedRowIds: SelectedRowIds) =>
     Object.values(selectedRowIds).filter((selected) => selected).length;
 
-const getHeadRow = <T extends GenericRowStructure>(headCells: HeadRowCells<T>) =>
+const buildHeadRow = <T extends GenericRowStructure>(headCells: HeadRowCells<T>) =>
     ({
         id: HEAD_ROW_IDENTIFIER,
         cells: headCells,
@@ -71,6 +71,7 @@ const useTableLogic = <T extends GenericRowStructure>({
     makeSearchableRowContent,
     sortColumn,
     sortDirection,
+    paginated,
 }: BaseTableProps<T>) => {
     const {
         currentPageRows: internalCurrentPageRows,
@@ -98,6 +99,7 @@ const useTableLogic = <T extends GenericRowStructure>({
         onRowSelectionChange,
         defaultRowsPerPage,
         searchProps,
+        paginated,
     });
 
     const tableState = {
@@ -110,7 +112,7 @@ const useTableLogic = <T extends GenericRowStructure>({
         currentPageRows: handleSortCellClick ? rows : internalCurrentPageRows,
         filteredRows: handleSortCellClick ? rows : internalFilteredRows,
         selectedRowsCount: getSelectedRowsCount(selectedRowIds ?? internalSelectedRowIds),
-        headRow: getHeadRow(headCells),
+        headRow: buildHeadRow(headCells),
     };
 
     const tableHandlers = {
@@ -120,9 +122,8 @@ const useTableLogic = <T extends GenericRowStructure>({
         handleChangePage: handlePageChange ?? internalHandleChangePage,
         handleRowSelection: onRowSelectionChange ?? internalHandleRowSelection,
         handleAllRowsSelection: onAllRowsSelectionChange ?? internalHandleAllRowsSelection,
-        // handled for both internal and external use cases
-        renderCellContent: renderCellContent(tableState),
-        renderHeadCellContent: renderHeadCellContent(tableState),
+        makeCellContentRenderer: renderCellContent(tableState),
+        makeHeadCellContentRenderer: renderHeadCellContent(tableState),
         makeRowCellId,
     };
 

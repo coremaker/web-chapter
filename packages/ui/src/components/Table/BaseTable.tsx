@@ -40,7 +40,6 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
         renderSearchEmptyState = () => <SearchEmptyState />,
         defaultRowsPerPage = 10,
         rowsPerPageOptions,
-        selectedRowIds: selectedRowIdsProp,
         paginated,
         SortIcon,
         classes = {},
@@ -75,8 +74,8 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
             handleRowsPerPageChange,
             handleSortCellClick,
             makeRowCellId,
-            renderCellContent,
-            renderHeadCellContent,
+            makeCellContentRenderer,
+            makeHeadCellContentRenderer,
         },
     } = useTableLogic<T>({
         ...props,
@@ -90,12 +89,10 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 
     const { cell: cellClasses } = classes;
 
-    const selectedRowIdsState = selectedRowIdsProp ?? selectedRowIds;
-
     const cellIdsArray = useMemo(() => Object.keys(headCells) as unknown as CellId<T>[], [headCells]);
 
     const renderRowCell = (row: Row<T>, cell: RowCell<T, T[CellId<T>]>, cellId: CellId<T>) => {
-        const cellContent = renderCellContent(cell, row);
+        const cellContent = makeCellContentRenderer(cell, row);
         const cellIndex = cellIdsArray.indexOf(cellId);
         const isLastCell = cellIndex === cellIdsArray.length - 1;
         const shouldRenderRowActions = rowActions.length > 0 && !row.disableActions;
@@ -199,7 +196,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
                         )}
                     </div>
                 ) : null}
-                <div className={classes.actionsContainer}>{renderTableActions?.(selectedRowIdsState)}</div>
+                <div className={classes.actionsContainer}>{renderTableActions?.(selectedRowIds)}</div>
             </div>
 
             <TableContainer className={classes.tableContainer} sx={tableContainerSxProps}>
@@ -245,7 +242,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
                                             sortable={headCell.sortable}
                                             classes={cellClasses}
                                         >
-                                            {renderHeadCellContent(headCell, headRow)}
+                                            {makeHeadCellContentRenderer(headCell, headRow)}
                                         </TableCell>
                                     );
                                 })
@@ -278,7 +275,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
                                           tabIndex={-1}
                                           onClick={(e) => onRowClick?.(row, e)}
                                           className={
-                                              selectedRowIdsState[row.cells.id.value] ? 'BaseTable__Row--selected' : ''
+                                              selectedRowIds[row.cells.id.value] ? 'BaseTable__Row--selected' : ''
                                           }
                                       >
                                           {selectable && (
@@ -293,7 +290,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
                                                       handleRowSelection={handleRowSelection}
                                                       renderCheckbox={renderCheckbox}
                                                       row={row}
-                                                      selectedRowIdsState={selectedRowIdsState}
+                                                      selectedRowIdsState={selectedRowIds}
                                                   />
                                               </TableCell>
                                           )}
