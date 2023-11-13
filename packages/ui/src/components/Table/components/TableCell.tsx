@@ -5,11 +5,15 @@ import {
     SxProps,
     TableSortLabel,
 } from '@mui/material';
+import classNames from 'classnames';
 import { JSXElementConstructor, forwardRef } from 'react';
 
 export type TableCellClasses = {
     bodyCell?: string;
-    headCell?: string;
+    headCell?: {
+        root?: string;
+        active?: string;
+    };
     sortLabel?: {
         root?: string;
         active?: string;
@@ -50,7 +54,10 @@ const TableCell = forwardRef(
         }: TableCellProps,
         ref
     ) => {
-        const rootClasses = isHeadCell ? classes.headCell : classes.bodyCell;
+        const headClasses = classNames(classes?.headCell?.root as string, {
+            [classes?.headCell?.active as string]: active && classes?.headCell?.active,
+        });
+        const rootClasses = isHeadCell ? headClasses : classes.bodyCell;
 
         if (isHeadCell && sortable) {
             return (
