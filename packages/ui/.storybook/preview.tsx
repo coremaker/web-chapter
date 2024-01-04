@@ -2,7 +2,7 @@ import { ThemeProvider } from '@mui/material';
 import type { Preview } from '@storybook/react';
 import React from 'react';
 
-import theme from '../src/components/theme/theme';
+import { theme } from '../src/components/theme';
 
 const preview: Preview = {
     parameters: {

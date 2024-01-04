@@ -1,17 +1,9 @@
-import {
-    Table as MuiTable,
-    TableBody,
-    TableContainer,
-    TableFooter,
-    TableHead,
-    TablePagination,
-    TableRow,
-    TextField,
-} from '@mui/material';
+import { Table as MuiTable, TableBody, TableContainer, TableHead, TableRow, TextField, styled } from '@mui/material';
 import { useMemo } from 'react';
 
 import { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
 import Spinner from '../Spinner/Spinner';
+import { TablePagination } from './TablePagination';
 import EllipsisCellContent from './components/EllipsisCellContent';
 import RowSelector, { HeadRowSelector } from './components/RowSelector';
 import SearchEmptyState from './components/SearchEmptyState';
@@ -19,7 +11,9 @@ import TableCell from './components/TableCell';
 import { BaseTableProps, CellId, GenericRowStructure, Row, RowCell } from './types';
 import useTableLogic from './useTableLogic';
 
-const defaultRowsPerPageOptions = [5, 10, 15, 20, 25];
+const FiltersRowContainer = styled('div')({
+    padding: '1.5rem',
+});
 
 const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
     const {
@@ -39,7 +33,6 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
         renderCheckbox,
         renderSearchEmptyState = () => <SearchEmptyState />,
         defaultRowsPerPage = 10,
-        rowsPerPageOptions,
         paginated,
         SortIcon,
         classes = {},
@@ -145,27 +138,13 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
                 handleRowsPerPageChange,
             });
         }
-        const { totalPages } = props;
         return (
-            <TableFooter className={classes.footer?.root}>
-                <TableRow>
-                    <TablePagination
-                        className={classes.footer?.cell}
-                        data-testid="table-pagination"
-                        rowsPerPageOptions={rowsPerPageOptions ?? defaultRowsPerPageOptions}
-                        count={totalPages ? totalPages * rowsPerPage : filteredRows.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        SelectProps={{
-                            inputProps: {
-                                'aria-label': 'rows per page',
-                            },
-                        }}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={(e) => handleRowsPerPageChange(parseInt(e.target.value, 10))}
-                    />
-                </TableRow>
-            </TableFooter>
+            <TablePagination
+                rowsPerPage={rowsPerPage ?? defaultRowsPerPage}
+                currentPage={page}
+                itemsCount={filteredRows.length}
+                onChangePage={handleChangePage}
+            />
         );
     };
 
@@ -179,7 +158,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 
     return (
         <div className={classes.root}>
-            <div className={classes.headArea}>
+            <FiltersRowContainer className={classes.headArea}>
                 {makeSearchableRowContent || searchProps ? (
                     <div className={classes.searchInputContainer}>
                         {renderSearchInput ? (
@@ -197,7 +176,7 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
                     </div>
                 ) : null}
                 <div className={classes.actionsContainer}>{renderTableActions?.(selectedRowIds)}</div>
-            </div>
+            </FiltersRowContainer>
 
             <TableContainer className={classes.tableContainer} sx={tableContainerSxProps}>
                 <MuiTable>
@@ -253,10 +232,11 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
                         <TableBody data-testid="table-body">
                             <TableRow>
                                 <TableCell
-                                    colSpan={cellIdsArray.length}
-                                    sx={{
+                                    colSpan={cellIdsArray.length + 1}
+                                    sxProps={{
                                         border: 'none',
                                         textAlign: 'center',
+                                        borderBottom: 'none',
                                     }}
                                     className={classes?.loaderContainer ?? ''}
                                 >
