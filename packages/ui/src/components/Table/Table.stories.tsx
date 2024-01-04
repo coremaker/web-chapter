@@ -2,11 +2,18 @@
 import AppleIcon from '@mui/icons-material/Apple';
 import { Chip } from '@mui/material';
 import { Meta, StoryFn } from '@storybook/react';
-import { ChangeEvent, MouseEvent, useState } from 'react';
+import { MouseEvent, useState } from 'react';
 
 import { SelectedRowIds } from '../../hooks/useTable/reducer';
 import Table from './BaseTable';
-import { RowStructure, headCells, rows } from './MockData';
+import {
+    RowStructure,
+    RowStructureWithStickyActions,
+    headCells,
+    headCellsWithSticky,
+    rows,
+    rowsWithSticky,
+} from './MockData';
 import Styles from './styles.module.css';
 
 export default {
@@ -15,6 +22,10 @@ export default {
 } as Meta<typeof Table>;
 
 const Template: StoryFn<typeof Table<RowStructure>> = (args) => <Table<RowStructure> {...args} />;
+
+const TemplateWithSticky: StoryFn<typeof Table<RowStructureWithStickyActions>> = (args) => (
+    <Table<RowStructureWithStickyActions> {...args} />
+);
 
 export const Base = Template.bind({});
 Base.args = {
@@ -47,6 +58,9 @@ Searchable.args = {
 
 export const Selectable = Template.bind({});
 Selectable.args = {
+    // Storybook overrides functions passed as props with its own functions
+    onAllRowsSelectionChange: undefined,
+    onRowSelectionChange: undefined,
     rows,
     headCells,
     defaultRowsPerPage: 5,
@@ -56,11 +70,34 @@ Selectable.args = {
         headArea: Styles.table__headArea,
         searchInputContainer: Styles.table__searchInputContainer,
     },
-
     renderTableActions: (selectedRowIds: SelectedRowIds) => {
         const selectedCount = Object.values(selectedRowIds).filter((selected) => selected).length;
 
         return <Chip color="primary" label={`Total selected: ${selectedCount}`} />;
+    },
+    makeSearchableRowContent: (row) => {
+        return `${row.cells.fullName.value} ${row.cells.username.value}`;
+    },
+};
+export const SingleSelectable = Template.bind({});
+SingleSelectable.args = {
+    onAllRowsSelectionChange: undefined,
+    onRowSelectionChange: undefined,
+    rows,
+    headCells,
+    defaultRowsPerPage: 5,
+    paginated: true,
+    selectable: true,
+    selectionType: 'single',
+    classes: {
+        headArea: Styles.table__headArea,
+        searchInputContainer: Styles.table__searchInputContainer,
+    },
+
+    renderTableActions: (selectedRowIds: SelectedRowIds) => {
+        const selectedCount = Object.values(selectedRowIds).filter((selected) => selected).length;
+
+        return <Chip color="primary" label={`Total items: ${selectedCount}`} />;
     },
     makeSearchableRowContent: (row) => {
         return `${row.cells.fullName.value} ${row.cells.username.value}`;
@@ -96,6 +133,7 @@ export const RowActions = Template.bind({});
 RowActions.args = {
     rows,
     headCells,
+    onRowClick: () => alert('row click'),
     rowActions: [
         {
             id: '1',
@@ -166,52 +204,62 @@ RowActionsCustomIcon.args = {
     ],
 };
 
+export const StickyColumns = TemplateWithSticky.bind({});
+StickyColumns.args = {
+    rows: rowsWithSticky,
+    headCells: headCellsWithSticky,
+    tableContainerSxProps: {
+        borderRadius: '0.5rem',
+    },
+};
+
 type Config = {
-    defaultRowsPerPage: number;
-    paginated: boolean;
+    defaultRowsPerPage?: number;
+    rowsPerPage: number;
+    totalPages?: number;
     page: number;
     sortDirection: 'asc' | 'desc' | false;
     sortColumn: keyof RowStructure | null;
 };
 const ServerFilterSortPaginationTemplate: StoryFn<typeof Table<RowStructure>> = (args) => {
     const [config, setConfig] = useState<Config>({
-        defaultRowsPerPage: 5,
-        paginated: true,
-        page: 1,
+        page: 0,
+        totalPages: 10,
+        rowsPerPage: 4,
         sortDirection: 'asc',
         sortColumn: 'address',
     });
 
-    const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setConfig((prev) => ({ ...prev, defaultRowsPerPage: event.target.valueAsNumber }));
+    const handleRowsPerPageChange = (value: number) => {
+        setConfig((prev) => ({ ...prev, rowsPerPage: value, totalPages: Math.ceil(rows.length / value) }));
     };
 
-    const handlePageChange = (e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-        return rows.slice((newPage - 1) * config.defaultRowsPerPage, newPage * config.defaultRowsPerPage);
+    const handlePageChange = (_e: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+        setConfig((prev) => ({ ...prev, page: newPage }));
     };
 
     const handleSortChange = (sortColumn: keyof RowStructure | null) => {
         setConfig((prev) => ({ ...prev, sortColumn, sortDirection: prev.sortDirection === 'asc' ? 'desc' : 'asc' }));
     };
-
     return (
         <Table<RowStructure>
+            paginated
             {...args}
+            rows={rows.slice(config.page * config.rowsPerPage, (config.page + 1) * config.rowsPerPage)}
             handlePageChange={handlePageChange}
-            rows={rows.slice((config.page - 1) * config.defaultRowsPerPage)}
             handleRowsPerPageChange={handleRowsPerPageChange}
             handleSortCellClick={handleSortChange}
-            {...config}
+            currentPage={config.page}
+            rowsPerPage={config.rowsPerPage}
+            sortColumn={config.sortColumn}
+            totalPages={config.totalPages}
+            sortDirection={config.sortDirection}
         />
     );
 };
 export const ServerFilterSortPagination = ServerFilterSortPaginationTemplate.bind({});
 ServerFilterSortPagination.args = {
     rows,
-    defaultRowsPerPage: 5,
-    totalPages: 8,
     headCells,
-    currentPage: 0,
-    sortDirection: 'asc',
-    sortColumn: 'address',
+    rowsPerPageOptions: [4, 8, 16],
 };

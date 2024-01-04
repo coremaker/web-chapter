@@ -1,8 +1,8 @@
 import { SortDirection } from '@mui/material';
-import { ChangeEvent, MouseEvent, useCallback, useMemo, useReducer } from 'react';
+import { MouseEvent, useCallback, useMemo, useReducer } from 'react';
 
-import type { BaseTableProps } from '../../components/Table/BaseTable';
 import {
+    BaseTableProps,
     Cell,
     CellComparator,
     CellId,
@@ -67,14 +67,14 @@ const makeSortRowByCellComparator =
     };
 
 export default function useTable<T extends GenericRowStructure>({
-    defaultRowsPerPage = 10,
     headCells,
     makeSearchableRowContent,
     rows,
     paginated,
     sortDirection = 'asc',
     sortColumn,
-    ...props
+    selectionType,
+    defaultRowsPerPage = 10,
 }: BaseTableProps<T>) {
     const [state, dispatch] = useReducer(reducer<T>, {
         selectedRowIds: {},
@@ -85,12 +85,9 @@ export default function useTable<T extends GenericRowStructure>({
         sortDirection,
     });
 
-    const selectedRowIdsState =
-        !!props.selectedRowIds && !!props.onRowSelectionChange ? props.selectedRowIds : state.selectedRowIds;
-
     const selectedRowsCount = useMemo(
-        () => Object.values(selectedRowIdsState).filter((selected) => selected).length,
-        [selectedRowIdsState]
+        () => Object.values(state.selectedRowIds).filter((selected) => selected).length,
+        [state.selectedRowIds]
     );
 
     const headRow: HeadRow<T> = useMemo(
@@ -145,6 +142,19 @@ export default function useTable<T extends GenericRowStructure>({
     const handleChangeSearchValue = (searchValue: string) => updateState({ searchValue });
 
     const handleRowSelectionInternal = (rowId: string, selected: boolean) => {
+        if (selectionType === 'single') {
+            const currentRowSelectedRows = rows
+                .map((row) => row.cells.id.value)
+                .reduce(
+                    (acc: Record<string, boolean>, currentRowId: string) => ({
+                        ...acc,
+                        [currentRowId]: currentRowId === rowId,
+                    }),
+                    {}
+                );
+            updateState({ selectedRowIds: currentRowSelectedRows });
+            return;
+        }
         updateState({ selectedRowIds: { [rowId]: selected } });
     };
 
@@ -163,9 +173,8 @@ export default function useTable<T extends GenericRowStructure>({
         updateState({ selectedRowIds: updatedSelectedRows });
     };
 
-    const handleRowsPerPageChangeInternal = (event: ChangeEvent<HTMLInputElement>) => {
-        const updatedRowsPerPage = parseInt(event.target.value, 10);
-        updateState({ rowsPerPage: updatedRowsPerPage, page: 0 });
+    const handleRowsPerPageChangeInternal = (value: number) => {
+        updateState({ rowsPerPage: value, page: 0 });
     };
 
     const handleSortCellClickInternal = (cellId: CellId<T>) => {
@@ -182,7 +191,7 @@ export default function useTable<T extends GenericRowStructure>({
             return rows;
         }
         return rows.filter((row) =>
-            makeSearchableRowContent(row).toLowerCase().includes(state.searchValue.toLowerCase())
+            makeSearchableRowContent(row).toLowerCase().includes(state.searchValue.toLowerCase().trim())
         );
     }, [makeSearchableRowContent, rows, state.searchValue]);
 
@@ -230,23 +239,16 @@ export default function useTable<T extends GenericRowStructure>({
         filteredRows,
         handleChangeSearchValue,
 
-        handleSortCellClick:
-            !!sortColumn && !!props.handleSortCellClick ? props.handleSortCellClick : handleSortCellClickInternal,
+        handleSortCellClick: handleSortCellClickInternal,
 
-        handleRowsPerPageChange: props.handleRowsPerPageChange ?? handleRowsPerPageChangeInternal,
-        handleChangePage: props.handlePageChange ?? handleChangePageInternal,
-        page: props.currentPage ?? state.page,
+        handleRowsPerPageChange: handleRowsPerPageChangeInternal,
+        handleChangePage: handleChangePageInternal,
+        page: state.page,
 
-        handleRowSelection:
-            !!props.selectedRowIds && !!props.onRowSelectionChange
-                ? props.onRowSelectionChange
-                : handleRowSelectionInternal,
-        handleAllRowsSelection:
-            !!props.selectedRowIds && !!props.onAllRowsSelectionChange
-                ? props.onAllRowsSelectionChange
-                : handleAllRowsSelectionInternal,
+        handleRowSelection: handleRowSelectionInternal,
+        handleAllRowsSelection: handleAllRowsSelectionInternal,
         selectedRowsCount,
-        selectedRowIds: selectedRowIdsState,
+        selectedRowIds: state.selectedRowIds,
         renderCellContent,
         renderHeadCellContent,
         makeRowCellId,

@@ -1,13 +1,9 @@
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { IconButton, Menu, MenuClasses, MenuItem, styled } from '@mui/material';
+import { IconButton, Menu, MenuItem, styled } from '@mui/material';
 import { MouseEvent, ReactNode, useState } from 'react';
 
-import { GenericRowStructure, Row, RowAction } from '../types';
+import { EllipsisCellContentClasses, GenericRowStructure, Row, RowAction } from '../types';
 
-export interface EllipsisCellContentClasses {
-    root: string;
-    menu: Partial<MenuClasses>;
-}
 interface EllipsisCellContentProps<T extends GenericRowStructure> {
     row: Row<T>;
     label: string | ReactNode;
@@ -35,6 +31,7 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: MouseEvent<HTMLElement>) => {
+        event.stopPropagation();
         onMenuOpen?.(row);
         setAnchorEl(event.currentTarget);
     };
@@ -49,14 +46,11 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
     };
     const menuId = `table-row-menu-${row.cells.id.value}`;
 
-    const isEllipsisIconDisabled = !rowActions?.find((rowAction) => !rowAction?.disabled?.(row));
-
     return (
         <StyledDivContainer className={classes.root ?? ''}>
             <div>{label}</div>
             <div>
                 <IconButton
-                    disabled={isEllipsisIconDisabled}
                     data-testid={`ellipsis-button-${row.cells.id.value}`}
                     aria-label={`open menu for row id ${row.cells.id.value}`}
                     aria-controls={open ? menuId : undefined}
@@ -69,20 +63,21 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
                 </IconButton>
                 <Menu classes={classes.menu} id={menuId} open={open} onClose={handleClose} anchorEl={anchorEl}>
                     {rowActions.map((rowAction) => {
-                        if (rowAction?.disabled?.(row)) {
-                            return null;
-                        }
-
                         const key = `${row.cells.id.value}-${rowAction.id}`;
+
                         if (rowAction.renderComponent) {
                             return rowAction.renderComponent({ key, row, options: { closeMenu } });
                         }
+
                         return (
                             <MenuItem
                                 key={key}
                                 data-testid={`menu-item-${row.cells.id.value}-${rowAction.id}`}
                                 className={rowAction.labelClassName}
-                                onClick={(e) => rowAction.onClick?.(row, e, { closeMenu })}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    rowAction.onClick?.(row, e, { closeMenu });
+                                }}
                             >
                                 {rowAction.label}
                             </MenuItem>
