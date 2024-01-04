@@ -57,23 +57,6 @@ interface ColorThemeVariants {
     tint200?: string;
 }
 
-declare module '@mui/material/styles/createPalette' {
-    interface PaletteOptions {
-        ink: PaletteColorOptions;
-        danger: PaletteColorOptions;
-        surface: PaletteColorOptions;
-        charcoal: PaletteColorOptions;
-        chalk: PaletteColorOptions;
-    }
-    interface Palette {
-        ink: PaletteColor;
-        danger: PaletteColor;
-        surface: PaletteColor;
-        charcoal: PaletteColor;
-        chalk: PaletteColor;
-    }
-}
-
 declare module '@mui/material/styles' {
     interface Theme extends ExtendedTheme {}
 
@@ -89,6 +72,21 @@ declare module '@mui/material/styles' {
 
     interface BreakpointOverrides {
         xxs: true;
+    }
+
+    interface PaletteOptions {
+        ink: PaletteOptions['primary'];
+        danger: PaletteOptions['primary'];
+        surface: PaletteOptions['primary'];
+        charcoal: PaletteOptions['primary'];
+        chalk: PaletteOptions['primary'];
+    }
+    interface Palette {
+        ink: Palette['primary'];
+        danger: Palette['primary'];
+        surface: Palette['primary'];
+        charcoal: Palette['primary'];
+        chalk: Palette['primary'];
     }
 }
 

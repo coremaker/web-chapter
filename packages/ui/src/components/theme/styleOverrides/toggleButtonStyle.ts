@@ -86,39 +86,45 @@ export const toggleButtonGroupStyle:
 export const toggleButtonStyle:
     | Partial<OverridesStyleRules<keyof ToggleButtonClasses, 'MuiToggleButton', Omit<Theme, 'components'>>>
     | undefined = {
-    root: ({ ownerState }: { ownerState: ToggleButtonProps & Record<string, unknown> }) => {
+    root: ({
+        ownerState,
+        theme,
+    }: {
+        ownerState: ToggleButtonProps & Record<string, unknown>;
+        theme: Omit<Theme, 'components'>;
+    }) => {
         const color = (ownerState.color as Color) || 'primary';
 
         return {
-            color: palette[color][500],
+            color: theme.palette[color][500],
             opacity: 1,
             border: 'none',
             textTransform: 'capitalize',
             ...typography.button,
 
             ':hover': {
-                backgroundColor: palette[color].tint50,
-                color: palette[color][700],
+                backgroundColor: theme.palette[color].tint50,
+                color: theme.palette[color][700],
             },
 
             '&.Mui-disabled': {
-                color: palette[color][300],
+                color: theme.palette[color][300],
                 border: 'none',
             },
 
             '&.Mui-selected': {
-                color: palette[color][500],
-                backgroundColor: palette[color].tint100,
+                color: theme.palette[color][500],
+                backgroundColor: theme.palette[color].tint100,
                 heigth: '1.25rem',
 
                 ':hover': {
-                    backgroundColor: palette[color].tint200,
-                    color: palette[color][700],
+                    backgroundColor: theme.palette[color].tint200,
+                    color: theme.palette[color][700],
                 },
 
                 '&.Mui-disabled': {
-                    color: palette[color][300],
-                    backgroundColor: palette[color].tint50,
+                    color: theme.palette[color][300],
+                    backgroundColor: theme.palette[color].tint50,
                 },
             },
         };
