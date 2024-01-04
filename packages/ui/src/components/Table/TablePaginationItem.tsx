@@ -53,7 +53,7 @@ export const TablePaginationItem: FC<TablePaginationItemProps> = ({ item }) => {
                 disabled={disabled}
                 sx={{ mr: '0.5rem', minWidth: 0 }}
                 size="small"
-                aria-label={page?.toString() ?? ''}
+                aria-label={`page ${page?.toString()}` ?? ''}
                 aria-current={selected}
             >
                 {page}

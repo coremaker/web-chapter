@@ -25,7 +25,7 @@ const unevenPages = [0, 1, 2, 3];
 describe('<TablePagination />', () => {
     it('renders the correct number of pages', () => {
         const { getByRole } = render(<Pagination {...sampleProps} />);
-        evenPages.forEach((page) => expect(getByRole('button', { name: `${page + 1}` })).toBeInTheDocument());
+        evenPages.forEach((page) => expect(getByRole('button', { name: `page ${page + 1}` })).toBeInTheDocument());
     });
 
     it("renders the correct number of pages when the items doesn't divide exactly between pages", () => {
@@ -33,7 +33,7 @@ describe('<TablePagination />', () => {
             <Pagination currentPage={0} itemsCount={10} rowsPerPage={3} onChangePage={() => {}} />
         );
 
-        unevenPages.forEach((page) => expect(getByRole('button', { name: `${page + 1}` })).toBeInTheDocument());
+        unevenPages.forEach((page) => expect(getByRole('button', { name: `page ${page + 1}` })).toBeInTheDocument());
     });
 
     it('renders the prev and next buttons', () => {
@@ -74,7 +74,7 @@ describe('<TablePagination />', () => {
             />
         );
 
-        fireEvent.click(getByRole('button', { name: '2' }));
+        fireEvent.click(getByRole('button', { name: 'page 2' }));
 
         rerender(
             <Pagination
@@ -88,7 +88,7 @@ describe('<TablePagination />', () => {
         );
         await waitFor(() => {
             expect(getByRole('button', { name: 'next' })).toBeDisabled();
-            expect(getByRole('button', { name: '2', current: true })).toBeInTheDocument();
+            expect(getByRole('button', { name: 'page 2', current: true })).toBeInTheDocument();
         });
     });
 });
