@@ -2,10 +2,6 @@
 
 A framework for building web applications
 
-# web-chapter
-
-A framework for building web applications
-
 # Modules
 
 ## UI
