@@ -1,108 +1,26 @@
-import {
-    Checkbox,
-    CircularProgressProps,
-    Table as MuiTable,
-    SortDirection,
-    SxProps,
-    TableBody,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TextField,
-} from '@mui/material';
-import { ChangeEvent, JSXElementConstructor, MouseEvent, ReactNode, useMemo } from 'react';
+import { Table as MuiTable, TableBody, TableContainer, TableHead, TableRow, TextField, styled } from '@mui/material';
+import { useMemo } from 'react';
 
-import { SelectedRowIds } from '../../hooks/useTable/reducer';
-import useTable, { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
+import { HEAD_ROW_IDENTIFIER } from '../../hooks/useTable/useTable';
 import Spinner from '../Spinner/Spinner';
 import { TablePagination } from './TablePagination';
-import EllipsisCellContent, { EllipsisCellContentClasses } from './components/EllipsisCellContent';
+import EllipsisCellContent from './components/EllipsisCellContent';
+import RowSelector, { HeadRowSelector } from './components/RowSelector';
 import SearchEmptyState from './components/SearchEmptyState';
-import TableCell, { TableCellClasses } from './components/TableCell';
-import {
-    CellId,
-    CheckboxRendererArgs,
-    GenericRowStructure,
-    HeadRowCells,
-    PaginationRendererArgs,
-    Row,
-    RowAction,
-    RowCell,
-    SearchInputRendererArgs,
-} from './types';
+import TableCell from './components/TableCell';
+import { BaseTableProps, CellId, GenericRowStructure, Row, RowCell } from './types';
+import useTableLogic from './useTableLogic';
 
-interface BaseTableFooterClasses {
-    root: string;
-    cell: string;
-}
+const FiltersRowContainer = styled('div')({
+    padding: '1.5rem',
+});
 
-export interface BaseTableClasses {
-    root: string;
-    headArea: string;
-    searchInputContainer: string;
-    actionsContainer: string;
-    tableContainer: string;
-    cell: Partial<TableCellClasses>;
-    ellipsis: Partial<EllipsisCellContentClasses>;
-    footer: Partial<BaseTableFooterClasses>;
-    loaderContainer: string;
-}
-
-export interface BaseTableProps<T extends GenericRowStructure> {
-    showIdCell?: boolean;
-    makeSearchableRowContent?: (row: Row<T>) => string;
-    searchInputPlaceholder?: string;
-    selectable?: boolean;
-    renderSearchEmptyState?: () => ReactNode;
-    /**
-     * This prop changes the selected rows state from uncontrolled to controlled
-     */
-    searchProps?: {
-        value: string;
-        onChange: (value: string) => void;
-    };
-    totalPages?: number;
-    selectedRowIds?: SelectedRowIds;
-    headCells: HeadRowCells<T>;
-    rows: Row<T>[];
-    rowActions?: RowAction<T>[];
-    ellipsisIcon?: ReactNode;
-    rowsPerPageOptions?: number[];
-    currentPage?: number;
-    sortColumn?: CellId<T> | null;
-    sortDirection?: SortDirection;
-    renderTableActions?: (selectedRows: SelectedRowIds) => ReactNode;
-    renderTablePagination?: (args: PaginationRendererArgs<T>) => ReactNode;
-    renderSearchInput?: (args: SearchInputRendererArgs) => ReactNode;
-    renderCheckbox?: (args: CheckboxRendererArgs) => ReactNode;
-    onRowSelectionChange?: (rowId: string, selected: boolean) => void;
-    onAllRowsSelectionChange?: (e: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
-    onRowMenuOpen?: (row: Row<T>) => void;
-    onRowMenuClose?: (row: Row<T>) => void;
-    defaultRowsPerPage?: number;
-    paginated?: boolean;
-    SortIcon?: JSXElementConstructor<{
-        className: string;
-    }>;
-    classes?: Partial<BaseTableClasses>;
-    loading?: boolean;
-    SpinnerComponent?: JSXElementConstructor<CircularProgressProps>;
-    handleRowsPerPageChange?: (value: number) => void;
-    handlePageChange?: (e: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
-    handleSortCellClick?: (cellId: CellId<T>) => void;
-    tableContainerSxProps?: SxProps;
-    onRowClick?: (row: Row<T>, e: MouseEvent<HTMLTableRowElement, globalThis.MouseEvent>) => void;
-}
-
-const BaseTable = <T extends GenericRowStructure>({
-    onRowSelectionChange,
-    onAllRowsSelectionChange,
-    ...props
-}: BaseTableProps<T>) => {
+const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
     const {
         headCells,
         rows,
         selectable,
+        selectionType = 'multiple',
         makeSearchableRowContent,
         searchInputPlaceholder = 'Search',
         showIdCell,
@@ -124,50 +42,62 @@ const BaseTable = <T extends GenericRowStructure>({
         SpinnerComponent = Spinner,
         tableContainerSxProps,
         onRowClick,
+        onRowSelectionChange,
+        onAllRowsSelectionChange,
     } = props;
 
     const {
-        renderCellContent,
-        renderHeadCellContent,
-        makeRowCellId,
-        currentPageRows,
-        filteredRows,
-        handleChangePage,
-        handleRowsPerPageChange,
-        handleSortCellClick,
-        handleChangeSearchValue,
-        handleRowSelection,
-        handleAllRowsSelection,
-        state,
-        selectedRowsCount,
-        headRow,
-        page,
-    } = useTable<T>({
+        state: {
+            currentPageRows,
+            filteredRows,
+            headRow,
+            page,
+            selectedRowsCount,
+            rowsPerPage,
+            searchValue,
+            sortByColumnId,
+            selectedRowIds,
+            sortDirection,
+        },
+        handlers: {
+            handleAllRowsSelection,
+            handleChangePage,
+            handleChangeSearchValue,
+            handleRowSelection,
+            handleRowsPerPageChange,
+            handleSortCellClick,
+            makeRowCellId,
+            makeCellContentRenderer,
+            makeHeadCellContentRenderer,
+        },
+    } = useTableLogic<T>({
         ...props,
+        selectionType,
         onAllRowsSelectionChange,
         onRowSelectionChange,
         defaultRowsPerPage,
     });
 
-    const { searchValue, sortByColumnId, sortDirection, rowsPerPage } = state;
     const hasTableData = Boolean(filteredRows.length);
 
     const { cell: cellClasses } = classes;
 
-    const selectedRowIdsState = props.selectedRowIds ? props.selectedRowIds : state.selectedRowIds;
-
     const cellIdsArray = useMemo(() => Object.keys(headCells) as unknown as CellId<T>[], [headCells]);
 
     const renderRowCell = (row: Row<T>, cell: RowCell<T, T[CellId<T>]>, cellId: CellId<T>) => {
-        const cellContent = renderCellContent(cell, row);
+        const cellContent = makeCellContentRenderer(cell, row);
         const cellIndex = cellIdsArray.indexOf(cellId);
         const isLastCell = cellIndex === cellIdsArray.length - 1;
         const shouldRenderRowActions = rowActions.length > 0 && !row.disableActions;
         const key = makeRowCellId(row.cells.id.value, cellId);
+
         return (
             <TableCell
                 key={key}
                 data-testid={`table-row-cell-${cellId}`}
+                isSticky={cell.isSticky}
+                stickyPosition={cell.stickyPosition}
+                sxProps={cell.sxProps}
                 align={cell.align}
                 padding={cell.disablePadding ? 'none' : 'normal'}
                 classes={{
@@ -208,7 +138,6 @@ const BaseTable = <T extends GenericRowStructure>({
                 handleRowsPerPageChange,
             });
         }
-
         return (
             <TablePagination
                 rowsPerPage={rowsPerPage ?? defaultRowsPerPage}
@@ -229,7 +158,7 @@ const BaseTable = <T extends GenericRowStructure>({
 
     return (
         <div className={classes.root}>
-            <div className={classes.headArea}>
+            <FiltersRowContainer className={classes.headArea}>
                 {makeSearchableRowContent || searchProps ? (
                     <div className={classes.searchInputContainer}>
                         {renderSearchInput ? (
@@ -246,8 +175,8 @@ const BaseTable = <T extends GenericRowStructure>({
                         )}
                     </div>
                 ) : null}
-                <div className={classes.actionsContainer}>{renderTableActions?.(selectedRowIdsState)}</div>
-            </div>
+                <div className={classes.actionsContainer}>{renderTableActions?.(selectedRowIds)}</div>
+            </FiltersRowContainer>
 
             <TableContainer className={classes.tableContainer} sx={tableContainerSxProps}>
                 <MuiTable>
@@ -255,20 +184,12 @@ const BaseTable = <T extends GenericRowStructure>({
                         <TableRow>
                             {selectable && (
                                 <TableCell classes={cellClasses} isHeadCell padding="checkbox">
-                                    {renderCheckbox ? (
-                                        renderCheckbox({
-                                            onChange: handleAllRowsSelection,
-                                            checked: selectedRowsCount === rows.length,
-                                            indeterminate: selectedRowsCount > 0 && selectedRowsCount < rows.length,
-                                        })
-                                    ) : (
-                                        <Checkbox
-                                            onChange={handleAllRowsSelection}
-                                            checked={selectedRowsCount === rows.length}
-                                            indeterminate={selectedRowsCount > 0 && selectedRowsCount < rows.length}
-                                            inputProps={{
-                                                'aria-label': 'select all rows',
-                                            }}
+                                    {selectionType === 'multiple' && (
+                                        <HeadRowSelector
+                                            selectedRowsCount={selectedRowsCount}
+                                            rows={rows}
+                                            handleAllRowsSelection={handleAllRowsSelection}
+                                            renderCheckbox={renderCheckbox}
                                         />
                                     )}
                                 </TableCell>
@@ -282,6 +203,9 @@ const BaseTable = <T extends GenericRowStructure>({
                                             key={HEAD_ROW_IDENTIFIER + cellId}
                                             cellId={cellId}
                                             isHeadCell
+                                            isSticky={headCell.isSticky}
+                                            stickyPosition={headCell.stickyPosition}
+                                            sxProps={headCell.sxProps}
                                             align={headCell.align}
                                             active={sortByColumnId === cellId}
                                             sortDirection={cellId === sortByColumnId ? sortDirection : 'desc'}
@@ -297,7 +221,7 @@ const BaseTable = <T extends GenericRowStructure>({
                                             sortable={headCell.sortable}
                                             classes={cellClasses}
                                         >
-                                            {renderHeadCellContent(headCell, headRow)}
+                                            {makeHeadCellContentRenderer(headCell, headRow)}
                                         </TableCell>
                                     );
                                 })
@@ -308,10 +232,11 @@ const BaseTable = <T extends GenericRowStructure>({
                         <TableBody data-testid="table-body">
                             <TableRow>
                                 <TableCell
-                                    colSpan={cellIdsArray.length}
-                                    sx={{
+                                    colSpan={cellIdsArray.length + 1}
+                                    sxProps={{
                                         border: 'none',
                                         textAlign: 'center',
+                                        borderBottom: 'none',
                                     }}
                                     className={classes?.loaderContainer ?? ''}
                                 >
@@ -330,7 +255,7 @@ const BaseTable = <T extends GenericRowStructure>({
                                           tabIndex={-1}
                                           onClick={(e) => onRowClick?.(row, e)}
                                           className={
-                                              selectedRowIdsState[row.cells.id.value] ? 'BaseTable__Row--selected' : ''
+                                              selectedRowIds[row.cells.id.value] ? 'BaseTable__Row--selected' : ''
                                           }
                                       >
                                           {selectable && (
@@ -340,24 +265,13 @@ const BaseTable = <T extends GenericRowStructure>({
                                                   data-testid="table-row-cell"
                                                   padding="checkbox"
                                               >
-                                                  {renderCheckbox ? (
-                                                      renderCheckbox({
-                                                          rowId: row.cells.id.value,
-                                                          checked: !!selectedRowIdsState[row.cells.id.value],
-                                                          onChange: (e) =>
-                                                              handleRowSelection(row.cells.id.value, e.target.checked),
-                                                      })
-                                                  ) : (
-                                                      <Checkbox
-                                                          onChange={(e) =>
-                                                              handleRowSelection(row.cells.id.value, e.target.checked)
-                                                          }
-                                                          checked={!!selectedRowIdsState[row.cells.id.value]}
-                                                          inputProps={{
-                                                              'aria-label': `select row ${row.cells.id.value}`,
-                                                          }}
-                                                      />
-                                                  )}
+                                                  <RowSelector
+                                                      selectionType={selectionType}
+                                                      handleRowSelection={handleRowSelection}
+                                                      renderCheckbox={renderCheckbox}
+                                                      row={row}
+                                                      selectedRowIdsState={selectedRowIds}
+                                                  />
                                               </TableCell>
                                           )}
 

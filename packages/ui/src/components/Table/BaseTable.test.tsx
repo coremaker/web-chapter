@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { theme } from '../theme/theme';
 import Table from './BaseTable';
-import { headCells, rows } from './MockData';
+import { headCells, headCellsWithSticky, rows, rowsWithSticky } from './MockData';
 
 describe('<Table />', () => {
     const wrapperRender = (comp: ReactNode) => render(<ThemeProvider theme={theme}>{comp}</ThemeProvider>);
@@ -286,6 +286,14 @@ describe('<Table />', () => {
         const checkboxesCountWithHeader = rows.length + 1;
 
         expect(checkboxes.length).toBe(checkboxesCountWithHeader);
+    });
+
+    it('renders radios for every row when the table is selectable', () => {
+        const { getAllByRole } = render(<Table selectable selectionType="single" headCells={headCells} rows={rows} />);
+
+        const radios = getAllByRole('radio');
+
+        expect(radios.length).toBe(rows.length);
     });
 
     it('selects all rows when clicking the checkbox in the header area', async () => {
@@ -660,5 +668,55 @@ describe('<Table />', () => {
         fireEvent.click(renderedRow);
 
         expect(mockOnRowClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('renders sticky styles when cell.isSticky is true and stickyPosition is defined', () => {
+        const stickyCellKey: keyof typeof headCellsWithSticky = 'username';
+
+        const { getByTestId } = render(<Table headCells={headCellsWithSticky} rows={rowsWithSticky.slice(0, 1)} />);
+        const renderedHead = getByTestId('table-head');
+
+        const stickyCellData = headCellsWithSticky[stickyCellKey];
+        const nameHeadCell = within(renderedHead).getByText(stickyCellData.value);
+
+        expect(nameHeadCell).toHaveStyle({
+            position: 'sticky',
+            [stickyCellData.stickyPosition as 'left' | 'right']: 0,
+        });
+    });
+
+    it('applies sticky styles to the head cell when isSticky is true and stickyPosition is defined', () => {
+        const stickyCellKey: keyof typeof headCellsWithSticky = 'username';
+        const { getByTestId } = render(<Table headCells={headCellsWithSticky} rows={rowsWithSticky.slice(0, 1)} />);
+        const renderedHead = getByTestId('table-head');
+
+        const stickyCellData = headCellsWithSticky[stickyCellKey];
+        const nameHeadCell = within(renderedHead).getByText(stickyCellData.value);
+
+        expect(nameHeadCell).toHaveStyle({
+            position: 'sticky',
+            [stickyCellData.stickyPosition as 'left' | 'right']: 0,
+        });
+    });
+
+    it('applies sxProps styles to the cell', () => {
+        const cellKeyWithSxProps: keyof typeof headCellsWithSticky = 'username';
+        const { getByTestId } = render(<Table headCells={headCellsWithSticky} rows={rowsWithSticky.slice(0, 1)} />);
+
+        const renderedCell = getByTestId(`table-row-cell-${cellKeyWithSxProps}`);
+        const cellData = headCellsWithSticky[cellKeyWithSxProps];
+
+        expect(renderedCell).toHaveStyle({ ...cellData.sxProps });
+    });
+
+    it('applies sxProps styles to the head cell', () => {
+        const headCellKeyWithSxProps: keyof typeof headCellsWithSticky = 'username';
+        const { getByTestId } = render(<Table headCells={headCellsWithSticky} rows={rowsWithSticky.slice(0, 1)} />);
+        const renderedHead = getByTestId('table-head');
+
+        const headCellData = headCellsWithSticky[headCellKeyWithSxProps];
+        const nameHeadCell = within(renderedHead).getByText(headCellData.value);
+
+        expect(nameHeadCell).toHaveStyle({ ...headCellData.sxProps });
     });
 });
