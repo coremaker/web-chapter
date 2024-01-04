@@ -8,6 +8,6 @@ export const tableContainerStyle:
     | undefined = {
     root: () => ({
         padding: '1.5rem',
-        height: getContainerHeight(true, true, false),
+        height: getContainerHeight({ hasToolbar: true, hasPageHeaderBreadcrumbs: true, hasTabs: false }),
     }),
 };

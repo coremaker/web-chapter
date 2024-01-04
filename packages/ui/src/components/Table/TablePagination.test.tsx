@@ -1,6 +1,5 @@
 import { ThemeProvider } from '@mui/material';
-import { render, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 
 import { theme } from '../theme/theme';
 import { TablePagination, TablePaginationProps } from './TablePagination';
@@ -38,12 +37,12 @@ describe('<TablePagination />', () => {
     });
 
     it('renders the prev and next buttons', () => {
-        const { getByTestId } = render(
+        const { getByRole } = render(
             <Pagination currentPage={0} itemsCount={10} rowsPerPage={2} onChangePage={() => {}} />
         );
 
-        expect(getByTestId('table-pagination-item-next')).toBeInTheDocument();
-        expect(getByTestId('table-pagination-item-previous')).toBeInTheDocument();
+        expect(getByRole('button', { name: 'next' })).toBeInTheDocument();
+        expect(getByRole('button', { name: 'previous' })).toBeInTheDocument();
     });
 
     it('renders an ellipsis when the number of pages is greater than', () => {
@@ -55,16 +54,16 @@ describe('<TablePagination />', () => {
     });
 
     it('renders the prev button disabled when we are on the first page', () => {
-        const { getByTestId } = render(
+        const { getByRole } = render(
             <Pagination currentPage={0} itemsCount={10} rowsPerPage={2} onChangePage={() => {}} />
         );
-        expect(getByTestId('table-pagination-item-previous')).toBeDisabled();
+        expect(getByRole('button', { name: 'previous' })).toBeDisabled();
     });
 
     it('renders the next button disabled when we are on the last page', async () => {
         let page = 0;
 
-        const { getByRole, getByTestId, rerender } = render(
+        const { getByRole, rerender } = render(
             <Pagination
                 currentPage={page}
                 itemsCount={10}
@@ -75,7 +74,7 @@ describe('<TablePagination />', () => {
             />
         );
 
-        await userEvent.click(getByRole('button', { name: '2' }));
+        fireEvent.click(getByRole('button', { name: '2' }));
 
         rerender(
             <Pagination
@@ -88,7 +87,7 @@ describe('<TablePagination />', () => {
             />
         );
         await waitFor(() => {
-            expect(getByTestId('table-pagination-item-next')).toBeDisabled();
+            expect(getByRole('button', { name: 'next' })).toBeDisabled();
             expect(getByRole('button', { name: '2', current: true })).toBeInTheDocument();
         });
     });
