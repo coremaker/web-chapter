@@ -56,27 +56,27 @@ describe('NotificationCenter', () => {
         expect(getByText('test')).toBeInTheDocument();
     });
 
-    it("should render a stack of notifications, up to the component's maxNotifications prop", () => {
+    it("should render a stack of notifications, up to the component's maxNotifications prop", async () => {
         const { queryByText } = renderComponent();
 
-        waitFor(() => {
-            emitEvent('test-1');
-            emitEvent('test-2');
-            emitEvent('test-3');
-            emitEvent('test-4');
-            emitEvent('test-5');
-            emitEvent('test-6');
-        });
+        emitEvent('test-1');
+        emitEvent('test-2');
+        emitEvent('test-3');
+        emitEvent('test-4');
+        emitEvent('test-5');
+        emitEvent('test-6');
 
-        expect(queryByText('test-1')).not.toBeInTheDocument();
-        expect(queryByText('test-2')).toBeInTheDocument();
-        expect(queryByText('test-3')).toBeInTheDocument();
-        expect(queryByText('test-4')).toBeInTheDocument();
-        expect(queryByText('test-5')).toBeInTheDocument();
-        expect(queryByText('test-6')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(queryByText('test-1')).not.toBeInTheDocument();
+            expect(queryByText('test-2')).toBeInTheDocument();
+            expect(queryByText('test-3')).toBeInTheDocument();
+            expect(queryByText('test-4')).toBeInTheDocument();
+            expect(queryByText('test-5')).toBeInTheDocument();
+            expect(queryByText('test-6')).toBeInTheDocument();
+        });
     });
 
-    it('should hide notifications after the hideAfter prop', () => {
+    it('should hide notifications after the hideAfter prop', async () => {
         const { queryByText } = renderComponent({ hideAfter: 1000 });
 
         emitEvent('test-1');
@@ -87,12 +87,12 @@ describe('NotificationCenter', () => {
             vi.advanceTimersByTime(1000);
         });
 
-        waitFor(() => {
+        await waitFor(() => {
             expect(queryByText('test-1')).not.toBeInTheDocument();
         });
     });
 
-    it('should hide notifications after the cacheTimeout prop', () => {
+    it('should hide notifications after the cacheTimeout prop', async () => {
         const { queryByText, getByTestId } = renderComponent({ cacheTimeout: 1000 });
 
         emitEvent('test-1');
@@ -107,12 +107,12 @@ describe('NotificationCenter', () => {
             vi.advanceTimersByTime(1000);
         });
 
-        waitFor(() => {
+        await waitFor(() => {
             expect(getByTestId('notification-center')).toBeEmptyDOMElement();
         });
     });
 
-    it("should close the notification when it's onClose prop is called", () => {
+    it("should close the notification when it's onClose prop is called", async () => {
         const { queryByText, getByText } = renderComponent();
 
         emitEvent('test-1');
@@ -123,7 +123,7 @@ describe('NotificationCenter', () => {
             fireEvent.click(getByText('test-1'));
         });
 
-        waitFor(() => {
+        await waitFor(() => {
             expect(queryByText('test-1')).not.toBeInTheDocument();
         });
     });

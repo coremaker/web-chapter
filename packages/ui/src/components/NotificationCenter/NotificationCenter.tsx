@@ -37,9 +37,7 @@ const NotificationCenter = ({
     const [notifications, setNotifications] = useState<Notification[]>([]);
 
     const handleCloseNotification = (id: string) => {
-        setNotifications((prev) =>
-            prev.map((notification) => (notification.id === id ? { ...notification, open: false } : notification))
-        );
+        setNotifications((prev) => prev.map((notification) => ({ ...notification, open: notification.id !== id })));
     };
 
     useEffect(() => {
