@@ -319,7 +319,11 @@ const BaseTable = <T extends GenericRowStructure>({
                             <TableRow>
                                 <TableCell
                                     colSpan={cellIdsArray.length}
+<<<<<<< Updated upstream
                                     sx={{
+=======
+                                    sxProps={{
+>>>>>>> Stashed changes
                                         border: 'none',
                                         textAlign: 'center',
                                     }}

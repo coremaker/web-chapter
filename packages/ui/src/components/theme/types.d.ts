@@ -87,6 +87,27 @@ declare module '@mui/material/Button' {
     }
 }
 
+<<<<<<< Updated upstream
+=======
+declare module '@mui/material/Chip' {
+    interface ChipClasses {
+        soft: true;
+    }
+
+    interface ChipPropsVariantOverrides {
+        soft: true;
+    }
+
+    interface ChipPropsColorOverrides {
+        ink: true;
+        danger: true;
+        surface: true;
+        charcoal: true;
+        chalk: true;
+    }
+}
+
+>>>>>>> Stashed changes
 declare module '@mui/material/Typography' {
     interface TypographyPropsVariantOverrides {
         displayLarge: true;
