@@ -1,9 +1,6 @@
-import { IconButtonClasses, Theme } from '@mui/material';
-import { OverridesStyleRules } from '@mui/material/styles/overrides';
+import { MUIComponentOverrides } from './types/StyleOverrides';
 
-export const iconButtonStyle:
-    | Partial<OverridesStyleRules<keyof IconButtonClasses, 'MuiIconButton', Omit<Theme, 'components'>>>
-    | undefined = {
+export const iconButtonStyle: MUIComponentOverrides['MuiIconButton'] = {
     root: {
         borderRadius: '0.75rem',
     },

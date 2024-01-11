@@ -1,12 +1,8 @@
-import { MenuClasses, Theme } from '@mui/material';
-import { OverridesStyleRules } from '@mui/material/styles/overrides';
+import { customShadows, typography } from '../themeOptions';
+import { MUIComponentOverrides } from './types/StyleOverrides';
 
-import { customShadows, palette, typography } from '../themeOptions';
-
-export const menuStyle:
-    | Partial<OverridesStyleRules<keyof MenuClasses, 'MuiMenu', Omit<Theme, 'components'>>>
-    | undefined = {
-    paper: {
+export const menuStyle: MUIComponentOverrides['MuiMenu'] = {
+    paper: ({ theme: { palette } }) => ({
         backgroundColor: palette.surface[0],
         boxShadow: customShadows.ink.m,
 
@@ -65,7 +61,7 @@ export const menuStyle:
                 },
             },
         },
-    },
+    }),
 
     list: {
         padding: 0,

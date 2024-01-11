@@ -1,12 +1,8 @@
-import { ButtonClasses, ButtonProps, Theme } from '@mui/material';
-import { OverridesStyleRules } from '@mui/material/styles/overrides';
-
-import { palette, typography } from '../themeOptions';
+import { typography } from '../themeOptions';
 import { Color } from './types';
+import { MUIComponentOverrides } from './types/StyleOverrides';
 
-export const buttonStyle:
-    | Partial<OverridesStyleRules<keyof ButtonClasses, 'MuiButton', Omit<Theme, 'components'>>>
-    | undefined = {
+export const buttonStyle: MUIComponentOverrides['MuiButton'] = {
     root: {
         borderRadius: 12,
         textTransform: 'none',
@@ -18,7 +14,7 @@ export const buttonStyle:
         },
     },
 
-    contained: ({ ownerState }: { ownerState: ButtonProps & Record<string, unknown> }) => {
+    contained: ({ ownerState, theme: { palette } }) => {
         const color = (ownerState.color as Color) || 'primary';
 
         return {
@@ -36,7 +32,7 @@ export const buttonStyle:
         };
     },
 
-    outlined: ({ ownerState }: { ownerState: ButtonProps & Record<string, unknown> }) => {
+    outlined: ({ ownerState, theme: { palette } }) => {
         const color = (ownerState.color as Color) || 'primary';
 
         return {
@@ -53,8 +49,8 @@ export const buttonStyle:
         };
     },
 
-    soft: ({ ownerState }: { ownerState: ButtonProps & Record<string, unknown> }) => {
-        const color = (ownerState.color as Color) || 'primary';
+    soft: ({ ownerState, theme: { palette } }) => {
+        const color = ownerState.color || 'primary';
 
         return {
             color: palette[color][500],
@@ -72,8 +68,8 @@ export const buttonStyle:
         };
     },
 
-    containedReversed: ({ ownerState }: { ownerState: ButtonProps & Record<string, unknown> }) => {
-        const color = (ownerState.color as Color) || 'primary';
+    containedReversed: ({ ownerState, theme: { palette } }) => {
+        const color = ownerState.color || 'primary';
 
         return {
             color: palette[color][500],
@@ -91,8 +87,8 @@ export const buttonStyle:
         };
     },
 
-    text: ({ ownerState }: { ownerState: ButtonProps & Record<string, unknown> }) => {
-        const color = (ownerState.color as Color) || 'primary';
+    text: ({ ownerState, theme: { palette } }) => {
+        const color = ownerState.color || 'primary';
 
         return {
             ':hover': {

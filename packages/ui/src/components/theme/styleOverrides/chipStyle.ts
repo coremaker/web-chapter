@@ -1,15 +1,8 @@
-import { ChipClasses, ChipProps, Theme } from '@mui/material';
-import { OverridesStyleRules } from '@mui/material/styles/overrides';
+import { typography } from '../themeOptions';
+import { MUIComponentOverrides } from './types/StyleOverrides';
 
-import { palette, typography } from '../themeOptions';
-import { Color } from './types';
-
-export const chipStyle:
-    | Partial<OverridesStyleRules<keyof ChipClasses, 'MuiChip', Omit<Theme, 'components'>>>
-    | undefined = {
-    root: ({ ownerState }: { ownerState: ChipProps & Record<string, unknown> }) => {
-        const color = (ownerState.color as Color) || 'primary';
-
+export const chipStyle: MUIComponentOverrides['MuiChip'] = {
+    root: ({ ownerState: { color = 'primary' }, theme: { palette } }) => {
         return {
             borderRadius: 12,
             padding: '4px 8px',
@@ -32,9 +25,7 @@ export const chipStyle:
         padding: 0,
     },
 
-    soft: ({ ownerState }: { ownerState: ChipProps & Record<string, unknown> }) => {
-        const color = (ownerState.color as Color) || 'primary';
-
+    soft: ({ ownerState: { color = 'primary' }, theme: { palette } }) => {
         return {
             color: palette[color][500],
             backgroundColor: palette[color].tint50,
@@ -71,9 +62,7 @@ export const chipStyle:
         };
     },
 
-    filled: ({ ownerState }: { ownerState: ChipProps & Record<string, unknown> }) => {
-        const color = (ownerState.color as Color) || 'primary';
-
+    filled: ({ ownerState: { color = 'primary' }, theme: { palette } }) => {
         return {
             color: palette.ink[0],
             backgroundColor: palette[color][500],
@@ -97,9 +86,7 @@ export const chipStyle:
         };
     },
 
-    outlined: ({ ownerState }: { ownerState: ChipProps & Record<string, unknown> }) => {
-        const color = (ownerState.color as Color) || 'primary';
-
+    outlined: ({ ownerState: { color = 'primary' }, theme: { palette } }) => {
         return {
             color: palette[color][500],
             backgroundColor: palette[color].tint50,
@@ -127,7 +114,7 @@ export const chipStyle:
         };
     },
 
-    deleteIcon: {
+    deleteIcon: ({ theme: { palette } }) => ({
         fontSize: 16,
         marginRight: 0,
         marginLeft: 4,
@@ -136,7 +123,7 @@ export const chipStyle:
             backgroundColor: palette.ink.tint50,
             borderRadius: '8px',
         },
-    },
+    }),
 
     icon: {
         height: 20,
