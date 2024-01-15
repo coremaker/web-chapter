@@ -1,9 +1,6 @@
-import { ContainerClasses, Theme } from '@mui/material';
-import { OverridesStyleRules } from '@mui/material/styles/overrides';
+import { MUIComponentOverrides } from './types/StyleOverrides';
 
-export const containerStyle:
-    | Partial<OverridesStyleRules<keyof ContainerClasses, 'MuiContainer', Omit<Theme, 'components'>>>
-    | undefined = {
+export const containerStyle: MUIComponentOverrides['MuiContainer'] = {
     maxWidthSm: ({ theme }) => ({
         [theme.breakpoints.up('sm')]: {
             maxWidth: '35rem',

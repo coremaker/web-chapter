@@ -1,11 +1,7 @@
-import { Theme, TooltipClasses } from '@mui/material';
-import { OverridesStyleRules } from '@mui/material/styles/overrides';
-
 import { customShadows, palette, typography } from '../themeOptions';
+import { MUIComponentOverrides } from './types/StyleOverrides';
 
-export const tooltipStyle:
-    | Partial<OverridesStyleRules<keyof TooltipClasses, 'MuiTooltip', Omit<Theme, 'components'>>>
-    | undefined = {
+export const tooltipStyle: MUIComponentOverrides['MuiTooltip'] = {
     tooltip: {
         backgroundColor: palette.ink[900],
         borderRadius: '0.75rem',

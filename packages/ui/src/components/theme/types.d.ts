@@ -82,6 +82,7 @@ declare module '@mui/material/styles' {
         chalk: PaletteOptions['primary'];
     }
     interface Palette {
+        default: Palette['primary'];
         ink: Palette['primary'];
         danger: Palette['primary'];
         surface: Palette['primary'];

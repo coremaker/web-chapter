@@ -1,25 +1,19 @@
-import { ListItemAvatarClasses, ListItemTextClasses, Theme } from '@mui/material';
-import { OverridesStyleRules } from '@mui/material/styles/overrides';
+import { typography } from '../themeOptions';
+import { MUIComponentOverrides } from './types/StyleOverrides';
 
-import { palette, typography } from '../themeOptions';
-
-export const listItemTextStyle:
-    | Partial<OverridesStyleRules<keyof ListItemTextClasses, 'MuiListItemText', Omit<Theme, 'components'>>>
-    | undefined = {
-    primary: {
+export const listItemTextStyle: MUIComponentOverrides['MuiListItemText'] = {
+    primary: ({ theme: { palette } }) => ({
         color: palette.ink[500],
         ...typography.button2,
-    },
+    }),
 
-    secondary: {
+    secondary: ({ theme: { palette } }) => ({
         color: palette.ink[500],
         ...typography.overline,
-    },
+    }),
 };
 
-export const listItemAvatarStyle:
-    | Partial<OverridesStyleRules<keyof ListItemAvatarClasses, 'MuiListItemAvatar', Omit<Theme, 'components'>>>
-    | undefined = {
+export const listItemAvatarStyle: MUIComponentOverrides['MuiListItemAvatar'] = {
     root: {
         minWidth: 'fit-content',
         marginRight: '0.3rem',

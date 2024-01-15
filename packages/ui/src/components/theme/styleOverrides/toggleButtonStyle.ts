@@ -1,15 +1,10 @@
-import { Theme, ToggleButtonClasses, ToggleButtonGroupClasses, ToggleButtonProps } from '@mui/material';
-import { OverridesStyleRules } from '@mui/material/styles/overrides';
-
-import { palette, typography } from '../themeOptions';
-import { Color } from './types/PaletteTheme';
+import { typography } from '../themeOptions';
+import { MUIComponentOverrides } from './types/StyleOverrides';
 
 const BORDER_RADIUS = '0.75rem';
 
-export const toggleButtonGroupStyle:
-    | Partial<OverridesStyleRules<keyof ToggleButtonGroupClasses, 'MuiToggleButtonGroup', Omit<Theme, 'components'>>>
-    | undefined = {
-    root: ({ theme }) => ({
+export const toggleButtonGroupStyle: MUIComponentOverrides['MuiToggleButtonGroup'] = {
+    root: ({ theme: { palette, breakpoints } }) => ({
         backgroundColor: palette.surface[50],
         border: `1px solid ${palette.surface[300]}`,
         borderRadius: BORDER_RADIUS,
@@ -22,13 +17,13 @@ export const toggleButtonGroupStyle:
             boxShadow: `0 0 0 2px ${palette.danger[500]}`,
         },
 
-        [theme.breakpoints.down('xs')]: {
+        [breakpoints.down('xs')]: {
             flexDirection: 'column',
             height: 'fit-content',
         },
     }),
 
-    grouped: ({ theme }) => ({
+    grouped: ({ theme: { palette, breakpoints } }) => ({
         height: '2.25rem',
         position: 'relative',
         display: 'inline-block',
@@ -57,7 +52,7 @@ export const toggleButtonGroupStyle:
             marginRight: '0.0625rem',
         },
 
-        [theme.breakpoints.down('xs')]: {
+        [breakpoints.down('xs')]: {
             '&:not(:last-of-type):after': {
                 content: 'none',
             },
@@ -83,48 +78,38 @@ export const toggleButtonGroupStyle:
     }),
 };
 
-export const toggleButtonStyle:
-    | Partial<OverridesStyleRules<keyof ToggleButtonClasses, 'MuiToggleButton', Omit<Theme, 'components'>>>
-    | undefined = {
-    root: ({
-        ownerState,
-        theme,
-    }: {
-        ownerState: ToggleButtonProps & Record<string, unknown>;
-        theme: Omit<Theme, 'components'>;
-    }) => {
-        const color = (ownerState.color as Color) || 'primary';
-
+export const toggleButtonStyle: MUIComponentOverrides['MuiToggleButton'] = {
+    root: ({ ownerState: { color = 'primary' }, theme: { palette } }) => {
         return {
-            color: theme.palette[color][500],
+            color: palette[color][500],
             opacity: 1,
             border: 'none',
             textTransform: 'capitalize',
             ...typography.button,
 
             ':hover': {
-                backgroundColor: theme.palette[color].tint50,
-                color: theme.palette[color][700],
+                backgroundColor: palette[color].tint50,
+                color: palette[color][700],
             },
 
             '&.Mui-disabled': {
-                color: theme.palette[color][300],
+                color: palette[color][300],
                 border: 'none',
             },
 
             '&.Mui-selected': {
-                color: theme.palette[color][500],
-                backgroundColor: theme.palette[color].tint100,
+                color: palette[color][500],
+                backgroundColor: palette[color].tint100,
                 heigth: '1.25rem',
 
                 ':hover': {
-                    backgroundColor: theme.palette[color].tint200,
-                    color: theme.palette[color][700],
+                    backgroundColor: palette[color].tint200,
+                    color: palette[color][700],
                 },
 
                 '&.Mui-disabled': {
-                    color: theme.palette[color][300],
-                    backgroundColor: theme.palette[color].tint50,
+                    color: palette[color][300],
+                    backgroundColor: palette[color].tint50,
                 },
             },
         };

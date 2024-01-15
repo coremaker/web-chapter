@@ -1,9 +1,6 @@
-import { TableClasses, Theme } from '@mui/material';
-import { OverridesStyleRules } from '@mui/material/styles/overrides';
+import { MUIComponentOverrides } from './types/StyleOverrides';
 
-export const tableStyle:
-    | Partial<OverridesStyleRules<keyof TableClasses, 'MuiTable', Omit<Theme, 'components'>>>
-    | undefined = {
+export const tableStyle: MUIComponentOverrides['MuiTable'] = {
     root: ({ theme: { palette, typography } }) => ({
         border: `1px solid ${palette.surface[300]}`,
         borderRadius: '12px',

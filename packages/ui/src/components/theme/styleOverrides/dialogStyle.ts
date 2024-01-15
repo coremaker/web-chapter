@@ -1,19 +1,15 @@
-import { DialogClasses, Theme } from '@mui/material';
-import { OverridesStyleRules } from '@mui/material/styles/overrides';
+import { blurEffects, typography } from '../themeOptions';
+import { MUIComponentOverrides } from './types/StyleOverrides';
 
-import { blurEffects, palette, typography } from '../themeOptions';
-
-export const dialogStyle:
-    | Partial<OverridesStyleRules<keyof DialogClasses, 'MuiDialog', Omit<Theme, 'components'>>>
-    | undefined = {
-    root: {
+export const dialogStyle: MUIComponentOverrides['MuiDialog'] = {
+    root: ({ theme: { palette } }) => ({
         '& .MuiBackdrop-root': {
             backgroundColor: palette.charcoal[500],
             backdropFilter: blurEffects.backdropFilter.s,
         },
-    },
+    }),
 
-    paper: {
+    paper: ({ theme: { palette } }) => ({
         width: '37.5rem',
         borderRadius: '0.75rem',
 
@@ -43,5 +39,5 @@ export const dialogStyle:
             borderTop: `1px solid ${palette.surface[300]}`,
             height: '4rem',
         },
-    },
+    }),
 };

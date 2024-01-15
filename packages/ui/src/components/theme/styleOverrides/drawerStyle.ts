@@ -1,24 +1,20 @@
-import { DrawerClasses, Theme } from '@mui/material';
-import { OverridesStyleRules } from '@mui/material/styles/overrides';
-
-import { blurEffects, palette } from '../themeOptions';
+import { blurEffects } from '../themeOptions';
+import { MUIComponentOverrides } from './types/StyleOverrides';
 
 export const DRAWER_WIDTH = '16.25rem';
 
-export const drawerStyle:
-    | Partial<OverridesStyleRules<keyof DrawerClasses, 'MuiDrawer', Omit<Theme, 'components'>>>
-    | undefined = {
+export const drawerStyle: MUIComponentOverrides['MuiDrawer'] = {
     docked: {
         width: `${DRAWER_WIDTH}rem`,
         flexShrink: 0,
     },
 
-    modal: {
+    modal: ({ theme: { palette } }) => ({
         '& .MuiBackdrop-root': {
             backgroundColor: palette.charcoal[500],
             backdropFilter: blurEffects.backdropFilter.s,
         },
-    },
+    }),
 
     paper: {
         width: DRAWER_WIDTH,

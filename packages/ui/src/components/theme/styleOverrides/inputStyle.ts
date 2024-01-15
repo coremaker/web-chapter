@@ -1,12 +1,8 @@
-import { OutlinedInputClasses, Theme } from '@mui/material';
-import { OverridesStyleRules } from '@mui/material/styles/overrides';
+import { typography } from '../themeOptions';
+import { MUIComponentOverrides } from './types/StyleOverrides';
 
-import { palette, typography } from '../themeOptions';
-
-export const muiOutlinedInputStyle:
-    | Partial<OverridesStyleRules<keyof OutlinedInputClasses, 'MuiOutlinedInput', Omit<Theme, 'components'>>>
-    | undefined = {
-    root: {
+export const muiOutlinedInputStyle: MUIComponentOverrides['MuiOutlinedInput'] = {
+    root: ({ theme: { palette } }) => ({
         borderRadius: 12,
         backgroundColor: palette.surface[100],
         border: `2px solid ${palette.surface[100]}`,
@@ -74,8 +70,8 @@ export const muiOutlinedInputStyle:
                 },
             },
         },
-    },
-    input: {
+    }),
+    input: ({ theme: { palette } }) => ({
         ...typography.body1Regular,
         color: palette.ink[500],
 
@@ -83,5 +79,5 @@ export const muiOutlinedInputStyle:
             color: palette.ink[300],
             opacity: 1,
         },
-    },
+    }),
 };
