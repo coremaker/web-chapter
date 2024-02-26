@@ -66,7 +66,7 @@ const EllipsisCellContent = <T extends GenericRowStructure>({
                     id={menuId}
                     open={open}
                     onClose={(e: MouseEvent<HTMLElement>) => {
-                        e?.stopPropagation();
+                        e.stopPropagation();
                         handleClose();
                     }}
                     anchorEl={anchorEl}
