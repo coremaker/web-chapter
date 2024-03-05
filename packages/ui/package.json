@@ -1,19 +1,20 @@
 {
     "name": "@web-chapter/ui",
-    "version": "0.0.57",
+    "version": "0.0.58",
     "files": [
         "dist"
     ],
     "exports": {
         ".": {
+            "types": "./dist/index.d.ts",
             "import": "./dist/index.es.js",
             "require": "./dist/index.umd.js"
         }
     },
     "type": "module",
+    "types": "./dist/index.d.ts",
     "main": "./dist/index.umd.js",
     "module": "./dist/index.es.js",
-    "types": "./dist/index.d.ts",
     "scripts": {
         "dev": "vite",
         "build": "tsc -b && vite build",
