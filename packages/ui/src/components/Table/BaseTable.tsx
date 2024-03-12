@@ -158,25 +158,27 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
 
     return (
         <div className={classes.root}>
-            <FiltersRowContainer className={classes.headArea}>
-                {makeSearchableRowContent || searchProps ? (
-                    <div className={classes.searchInputContainer}>
-                        {renderSearchInput ? (
-                            renderSearchInput({
-                                searchValue: searchInputProps.value,
-                                handleChangeSearchValue: searchInputProps.onChange,
-                            })
-                        ) : (
-                            <TextField
-                                placeholder={searchInputPlaceholder}
-                                onChange={(e) => searchInputProps.onChange(e.target.value)}
-                                value={searchInputProps.value}
-                            />
-                        )}
-                    </div>
-                ) : null}
-                <div className={classes.actionsContainer}>{renderTableActions?.(selectedRowIds)}</div>
-            </FiltersRowContainer>
+            {makeSearchableRowContent || searchProps || renderTableActions ? (
+                <FiltersRowContainer className={classes.headArea}>
+                    {makeSearchableRowContent || searchProps ? (
+                        <div className={classes.searchInputContainer}>
+                            {renderSearchInput ? (
+                                renderSearchInput({
+                                    searchValue: searchInputProps.value,
+                                    handleChangeSearchValue: searchInputProps.onChange,
+                                })
+                            ) : (
+                                <TextField
+                                    placeholder={searchInputPlaceholder}
+                                    onChange={(e) => searchInputProps.onChange(e.target.value)}
+                                    value={searchInputProps.value}
+                                />
+                            )}
+                        </div>
+                    ) : null}
+                    <div className={classes.actionsContainer}>{renderTableActions?.(selectedRowIds)}</div>
+                </FiltersRowContainer>
+            ) : null}
 
             <TableContainer className={classes.tableContainer} sx={tableContainerSxProps}>
                 <MuiTable>
