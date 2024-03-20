@@ -156,11 +156,14 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
         onChange: handleChangeSearchValue,
     };
 
+    const isSearchable = makeSearchableRowContent || searchProps;
+    const shouldRenderTableFilters = isSearchable || renderTableActions;
+
     return (
         <div className={classes.root}>
-            {makeSearchableRowContent || searchProps || renderTableActions ? (
+            {shouldRenderTableFilters ? (
                 <FiltersRowContainer className={classes.headArea}>
-                    {makeSearchableRowContent || searchProps ? (
+                    {isSearchable ? (
                         <div className={classes.searchInputContainer}>
                             {renderSearchInput ? (
                                 renderSearchInput({
@@ -176,7 +179,10 @@ const BaseTable = <T extends GenericRowStructure>(props: BaseTableProps<T>) => {
                             )}
                         </div>
                     ) : null}
-                    <div className={classes.actionsContainer}>{renderTableActions?.(selectedRowIds)}</div>
+
+                    {renderTableActions && (
+                        <div className={classes.actionsContainer}>{renderTableActions(selectedRowIds)}</div>
+                    )}
                 </FiltersRowContainer>
             ) : null}
 
