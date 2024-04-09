@@ -139,7 +139,7 @@ export default function useTable<T extends GenericRowStructure>({
         updateState({ page: newPage });
     };
 
-    const handleChangeSearchValue = (searchValue: string) => updateState({ searchValue });
+    const handleChangeSearchValue = (searchValue: string) => updateState({ searchValue, page: 0 });
 
     const handleRowSelectionInternal = (rowId: string, selected: boolean) => {
         if (selectionType === 'single') {
