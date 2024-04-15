@@ -109,7 +109,7 @@ const useTableLogic = <T extends GenericRowStructure>({
         sortByColumnId: sortColumn ?? internalSortColumn,
         searchValue: searchProps?.value ?? internalSearchValue,
         sortDirection: sortDirection ?? internalSortDirection,
-        currentPageRows: handleSortCellClick ? rows : internalCurrentPageRows,
+        currentPageRows: handleSortCellClick || handleRowsPerPageChange ? rows : internalCurrentPageRows,
         filteredRows: handleSortCellClick ? rows : internalFilteredRows,
         selectedRowsCount: getSelectedRowsCount(selectedRowIds ?? internalSelectedRowIds),
         headRow: buildHeadRow(headCells),
